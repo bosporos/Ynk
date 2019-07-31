@@ -7,8 +7,8 @@
 #define __YNK_RESULT_RESULT
 
 // #include "panic/panic.hpp"
-#include <ynk/option/Option.h>
-#include <ynk/lang/Move.h>
+#include <Ynk/option/Option.h>
+#include <Ynk/lang/Move.h>
 
 using Ynk::option::Option;
 
@@ -17,7 +17,9 @@ namespace Ynk {
     //! Helper struct returned by Ynk::result::Ok<T>
     //!
     //! May be passed by copy or move to Ynk::result::Result's ctor.
-    template <class T> struct OkResultInitializer {
+    template <class T>
+    struct OkResultInitializer
+    {
         //! Object of type `T` to be used as Ynk::result::Result's
         //! `result`.
         T inner;
@@ -26,33 +28,41 @@ namespace Ynk {
     //! Helper struct returned by Ynk::result::Err<T>
     //!
     //! May be passed by copy or move to Ynk::result::Result's ctor.
-    template <class T> struct ErrResultInitializer {
+    template <class T>
+    struct ErrResultInitializer
+    {
         //! Object of type `T` to be used as Ynk::result::Result's
         //! `error`.
         T inner;
     };
 
-    template <class T> constexpr OkResultInitializer<T> Ok (T const & x)
+    template <class T>
+    constexpr OkResultInitializer<T> Ok (T const & x)
     {
         return { x };
     }
 
-    template <class T> constexpr ErrResultInitializer<T> Err (T const & x)
+    template <class T>
+    constexpr ErrResultInitializer<T> Err (T const & x)
     {
         return { x };
     }
 
-    template <class T> constexpr OkResultInitializer<T> Ok (T && x)
+    template <class T>
+    constexpr OkResultInitializer<T> Ok (T && x)
     {
         return { Ynk::Move (x) };
     }
 
-    template <class T> constexpr ErrResultInitializer<T> Err (T && x)
+    template <class T>
+    constexpr ErrResultInitializer<T> Err (T && x)
     {
         return { Ynk::Move (x) };
     }
 
-    template <class R, class E> struct Result {
+    template <class R, class E>
+    struct Result
+    {
         union {
             R result;
             E error;
@@ -113,7 +123,9 @@ namespace Ynk {
         }
         constexpr R unwrap () const
         {
-            if (is_error) { panic ("result::unwrap: is an error"); }
+            if (is_error) {
+                panic ("result::unwrap: is an error");
+            }
             return Ynk::Move (result);
         }
         constexpr R unwrap_or (R default_value) const
@@ -122,7 +134,9 @@ namespace Ynk {
         }
         constexpr E unwrap_err () const
         {
-            if (!is_error) { panic ("result::unwrap_err: isn't an error"); }
+            if (!is_error) {
+                panic ("result::unwrap_err: isn't an error");
+            }
             return Ynk::Move (result);
         }
         constexpr E unwrap_err_or (R default_value) const

@@ -1,9 +1,7 @@
-# Author: Maximilien A. Cura <max.cura>
-# Date:   04.29.2018
-# Project: ReactiveSilk
-# Filename: .clang-format
-# Last modified by:   max.cura
-# Copyright (C) Apr 21, 2018 Maximilien A. Cura. All rights reserved. Use by explicit written permission only.
+#
+# file .clang-format
+# author Maximilien M. Cura
+#
 
 BasedOnStyle:                                   WebKit
 
@@ -14,19 +12,18 @@ AlignConsecutiveAssignments:                    true
 AllowShortBlocksOnASingleLine:                  true
 AllowShortCaseLabelsOnASingleLine:              true
 AllowShortFunctionsOnASingleLine:               true
-AllowShortIfStatementsOnASingleLine:            true
 AlwaysBreakAfterReturnType:                     None
-AlwaysBreakTemplateDeclarations:                No
+AlwaysBreakTemplateDeclarations:                true
 BinPackArguments:                               false
 BinPackParameters:                              false
 BreakBeforeBraces:                              Custom
 BraceWrapping:
-    AfterClass:                                 false
+    AfterClass:                                 true
     AfterControlStatement:                      false
     AfterEnum:                                  false
     AfterFunction:                              true
     AfterNamespace:                             false
-    AfterStruct:                                false
+    AfterStruct:                                true
     AfterUnion:                                 false
     AfterExternBlock:                           true
     BeforeCatch:                                false

@@ -12,16 +12,16 @@
 -fno-rtti
 
 # Visibility should be limited by default
--fvisibility=hidden
+-fvisibility=default
 
 # Reduce preprocessed input size
--nobuiltininc
+#-nobuiltininc
 
 # Because with this many options, it's *gonna* come up
 -Wno-unused-command-line-argument
 # Various things
 -Wno-nullability-completeness
--Wno-expansion-to-undefined
+-Wno-expansion-to-defined
 -Wno-unused-parameter
 -Wunused-variable
 

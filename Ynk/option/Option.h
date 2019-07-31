@@ -8,7 +8,9 @@
 
 // #include "panic/panic.hpp"
 
-#include <ynk/lang/Move.h>
+#include <Ynk/lang/Move.h>
+
+#include <cstdlib>
 
 namespace Ynk {
     template <class T, class... Args>
@@ -17,11 +19,19 @@ namespace Ynk {
         return t;
     }
 
-    template <class T> struct Option;
-    template <> struct Option<void> {};
+    template <class T>
+    struct Option;
+    template <>
+    struct Option<void>
+    {};
 
-    template <class T> Option<T> Some (T const & o) { return Option<T> (o); }
-    template <class T> Option<T> Some (T && o)
+    template <class T>
+    Option<T> Some (T const & o)
+    {
+        return Option<T> (o);
+    }
+    template <class T>
+    Option<T> Some (T && o)
     {
         return Option<T> (Ynk::Move (o));
     }
@@ -34,7 +44,9 @@ namespace Ynk {
 
     using None = Option<void>;
 
-    template <class T> struct Option {
+    template <class T>
+    struct Option
+    {
         union {
             T inner;
         };
@@ -61,7 +73,9 @@ namespace Ynk {
         Option (Option<T> const & o)
             : has_value { o.has_value }
         {
-            if (has_value) { new (&inner) T (o.inner); }
+            if (has_value) {
+                new (&inner) T (o.inner);
+            }
         }
 
         Option (Option<T> && o)
@@ -83,7 +97,10 @@ namespace Ynk {
         }
         constexpr T unwrap () const
         {
-            if (!has_value) { panic ("option::unwrap: has no value"); }
+            if (!has_value) {
+                // panic ("option::unwrap: has no value");
+                std::abort ();
+            }
             return inner;
         }
         constexpr T unwrap_or (T default_value) const
@@ -107,7 +124,8 @@ namespace Ynk {
             }
         }
 
-        template <class M> constexpr auto map (const M & m) && -> Ynk::Option<
+        template <class M>
+        constexpr auto map (const M & m) && -> Ynk::Option<
             decltype (m (Ynk::Move (this->inner)))>
         {
             using returning_t = decltype (m (Ynk::Move (inner)));

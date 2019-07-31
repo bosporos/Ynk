@@ -12,9 +12,11 @@
 #include <Ynk/Compiler.h>
 #include <Ynk/Platform.h>
 
+#include <unistd.h>
+
 namespace Ynk {
 
-#if COMPILER(GCC_COMPATIBLE)
+#if COMPILER(GNU_COMPATIBLE)
     typedef __UINT8_TYPE__ _u8;
     typedef __UINT16_TYPE__ _u16;
     typedef __UINT32_TYPE__ _u32;
@@ -30,13 +32,21 @@ namespace Ynk {
 #endif
 
 #if CPU(ADDRESS64)
-    typedef _u64 _usize;
-    typedef _u64 _uptr;
-    typedef _i64 _isize;
-    typedef _i64 _iptr;
+
+    static_assert (sizeof (size_t) == sizeof (unsigned long));
+
+    typedef unsigned long _usize;
+    typedef _usize _uptr;
+    typedef long _isize;
+    typedef _isize _iptr;
 #else
 #    error "Ynk requires a 64-bit system"
 #endif
+
+    static_assert (sizeof (_usize) == sizeof (void *));
+    static_assert (sizeof (_isize) == sizeof (void *));
+    static_assert (sizeof (_uptr) == sizeof (void *));
+    static_assert (sizeof (_iptr) == sizeof (void *));
 
 }
 

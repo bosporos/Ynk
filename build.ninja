@@ -1,0 +1,43 @@
+ninja_required_version = 1.3
+builddir = ./build
+root = .
+cache_engine = ccache
+# Have to pass -fcolor-diagnostics here so Ninja'll actually respect it, it seems
+clang = clang-8 -fcolor-diagnostics
+asflags = --config ${root}/clang/dev-asflags.txt
+cflags = --config ${root}/clang/dev-cflags.txt -I$root
+cxxflags = --config ${root}/clang/dev-cxxflags.txt -I$root
+ldflags = --config ${root}/clang/dev-ldflags.txt -L$builddir
+
+rule rule-cxx
+    command = ${cache_engine} ${clang} -MMD -MT $out -MF $out.d ${cxxflags} -c $in -o $out
+    description = CXX $in
+    deps = gcc
+    depfile = $out.d
+
+rule rule-c
+    command = ${cache_engine} ${clang} -MMD -MT $out -MF $out.d ${cflags} -c $in -o $out
+    description = CC $in
+    deps = gcc
+    depfile = $out.d
+
+rule libdynamic
+    command = ${clang} -dynamiclib -fPIC -undefined dynamic_lookup -g ${ldflags} -o $out $in $libs
+    description = LIBDYNAMIC $out
+
+rule link
+    command = ${clang} ${ldflags} -o $out $in $libs
+    description = LINK $out
+
+build $builddir/ynk/backtrace/Backtrace.o: rule-cxx $root/ynk/backtrace/Backtrace.cc
+build $builddir/ynk/bootstrap.lower.o: rule-c $root/ynk/Bootstrap.c
+build $builddir/ynk/bootstrap.upper.o: rule-cxx $root/ynk/Bootstrap.cc
+build $builddir/libynk.dylib: libdynamic $
+        $builddir/ynk/backtrace/Backtrace.o $
+        $builddir/ynk/bootstrap.lower.o $
+        $builddir/ynk/bootstrap.upper.o
+    libs = -lc -lm -lpthread -framework GLUT -framework OpenGL -lc++
+
+build $builddir/art/art.o: rule-cxx $root/art/art.cc
+build $builddir/ynked: link $builddir/art/art.o
+    libs = -lynk -lc -lc++

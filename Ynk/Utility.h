@@ -14,4 +14,7 @@
 #define YNK_NONNULL __attribute__ ((nonnull))
 #define YNK_FN_NONNULL __attribute__ ((returns_nonnull))
 
+#define YNK_FN_PTR(ret, name, ...) ret (*name) (__VA_ARGS__)
+#define YNK_FN_PTR_T(ret, ...) ret (*) (__VA_ARGS__)
+
 #endif /* !@__YNK_UTILITY */

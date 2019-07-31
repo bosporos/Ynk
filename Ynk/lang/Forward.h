@@ -6,8 +6,8 @@
 #ifndef __YNK_LANG_FORWARD
 #define __YNK_LANG_FORWARD
 
-#include <ynk/Compiler.h>
-#include <ynk/lang/RemoveReference.h>
+#include <Ynk/Compiler.h>
+#include <Ynk/lang/RemoveReference.h>
 
 namespace Ynk {
     template <typename T>

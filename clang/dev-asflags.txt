@@ -4,9 +4,9 @@
 # try to speed up the compile process
 -pipe
 
-# always build debug versions with -O3, so you know when optimization bugs pop
-# up
--O3
+# always build debug versions with -O3, so you know when optimization bugs pop up
+#NOTE: this screws up libunwind, so the backtraces die :(
+#-O3
 
 # ALL the errors
 -Wall
