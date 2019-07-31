@@ -15,10 +15,11 @@
 namespace Ynk::Atomic {
 #if COMPILER_HAS_CLANG_FEATURE(c_atomic)
     template <typename T>
-    struct Atomic {
+    struct Atomic
+    {
 
-        YNK_MAKE_NONCOPYABLE (Atomic);
-        YNK_MAKE_NONMOVEABLE (Atomic);
+        YNK_MAKE_NON_COPYABLE (Atomic);
+        YNK_MAKE_NON_MOVEABLE (Atomic);
 
         _Atomic volatile T inner;
 

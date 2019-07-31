@@ -6,6 +6,6 @@
 #ifndef __YNK_LANG_NONCOPYABLE
 #define __YNK_LANG_NONCOPYABLE
 
-#define YNK_MAKE_NONCOPYABLE(_Name) _Name (_Name const &) = delete
+#define YNK_MAKE_NON_COPYABLE(_Name) _Name (_Name const &) = delete
 
 #endif

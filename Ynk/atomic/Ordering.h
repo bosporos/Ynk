@@ -1,14 +1,14 @@
 //
-// file petra/atomic/Ordering.h
-// author Maximilien A. Cura <ushabti.cms@gmail.com>
+// file ynk/atomic/Ordering.h
+// author Maximilien M. Cura
 //
 
-#ifndef __PETRA_ATOMIC_ORDERING
-#define __PETRA_ATOMIC_ORDERING
+#ifndef __YNK_ATOMIC_ORDERING
+#define __YNK_ATOMIC_ORDERING
 
-#include <petra/numeric/NativeIntegers.h>
+#include <Ynk/num/NativeIntegers>
 
-namespace Petra::Atomic {
+namespace Ynk::Atomic {
     enum class Ordering : _u8 {
 #if defined(__ATOMIC_RELAXED)
         Relaxed = __ATOMIC_RELAXED,
@@ -18,7 +18,7 @@ namespace Petra::Atomic {
         AcqRel  = __ATOMIC_ACQ_REL,
         SeqCst  = __ATOMIC_SEQ_CST,
 #else
-#    error "Petra requires the __ATOMIC_* macros & __atomic_* builtins"
+#    error "Ynk requires the __ATOMIC_* macros & __atomic_* builtins"
 #endif
     }
 }
