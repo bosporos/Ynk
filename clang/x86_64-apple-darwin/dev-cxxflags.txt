@@ -1,0 +1,4 @@
+@dev-cflags.txt
+
+# C++2a standard
+-std=c++2a

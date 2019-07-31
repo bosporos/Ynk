@@ -1,0 +1,14 @@
+;;
+;; file ynk/frost/files.x86_64-apple-darwin.dev.frost
+;; author Maximilien M. Cura
+;;
+
+include ynk/base/file-extensions.frost
+
+phase ynk {
+;    compile![rule(cxx)] ynk/ynk_init.cc
+
+    @libdynamic![all_objects, lib(c), lib(m)] libynk.dylib
+}
+
+stop

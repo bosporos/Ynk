@@ -1,0 +1,10 @@
+;;
+;; file ynk/frost/base/file-extensions.frost
+;; author Maximilien M. Cura
+;;
+
+;; C
+file c      rule-compile-c
+
+;; C++
+file cc     rule-compile-cxx

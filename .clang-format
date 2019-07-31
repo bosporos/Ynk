@@ -1,0 +1,65 @@
+# Author: Maximilien A. Cura <max.cura>
+# Date:   04.29.2018
+# Project: ReactiveSilk
+# Filename: .clang-format
+# Last modified by:   max.cura
+# Copyright (C) Apr 21, 2018 Maximilien A. Cura. All rights reserved. Use by explicit written permission only.
+
+BasedOnStyle:                                   WebKit
+
+Language:                                       Cpp
+AccessModifierOffset:                           -4
+AlignAfterOpenBracket:                          Align
+AlignConsecutiveAssignments:                    true
+AllowShortBlocksOnASingleLine:                  true
+AllowShortCaseLabelsOnASingleLine:              true
+AllowShortFunctionsOnASingleLine:               true
+AllowShortIfStatementsOnASingleLine:            true
+AlwaysBreakAfterReturnType:                     None
+AlwaysBreakTemplateDeclarations:                No
+BinPackArguments:                               false
+BinPackParameters:                              false
+BreakBeforeBraces:                              Custom
+BraceWrapping:
+    AfterClass:                                 false
+    AfterControlStatement:                      false
+    AfterEnum:                                  false
+    AfterFunction:                              true
+    AfterNamespace:                             false
+    AfterStruct:                                false
+    AfterUnion:                                 false
+    AfterExternBlock:                           true
+    BeforeCatch:                                false
+    BeforeElse:                                 false
+    IndentBraces:                               false
+    SplitEmptyFunction:                         false
+    SplitEmptyRecord:                           false
+    SplitEmptyNamespace:                        false
+BreakBeforeInheritanceComma:                    false
+BreakBeforeTernaryOperators:                    true
+BreakConstructorInitializers:                   BeforeComma
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+ContinuationIndentWidth:                        4
+# DerivePointerAlignment:                       true
+IncludeBlocks:                                  Preserve
+IndentCaseLabels:                               true
+IndentPPDirectives:                             AfterHash
+IndentWidth:                                    4
+IndentWrappedFunctionNames:                     true
+NamespaceIndentation:                           All
+PointerAlignment:                               Middle
+ReflowComments:                                 true
+SortIncludes:                                   false
+SortUsingDeclarations:                          true
+SpaceAfterCStyleCast:                           false
+SpaceAfterTemplateKeyword:                      true
+SpaceBeforeAssignmentOperators:                 true
+SpaceBeforeInheritanceColon:                    true
+SpaceBeforeParens:                              Always
+SpaceBeforeRangeBasedForLoopColon:              true
+SpaceInEmptyParentheses:                        false
+SpacesBeforeTrailingComments:                   3
+SpacesInAngles:                                 false
+SpacesInCStyleCastParentheses:                  false
+Standard:                                       Cpp11
+UseTab:                                         Never

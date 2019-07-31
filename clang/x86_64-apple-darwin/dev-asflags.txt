@@ -1,0 +1,19 @@
+-ffreestanding
+-fPIC
+
+# try to speed up the compile process
+-pipe
+
+# always build debug versions with -O3, so you know when optimization bugs pop
+# up
+-O3
+
+# ALL the errors
+-Wall
+-Wextra
+
+# For ease of debugging
+-fcolor-diagnostics
+-g
+
+@dev-macros.txt

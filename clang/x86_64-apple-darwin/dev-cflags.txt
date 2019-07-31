@@ -1,0 +1,28 @@
+# Enable __builtin_*
+-fbuiltin
+
+# Allow inline-functions, optimize when possible
+-finline-functions
+
+# Because I quite frankly am completely unconcerned with those on MS,
+# because this tooling is not *meant* to be used with MS software
+-fno-ms-compatibility
+
+# Makes for a more compact executable/library
+-fno-rtti
+
+# Visibility should be limited by default
+-fvisibility=hidden
+
+# Reduce preprocessed input size
+-nobuiltininc
+
+# Because with this many options, it's *gonna* come up
+-Wno-unused-command-line-argument
+# Various things
+-Wno-nullability-completeness
+-Wno-expansion-to-undefined
+-Wno-unused-parameter
+-Wunused-variable
+
+@dev-asflags.txt
