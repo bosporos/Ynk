@@ -6,6 +6,8 @@
 #ifndef __YNK_APP
 #define __YNK_APP
 
+#include <Ynk/Utility.h>
+
 #include <cstdio>
 #include <cstdlib>
 
@@ -77,21 +79,23 @@ namespace Ynk::App {
     }
 }
 
-#define YNK_APP()                                                 \
-    namespace Ynk::App {                                          \
-        struct StubImpl                                           \
-            : public Ynk::App::Stub                               \
-        {                                                         \
-            static bool registered;                               \
-                                                                  \
-            int run (int, char **) override;                      \
-        };                                                        \
-    }                                                             \
-                                                                  \
-    bool Ynk::App::StubImpl::registered                           \
-        = Ynk::App::register_stub (                               \
-            new Ynk::App::StubRunnerImpl<Ynk::App::StubImpl> ()); \
-                                                                  \
-    int Ynk::App::StubImpl::run (int argc, char ** argv)
+//! Uses YNK_UNUSED to silence compiler warnings about argc and argv being unused
+//! parameters
+#define YNK_APP()                                                  \
+    namespace Ynk::App {                                           \
+        struct StubImpl                                            \
+            : public Ynk::App::Stub                                \
+        {                                                          \
+            static bool registered;                                \
+                                                                   \
+            int run (int YNK_UNUSED, char ** YNK_UNUSED) override; \
+        };                                                         \
+    }                                                              \
+                                                                   \
+    bool Ynk::App::StubImpl::registered                            \
+        = Ynk::App::register_stub (                                \
+            new Ynk::App::StubRunnerImpl<Ynk::App::StubImpl> ());  \
+                                                                   \
+    int Ynk::App::StubImpl::run (int YNK_UNUSED argc, char ** YNK_UNUSED argv)
 
 #endif /* !@__YNK_APP */

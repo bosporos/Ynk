@@ -65,7 +65,7 @@ Ynk::Backtrace::BacktraceElement * Ynk::Backtrace::backtrace (usize & number)
                     // panic ("Ynk::Backtrace::Backtrace cannot backtrace: allocation failed");
                     abort ();
                 }
-                strlcpy (nameptr, sym, 257);
+                strlcpy (nameptr, sym, 256);
             }
             asprintf (&current->text, "0x%llx: %s+0x%llx", ip, nameptr, offset);
             std::free (demangled);

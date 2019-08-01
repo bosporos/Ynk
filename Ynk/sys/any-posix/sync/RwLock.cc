@@ -3,7 +3,7 @@
 // author Maximilien M. Cura
 //
 
-#include <Ynk/sys/any-posix/RwLock.h>
+#include <Ynk/sys/any-posix/sync/RwLock.h>
 #include <Ynk/atomic/Ordering.h>
 
 #include <errno.h>

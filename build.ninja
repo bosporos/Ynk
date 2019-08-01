@@ -21,6 +21,10 @@ rule rule-c
     deps = gcc
     depfile = $out.d
 
+rule rule-asm
+    command = ${clang} ${asflags} -c $in -o $out
+    description = ASM $in
+
 rule libdynamic
     command = ${clang} -dynamiclib -fPIC -undefined dynamic_lookup -g ${ldflags} -o $out $in $libs
     description = LIBDYNAMIC $out
@@ -30,12 +34,21 @@ rule link
     description = LINK $out
 
 build $builddir/ynk/backtrace/Backtrace.o: rule-cxx $root/ynk/backtrace/Backtrace.cc
+
 build $builddir/ynk/bootstrap.lower.o: rule-c $root/ynk/Bootstrap.c
 build $builddir/ynk/bootstrap.upper.o: rule-cxx $root/ynk/Bootstrap.cc
+
+build $builddir/ynk/sys/sync/Mutex.o: rule-cxx $root/ynk/sys/any-posix/sync/Mutex.cc
+build $builddir/ynk/sys/sync/RwLock.o: rule-cxx $root/ynk/sys/any-posix/sync/RwLock.cc
+build $builddir/ynk/sys/sync/Condvar.o: rule-cxx $root/ynk/sys/any-posix/sync/Condvar.cc
+
 build $builddir/libynk.dylib: libdynamic $
         $builddir/ynk/backtrace/Backtrace.o $
         $builddir/ynk/bootstrap.lower.o $
-        $builddir/ynk/bootstrap.upper.o
+        $builddir/ynk/bootstrap.upper.o $
+        $builddir/ynk/sys/sync/Mutex.o $
+        $builddir/ynk/sys/sync/RwLock.o $
+        $builddir/ynk/sys/sync/Condvar.o
     libs = -lc -lm -lpthread -framework GLUT -framework OpenGL -lc++
 
 build $builddir/art/art.o: rule-cxx $root/art/art.cc

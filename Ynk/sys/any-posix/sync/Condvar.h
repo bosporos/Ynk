@@ -27,7 +27,7 @@ namespace Ynk::Sys::Sync {
         void notify_one ();
         void notify_all ();
         void wait (Ynk::Sys::Sync::Mutex & m);
-    }
+    };
 }
 
 #endif /* !@__YNK_SYS_ANY_POSIX_SYNC_CONDVAR */

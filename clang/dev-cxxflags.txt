@@ -2,3 +2,5 @@
 
 # C++2a standard
 -std=c++2a
+
+-Wno-format-extra-args

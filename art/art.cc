@@ -1,5 +1,6 @@
 #include <Ynk/App.h>
 #include <Ynk/backtrace/Backtrace.h>
+#include <Ynk/fmt/Fmt.h>
 
 #include <cstdio>
 
@@ -14,11 +15,15 @@
 //! this work.
 YNK_APP ()
 {
-    std::printf ("Hello, world!\n");
+    // std::printf ("Hello, world!\n");
 
-    Ynk::usize depth;
-    Ynk::Backtrace::BacktraceElement * trace = Ynk::Backtrace::backtrace (depth);
-    Ynk::Backtrace::print_backtrace (trace, depth);
+    // Ynk::usize depth;
+    // Ynk::Backtrace::BacktraceElement * trace = Ynk::Backtrace::backtrace (depth);
+    // Ynk::Backtrace::print_backtrace (trace, depth);
+
+    // std::printf ("Hello, %s!\n", u8"Móçtu");
+
+    // Ynk::Fmt::print ("%", u64 (2));
 
     return 0;
 }

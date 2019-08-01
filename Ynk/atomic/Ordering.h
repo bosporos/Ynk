@@ -6,7 +6,7 @@
 #ifndef __YNK_ATOMIC_ORDERING
 #define __YNK_ATOMIC_ORDERING
 
-#include <Ynk/num/NativeIntegers>
+#include <Ynk/num/NativeIntegers.h>
 
 namespace Ynk::Atomic {
     enum class Ordering : _u8 {
@@ -20,7 +20,7 @@ namespace Ynk::Atomic {
 #else
 #    error "Ynk requires the __ATOMIC_* macros & __atomic_* builtins"
 #endif
-    }
+    };
 }
 
 #endif

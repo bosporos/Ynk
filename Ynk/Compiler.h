@@ -22,6 +22,12 @@
 #    define COMPILER_HAS_CLANG_FEATURE(x) 0
 #endif /* @__has_feature */
 
+#ifdef __has_extension
+#    define COMPILER_HAS_CLANG_EXTENSION(x) __has_extension (x)
+#else
+#    define COMPILER_HAS_CLANG_EXTENSION(x) 0
+#endif
+
 #if defined(__clang__)
 #    define YNK_COMPILER_CLANG 1
 #    define YNK_COMPILER_SUPPORTS_BLOCKS COMPILER_HAS_CLANG_FEATURE (blocks)

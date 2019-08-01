@@ -13,7 +13,7 @@
 #include <stdlib.h> /* abort */
 
 namespace Ynk::Atomic {
-#if COMPILER_HAS_CLANG_FEATURE(c_atomic)
+#if COMPILER_HAS_CLANG_FEATURE(c_atomic) || COMPILER_HAS_CLANG_EXTENSION(c_atomic)
     template <typename T>
     struct Atomic
     {
