@@ -7,7 +7,7 @@
 #define __YNK_LANG_FORWARD
 
 #include <Ynk/Compiler.h>
-#include <Ynk/lang/RemoveReference.h>
+#include <Ynk/lang/Dequalify.h>
 
 namespace Ynk {
     template <typename T>
@@ -21,7 +21,7 @@ namespace Ynk {
     ALWAYS_INLINE constexpr T && Forward (
         typename Ynk::RemoveReference<T>::type && x)
     {
-        static_assert (!Ynk::IsLValueReference (x), "Cannot forward an lvalue as an rvalue") return static_cast<T &&> (x);
+        static_assert (!Ynk::IsLValueReference<T>::value, "Cannot forward an lvalue as an rvalue");
         return static_cast<T &&> (x);
     }
 }

@@ -7,9 +7,15 @@
 #define __YNK_STRING_STRING
 
 #include <Ynk/num/NativeIntegers.h>
+#include <Ynk/num/Integers.h>
+#include <Ynk/lang/Move.h>
+#include <Ynk/option/Option.h>
+#include <Ynk/box/Box.h>
 
 #include <cstdlib>
 #include <cstdio>
+
+#include <strings.h> /* strlcpy, bcopy */
 
 #include <vector>
 
@@ -24,62 +30,137 @@ static_assert (sizeof (char) == 1, "char is not 8 bits; contact the developer fo
 namespace Ynk {
     struct String
     {
-        char * inner;
-        usize len_bytes;
-        usize len_chars;
+        std::vector<char8_t> inner;
 
         String ()
-            : inner { new char[1] { '\0' } }
-            , len_bytes { 1 }
-            , len_chars { 0 }
+            : inner (1)
+        {
+            inner[0] = static_cast<char8_t> ('\0');
+        }
+
+        String (const char * x)
+            : inner (std::strlen (x) + 1)
+        {
+            const usize length = std::strlen (x);
+            for (usize i = 0; i < length; i++) {
+                this->inner[i] = static_cast<const char8_t> (x[i]);
+            }
+            this->inner[length] = static_cast<char8_t> ('\0');
+        }
+
+        String (const char8_t * x)
+            : inner (std::strlen (reinterpret_cast<const char *> (x)) + 1)
+        {
+            const usize length = std::strlen (reinterpret_cast<const char *> (x));
+            for (usize i = 0; i < length; i++) {
+                this->inner[i] = x[i];
+            }
+            this->inner[length] = static_cast<char8_t> ('\0');
+        }
+
+        String (String const & x)
+            : inner (x.inner)
         {}
 
-        String (const char * str)
-            : inner { new char[strlen (str) + 1] }
-            , len_bytes { strlen (str) + 1 }
-            , len_chars { __ynk_utf8_strlen (str) }
+        String (String && x)
+            : inner (Ynk::Move (x.inner))
+        {}
+
+        usize char_length () const
         {
-            strlcpy (this->inner, str, this->len_bytes);
+            // If vector::size() is 0, then vector::data() may actually be a nullptr.
+            if (this->inner.size () > 0) {
+                return __ynk_utf8_strlen (reinterpret_cast<const char *> (this->inner.data ()));
+            } else {
+                return 0;
+            }
         }
 
-        String (String const & orig)
-            : inner { new char[orig.len_bytes] }
-            , len_bytes { orig.len_bytes }
-            , len_chars { orig.len_chars }
+        usize byte_length () const
         {
-            strlcpy (this->inner, orig.inner, this->len_bytes);
+            return this->inner.size ();
         }
 
-        String (String && orig)
-            : inner { orig.inner }
-            , len_bytes { orig.len_bytes }
-            , len_chars { orig.len_chars }
+        usize length () const
         {
-            orig.inner     = nullptr;
-            orig.len_bytes = 0;
-            orig.len_chars = 0;
+            return this->inner.size () - 1;
         }
 
-        ~String ()
+        // Todo: KMP substring search
+        // Todo: index_of()
+        // Todo: iterators
+
+        Option<usize> index_of (char8_t chr) const
         {
-            delete[] this->inner;
+            for (usize i = 0; i < this->inner.size (); i++) {
+                if (this->inner[i] == chr) {
+                    return Some (Ynk::Move (i));
+                }
+            }
+            return None ();
         }
 
-        usize length ()
+        String substr (usize idx) const
         {
-            return this->len_bytes - 1;
+            String tmp;
+            tmp.inner.insert (tmp.inner.begin (), this->inner.begin () + idx, this->inner.end ());
+            return Ynk::Move (tmp);
         }
 
-        usize char_length ()
+        String substr (usize idx, usize length) const
         {
-            return this->len_chars;
+            String tmp;
+            tmp.inner.insert (tmp.inner.begin (), this->inner.begin () + idx, this->inner.begin () + idx + length);
+            return Ynk::Move (tmp);
         }
 
-        usize byte_length ()
+        String append (String rhs) const
         {
-            return this->len_bytes;
+            return Ynk::Move (rhs.unslide (*this));
+        }
+
+        String prepend (String rhs) const
+        {
+            return Ynk::Move (rhs.push (*this));
+        }
+
+        String & unslide (String const & rhs)
+        {
+            this->inner.insert (this->inner.begin (), rhs.inner.begin (), rhs.inner.end () - 1);
+            return *this;
+        }
+
+        String & push (String const & rhs)
+        {
+            this->inner.insert (this->inner.end () - 1, rhs.inner.begin (), rhs.inner.end ());
+            return *this;
+        }
+
+        String operator+ (String rhs) const
+        {
+            return this->append (rhs);
+        }
+
+        String & operator+= (String rhs)
+        {
+            return this->push (rhs);
+        }
+
+        const char * into_inner_volatile ()
+        {
+            return reinterpret_cast<const char *> (this->inner.data ());
         }
     };
+}
+
+Ynk::String operator""_y (const char * x, Ynk::_usize)
+{
+    return Ynk::String (x);
+}
+
+Ynk::String operator""_y (const char8_t * x, Ynk::_usize)
+{
+    return Ynk::String (x);
 }
 
 #endif /* !@__YNK_STRING_STRING */

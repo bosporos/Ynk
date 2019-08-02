@@ -16,35 +16,43 @@
     {                                         \
         return inner_ symbol rhs.inner_;      \
     }                                         \
-    bool operator symbol (_u8 rhs)            \
+    self_type operator symbol (_u8 rhs)       \
     {                                         \
         return inner_ symbol rhs;             \
     }                                         \
-    bool operator symbol (_u16 rhs)           \
+    self_type operator symbol (_u16 rhs)      \
     {                                         \
         return inner_ symbol rhs;             \
     }                                         \
-    bool operator symbol (_u32 rhs)           \
+    self_type operator symbol (_u32 rhs)      \
     {                                         \
         return inner_ symbol rhs;             \
     }                                         \
-    bool operator symbol (_u64 rhs)           \
+    self_type operator symbol (_u64 rhs)      \
     {                                         \
         return inner_ symbol rhs;             \
     }                                         \
-    bool operator symbol (_i8 rhs)            \
+    self_type operator symbol (_i8 rhs)       \
     {                                         \
         return inner_ symbol rhs;             \
     }                                         \
-    bool operator symbol (_i16 rhs)           \
+    self_type operator symbol (_i16 rhs)      \
     {                                         \
         return inner_ symbol rhs;             \
     }                                         \
-    bool operator symbol (_i32 rhs)           \
+    self_type operator symbol (_i32 rhs)      \
     {                                         \
         return inner_ symbol rhs;             \
     }                                         \
-    bool operator symbol (_i64 rhs)           \
+    self_type operator symbol (_i64 rhs)      \
+    {                                         \
+        return inner_ symbol rhs;             \
+    }                                         \
+    self_type operator symbol (_usize rhs)    \
+    {                                         \
+        return inner_ symbol rhs;             \
+    }                                         \
+    self_type operator symbol (_isize rhs)    \
     {                                         \
         return inner_ symbol rhs;             \
     }
@@ -94,6 +102,14 @@
         return inner_ symbol rhs;         \
     }                                     \
     bool operator symbol (_i64 rhs)       \
+    {                                     \
+        return inner_ symbol rhs;         \
+    }                                     \
+    bool operator symbol (_usize rhs)     \
+    {                                     \
+        return inner_ symbol rhs;         \
+    }                                     \
+    bool operator symbol (_isize rhs)     \
     {                                     \
         return inner_ symbol rhs;         \
     }

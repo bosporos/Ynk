@@ -9,6 +9,9 @@
 #include <Ynk/num/Integers.h>
 #include <Ynk/fmt/Dispatcher.h>
 #include <Ynk/lang/Move.h>
+#include <Ynk/lang/Forward.h>
+
+#include <Ynk/option/Option.h>
 
 #include <Ynk/string/String.h>
 
@@ -44,6 +47,39 @@ namespace Ynk::Fmt {
             return count;
         }
     };
+
+    template <class... T>
+    constexpr unsigned long Number (T &&...)
+    {
+        return sizeof...(T);
+    }
+
+    String fmt (String const & format)
+    {
+        return String (format);
+    }
+
+    void fmt_ (String const & format, String & carry)
+    {
+        carry.push (format);
+    }
+
+    template <class Head, class... Tail>
+    void fmt_ (String const & format, String & carry, Head && head, Tail &&... tail)
+    {
+        usize index = format.index_of ('%').unwrap ();
+        carry += format.substr (0, index).push (dispatch (head, Dispatch::Display));
+        fmt_ (format.substr (index), carry, Ynk::Forward<Tail> (tail)...);
+    }
+
+    template <class Head, class... Tail>
+    String fmt (String const & format, Head && head, Tail &&... tail)
+    {
+        usize index  = format.index_of ('%').unwrap ();
+        String carry = format.substr (0, index).push (dispatch (head, Dispatch::Display));
+        fmt_ (format.substr (index), carry, Ynk::Forward<Tail> (tail)...);
+        return carry;
+    }
 }
 
 #endif /* !@__YNK_FMT_FMT */

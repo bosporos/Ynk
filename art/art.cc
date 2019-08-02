@@ -25,5 +25,7 @@ YNK_APP (Art)
 
     // Ynk::Fmt::print ("%", u64 (2));
 
+    std::printf ("%s\n", (u8"Hello"_y + ", "_y + u8"world!"_y).into_inner_volatile ());
+
     return 0;
 }
