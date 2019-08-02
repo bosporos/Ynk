@@ -13,7 +13,7 @@
 //! `argc` and `argv` are actually being passed into this function invisibly by Ynk;
 //! they may be used herein, it's just part of the C++ magic I had to use to make
 //! this work.
-YNK_APP ()
+YNK_APP (Art)
 {
     // std::printf ("Hello, world!\n");
 

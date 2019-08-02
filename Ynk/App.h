@@ -11,21 +11,25 @@
 #include <cstdio>
 #include <cstdlib>
 
+// I recommend reading through Bootstrap.md before looking through this file, if you're
+// not used to the trickeries that C++ programmers use to make the language do the things
+// it wasn't meant to do
+
 namespace Ynk::App {
     struct Stub
     {
         virtual int run (int, char **) = 0;
     };
 
-    struct StubRunner
+    struct StubFactory
     {
         virtual Stub * create_stub () = 0;
     };
 
     template <class T>
-    struct StubRunnerImpl : public StubRunner
+    struct StubFactoryImpl : public StubFactory
     {
-        StubRunnerImpl ()
+        StubFactoryImpl ()
         {}
 
         Stub * create_stub () override
@@ -46,9 +50,9 @@ namespace Ynk::App {
             return _instance;
         }
 
-        StubRunner * stub_runner = nullptr;
+        StubFactory * stub_runner = nullptr;
 
-        void fix_runner (StubRunner * runner)
+        void fix_runner (StubFactory * runner)
         {
             this->stub_runner = runner;
         }
@@ -71,7 +75,7 @@ namespace Ynk::App {
         {}
     };
 
-    bool register_stub (StubRunner * sr)
+    bool register_stub (StubFactory * sr)
     {
         Runner::instance ()->fix_runner (sr);
 
@@ -79,23 +83,25 @@ namespace Ynk::App {
     }
 }
 
+#define YNK_APP_NAMED(_name) StubImpl_##_name
+
 //! Uses YNK_UNUSED to silence compiler warnings about argc and argv being unused
 //! parameters
-#define YNK_APP()                                                  \
-    namespace Ynk::App {                                           \
-        struct StubImpl                                            \
-            : public Ynk::App::Stub                                \
-        {                                                          \
-            static bool registered;                                \
-                                                                   \
-            int run (int YNK_UNUSED, char ** YNK_UNUSED) override; \
-        };                                                         \
-    }                                                              \
-                                                                   \
-    bool Ynk::App::StubImpl::registered                            \
-        = Ynk::App::register_stub (                                \
-            new Ynk::App::StubRunnerImpl<Ynk::App::StubImpl> ());  \
-                                                                   \
-    int Ynk::App::StubImpl::run (int YNK_UNUSED argc, char ** YNK_UNUSED argv)
+#define YNK_APP(_name)                                                          \
+    namespace Ynk::App {                                                        \
+        struct YNK_APP_NAMED (_name)                                            \
+            : public Ynk::App::Stub                                             \
+        {                                                                       \
+            static bool registered;                                             \
+                                                                                \
+            int run (int YNK_UNUSED, char ** YNK_UNUSED) override;              \
+        };                                                                      \
+    }                                                                           \
+                                                                                \
+    bool Ynk::App::YNK_APP_NAMED (_name)::registered                            \
+        = Ynk::App::register_stub (                                             \
+            new Ynk::App::StubFactoryImpl<Ynk::App::YNK_APP_NAMED (_name)> ()); \
+                                                                                \
+    int Ynk::App::YNK_APP_NAMED (_name)::run (int YNK_UNUSED argc, char ** YNK_UNUSED argv)
 
 #endif /* !@__YNK_APP */
