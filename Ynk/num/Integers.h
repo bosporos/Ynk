@@ -302,6 +302,7 @@ namespace Ynk {
         self_type operator~ () { return ~inner_; }
         bool operator! () { return !inner_; };
 
+        operator underlying_type () const { return inner_; }
         operator underlying_type () { return inner_; }
     };
 
@@ -537,6 +538,7 @@ namespace Ynk {
         self_type operator~ () { return ~inner_; }
         bool operator! () { return !inner_; };
 
+        operator underlying_type () const { return inner_; }
         operator underlying_type () { return inner_; }
     };
 

@@ -42,13 +42,18 @@ build $builddir/ynk/sys/sync/Mutex.o: rule-cxx $root/ynk/sys/any-posix/sync/Mute
 build $builddir/ynk/sys/sync/RwLock.o: rule-cxx $root/ynk/sys/any-posix/sync/RwLock.cc
 build $builddir/ynk/sys/sync/Condvar.o: rule-cxx $root/ynk/sys/any-posix/sync/Condvar.cc
 
+# x86_64-svr4 works on x86_64/amd64 systems that use the SVR4 ABI
+build $builddir/ynk/string/utf8_strlen.o: rule-asm $root/ynk/string/utf8_strlen.x86_64-svr4.s
+#build $builddir/ynk/string/utf8_strlen.o: rule-cxx $root/ynk/string/utf8_strlen.cc
+
 build $builddir/libynk.dylib: libdynamic $
         $builddir/ynk/backtrace/Backtrace.o $
         $builddir/ynk/bootstrap.lower.o $
         $builddir/ynk/bootstrap.upper.o $
         $builddir/ynk/sys/sync/Mutex.o $
         $builddir/ynk/sys/sync/RwLock.o $
-        $builddir/ynk/sys/sync/Condvar.o
+        $builddir/ynk/sys/sync/Condvar.o $
+        $builddir/ynk/string/utf8_strlen.o
     libs = -lc -lm -lpthread -framework GLUT -framework OpenGL -lc++
 
 build $builddir/art/art.o: rule-cxx $root/art/art.cc
