@@ -23,7 +23,8 @@
 
 namespace Ynk::Fmt {
 
-    // Based on Sasha Goldshtein's safe_printf (https://blogs.microsoft.co.il/sasha/2015/01/29/compile-time-runtime-safe-replacement-printf/)
+    // (Structurally) Based on Sasha Goldshtein's safe_printf (https://blogs.microsoft.co.il/sasha/2015/01/29/compile-time-runtime-safe-replacement-printf/)
+    // In terms of concept, based on Rust's std::fmt module
 
     struct ConstexprString
     {
