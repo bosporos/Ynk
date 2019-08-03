@@ -57,8 +57,7 @@ namespace Ynk::Fmt {
             }
             if (prepend)
                 ctx.write_str (u8"0x"_y);
-
-            ctx.write_int (obj, 16, true);
+            ctx.write_int (obj, base, true, upper);
         }
     };
 }

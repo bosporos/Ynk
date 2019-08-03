@@ -113,7 +113,7 @@ namespace Ynk::Fmt {
                         case 'o': this->number_fmt = NumberFormat::Octal; break;
                         case 'd': this->number_fmt = NumberFormat::Decimal; break;
                         case 'X': this->number_fmt = NumberFormat::UpperHex0x; break;
-                        case 'x': this->number_fmt = NumberFormat::LowerHex0x; break;
+                        case 'x': this->number_fmt = NumbegrFormat::LowerHex0x; break;
                         case 'H': this->number_fmt = NumberFormat::UpperHex; break;
                         case 'h': this->number_fmt = NumberFormat::LowerHex; break;
                         default:
