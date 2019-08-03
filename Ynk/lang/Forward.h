@@ -7,7 +7,7 @@
 #define __YNK_LANG_FORWARD
 
 #include <Ynk/Compiler.h>
-#include <Ynk/lang/Dequalify.h>
+#include <Ynk/Lang/Dequalify.h>
 
 namespace Ynk {
     template <typename T>

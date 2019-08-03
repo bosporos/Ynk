@@ -6,8 +6,8 @@
 #ifndef __YNK_NUM_INTEGERS
 #define __YNK_NUM_INTEGERS
 
-#include <Ynk/num/NativeIntegers.h>
-#include <Ynk/option/Option.h>
+#include <Ynk/Num/NativeIntegers.h>
+#include <Ynk/Option/Option.h>
 
 #include <tuple>
 

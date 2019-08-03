@@ -1,5 +1,5 @@
 //
-// file ynk/sys/any-posix/sync/Mutex.h
+// file ynk/sys/any-posix/Sync/Mutex.h
 // author Maximilien M. Cura
 //
 
@@ -8,8 +8,8 @@
 
 #include <pthread.h>
 
-#include <Ynk/lang/NonCopyable.h>
-#include <Ynk/lang/NonMoveable.h>
+#include <Ynk/Lang/NonCopyable.h>
+#include <Ynk/Lang/NonMoveable.h>
 
 namespace Ynk::Sys::Sync {
     struct Mutex

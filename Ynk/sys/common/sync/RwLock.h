@@ -1,5 +1,5 @@
 //
-// file ynk/sys/common/sync/RwLock.h
+// file ynk/sys/common/Sync/RwLock.h
 // author Maximilien M. Cura
 //
 
@@ -7,7 +7,7 @@
 #define __YNK_SYS_SYNC_RWLOCK
 
 #if OS(POSIX)
-#    include <Ynk/sys/any-posix/sync/RwLock.h>
+#    include <Ynk/sys/any-posix/Sync/RwLock.h>
 #else
 #    error "At present, Ynk only supports pthread synchronization primitives"
 #endif

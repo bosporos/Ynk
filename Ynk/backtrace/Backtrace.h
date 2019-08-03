@@ -6,7 +6,7 @@
 #ifndef __YNK_BACKTRACE_BACKTRACE
 #define __YNK_BACKTRACE_BACKTRACE
 
-#include <Ynk/num/Integers.h>
+#include <Ynk/Num/Integers.h>
 
 namespace Ynk::Backtrace {
     struct BacktraceElement

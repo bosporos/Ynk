@@ -6,11 +6,11 @@
 #ifndef __YNK_STRING_STRING
 #define __YNK_STRING_STRING
 
-#include <Ynk/num/NativeIntegers.h>
-#include <Ynk/num/Integers.h>
-#include <Ynk/lang/Move.h>
-#include <Ynk/option/Option.h>
-#include <Ynk/box/Box.h>
+#include <Ynk/Num/NativeIntegers.h>
+#include <Ynk/Num/Integers.h>
+#include <Ynk/Lang/Move.h>
+#include <Ynk/Option/Option.h>
+#include <Ynk/Box/Box.h>
 
 #include <cstdlib>
 #include <cstdio>
@@ -58,6 +58,10 @@ namespace Ynk {
             this->inner[length] = static_cast<char8_t> ('\0');
         }
 
+        String (usize len)
+            : inner (len)
+        {}
+
         String (String const & x)
             : inner (x.inner)
         {}
@@ -86,13 +90,19 @@ namespace Ynk {
             return this->inner.size () - 1;
         }
 
+        // Todo: Char
         // Todo: KMP substring search
         // Todo: index_of()
         // Todo: iterators
 
         Option<usize> index_of (char8_t chr) const
         {
-            for (usize i = 0; i < this->inner.size (); i++) {
+            return this->index_of (chr, 0);
+        }
+
+        Option<usize> index_of (char8_t chr, usize start) const
+        {
+            for (usize i = start; i < this->inner.size (); i++) {
                 if (this->inner[i] == chr) {
                     return Some (Ynk::Move (i));
                 }
@@ -126,14 +136,25 @@ namespace Ynk {
 
         String & unslide (String const & rhs)
         {
-            this->inner.insert (this->inner.begin (), rhs.inner.begin (), rhs.inner.end () - 1);
+            if (rhs.inner[rhs.inner.size ()] == '\0')
+                this->inner.insert (this->inner.begin (), rhs.inner.begin (), rhs.inner.end () - 1);
+            else
+                this->inner.insert (this->inner.begin (), rhs.inner.begin (), rhs.inner.end ());
             return *this;
         }
 
         String & push (String const & rhs)
         {
-            this->inner.insert (this->inner.end () - 1, rhs.inner.begin (), rhs.inner.end ());
+            if (rhs.inner[rhs.inner.size () - 1] == '\0')
+                this->inner.insert (this->inner.end () - 1, rhs.inner.begin (), rhs.inner.end () - 1);
+            else
+                this->inner.insert (this->inner.end () - 1, rhs.inner.begin (), rhs.inner.end ());
             return *this;
+        }
+
+        std::vector<char8_t> & bytes ()
+        {
+            return this->inner;
         }
 
         String operator+ (String rhs) const

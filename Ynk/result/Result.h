@@ -7,8 +7,8 @@
 #define __YNK_RESULT_RESULT
 
 // #include "panic/panic.hpp"
-#include <Ynk/option/Option.h>
-#include <Ynk/lang/Move.h>
+#include <Ynk/Option/Option.h>
+#include <Ynk/Lang/Move.h>
 
 using Ynk::option::Option;
 

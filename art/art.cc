@@ -1,8 +1,16 @@
 #include <Ynk/App.h>
-#include <Ynk/backtrace/Backtrace.h>
-#include <Ynk/fmt/Fmt.h>
+#include <Ynk/Backtrace/Backtrace.h>
+#include <Ynk/Fmt/Fmt.h>
 
 #include <cstdio>
+
+// struct K : public Ynk::Fmt::Display
+// {
+//     Ynk::String display ()
+//     {
+//         return Ynk::String ("I. AM. K.");
+//     }
+// };
 
 //! Main function
 //!
@@ -25,7 +33,7 @@ YNK_APP (Art)
 
     // Ynk::Fmt::print ("%", u64 (2));
 
-    std::printf ("%s\n", (u8"Hello"_y + ", "_y + u8"world!"_y).into_inner_volatile ());
+    Ynk::Fmt::println ("Hello, {}!", (i32)-3);
 
     return 0;
 }

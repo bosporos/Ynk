@@ -3,7 +3,7 @@
 // author Maximilien M. Cura
 //
 
-#include <Ynk/string/String.h>
+#include <Ynk/String/String.h>
 
 //! Unfortunately slow.
 _u64 __ynk_utf8_strlen (const char * string)

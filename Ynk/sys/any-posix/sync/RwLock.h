@@ -1,5 +1,5 @@
 //
-// file ynk/sys/any-posix/sync/RwLock.h
+// file ynk/sys/any-posix/Sync/RwLock.h
 // author Maximilien M. Cura
 //
 
@@ -8,10 +8,10 @@
 
 #include <pthread.h>
 
-#include <Ynk/lang/NonCopyable.h>
-#include <Ynk/lang/NonMoveable.h>
+#include <Ynk/Lang/NonCopyable.h>
+#include <Ynk/Lang/NonMoveable.h>
 
-#include <Ynk/atomic/Atomic.h>
+#include <Ynk/Atomic/Atomic.h>
 
 namespace Ynk::Sys::Sync {
     struct RwLock

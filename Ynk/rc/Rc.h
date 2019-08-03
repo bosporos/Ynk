@@ -8,12 +8,12 @@
 
 // #include "common.hpp"
 // #include "panic/panic.hpp"
-#include <Ynk/lang/Conditional.h>
-#include <Ynk/lang/Traits.h>
-#include <Ynk/lang/Move.h>
+#include <Ynk/Lang/Conditional.h>
+#include <Ynk/Lang/Traits.h>
+#include <Ynk/Lang/Move.h>
 
-#include <Ynk/option/Option.h>
-#include <Ynk/box/Box.h>
+#include <Ynk/Option/Option.h>
+#include <Ynk/Box/Box.h>
 
 #include <new>
 #include <type_traits>

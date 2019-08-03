@@ -8,8 +8,8 @@
 #ifndef __YNK_LANG_SCOPEDLAMBDA
 #define __YNK_LANG_SCOPEDLAMBDA
 
-#include <Ynk/lang/Move.h>
-#include <Ynk/lang/Forward.h>
+#include <Ynk/Lang/Move.h>
+#include <Ynk/Lang/Forward.h>
 
 // From Mozilla WTF
 

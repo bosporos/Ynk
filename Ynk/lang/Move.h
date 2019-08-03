@@ -6,8 +6,8 @@
 #ifndef __YNK_LANG_MOVE
 #define __YNK_LANG_MOVE
 
-#include <Ynk/lang/Dequalify.h>
-#include <Ynk/lang/Traits.h>
+#include <Ynk/Lang/Dequalify.h>
+#include <Ynk/Lang/Traits.h>
 
 namespace Ynk {
     template <typename T>

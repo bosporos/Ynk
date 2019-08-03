@@ -4,3 +4,4 @@
 -std=c++2a
 
 -Wno-format-extra-args
+-fdollars-in-identifiers

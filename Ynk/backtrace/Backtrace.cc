@@ -3,7 +3,7 @@
 // author Maximilien M. Cura
 //
 
-#include <Ynk/backtrace/Backtrace.h>
+#include <Ynk/Backtrace/Backtrace.h>
 
 #include <cxxabi.h>
 #include <libunwind.h>

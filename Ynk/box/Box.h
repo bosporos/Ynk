@@ -7,9 +7,9 @@
 #define __YNK_BOX_BOX
 
 // #include "panic/panic.hpp"
-#include <Ynk/lang/Conditional.h>
-#include <Ynk/lang/Traits.h>
-#include <Ynk/lang/Move.h>
+#include <Ynk/Lang/Conditional.h>
+#include <Ynk/Lang/Traits.h>
+#include <Ynk/Lang/Move.h>
 
 #include <new>
 #include <type_traits>

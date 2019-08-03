@@ -6,10 +6,10 @@
 #ifndef __YNK_ATOMIC_ATOMIC
 #define __YNK_ATOMIC_ATOMIC
 
-#include <Ynk/lang/NonCopyable.h>
-#include <Ynk/lang/NonMoveable.h>
+#include <Ynk/Lang/NonCopyable.h>
+#include <Ynk/Lang/NonMoveable.h>
 
-#include <Ynk/atomic/Ordering.h>
+#include <Ynk/Atomic/Ordering.h>
 #include <stdlib.h> /* abort */
 
 namespace Ynk::Atomic {

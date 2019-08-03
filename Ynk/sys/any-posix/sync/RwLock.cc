@@ -1,10 +1,10 @@
 //
-// file ynk/sys/any-posix/sync/RwLock.cc
+// file ynk/sys/any-posix/Sync/RwLock.cc
 // author Maximilien M. Cura
 //
 
-#include <Ynk/sys/any-posix/sync/RwLock.h>
-#include <Ynk/atomic/Ordering.h>
+#include <Ynk/Sys/any-posix/Sync/RwLock.h>
+#include <Ynk/Atomic/Ordering.h>
 
 #include <errno.h>
 

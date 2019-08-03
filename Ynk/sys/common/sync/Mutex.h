@@ -1,5 +1,5 @@
 //
-// file ynk/sys/common/sync/Mutex.h
+// file ynk/sys/common/Sync/Mutex.h
 // author Maximilien M. Cura
 //
 
@@ -7,7 +7,7 @@
 #define __YNK_SYS_SYNC_MUTEX
 
 #if OS(POSIX)
-#    include <Ynk/sys/any-posix/sync/Mutex.h>
+#    include <Ynk/sys/any-posix/Sync/Mutex.h>
 #else
 #    error "At present, Ynk only supports pthread synchronization primitives"
 #endif

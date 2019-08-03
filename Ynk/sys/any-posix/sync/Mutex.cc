@@ -1,9 +1,9 @@
 //
-// file ynk/sys/any-posix/sync/Mutex.cc
+// file ynk/sys/any-posix/Sync/Mutex.cc
 // author Maximilien M. Cura
 //
 
-#include <Ynk/sys/any-posix/sync/Mutex.h>
+#include <Ynk/Sys/any-posix/Sync/Mutex.h>
 
 using Ynk::Sys::Sync::Mutex;
 

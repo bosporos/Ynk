@@ -1,9 +1,9 @@
 //
-// file ynk/sys/any-posix/sync/Condvar.cc
+// file ynk/sys/any-posix/Sync/Condvar.cc
 // author Maximilien M. Cura
 //
 
-#include <Ynk/sys/any-posix/sync/Condvar.h>
+#include <Ynk/Sys/any-posix/Sync/Condvar.h>
 
 using Ynk::Sys::Sync::Condvar;
 

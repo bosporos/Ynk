@@ -1,5 +1,5 @@
 //
-// file ynk/sys/any-posix/sync/Condvar.h
+// file ynk/sys/any-posix/Sync/Condvar.h
 // author Maximilien M. Cura
 //
 
@@ -8,10 +8,10 @@
 
 #include <pthread.h>
 
-#include <Ynk/lang/NonCopyable.h>
-#include <Ynk/lang/NonMoveable.h>
+#include <Ynk/Lang/NonCopyable.h>
+#include <Ynk/Lang/NonMoveable.h>
 
-#include <Ynk/sys/any-posix/sync/Mutex.h>
+#include <Ynk/Sys/any-posix/Sync/Mutex.h>
 
 namespace Ynk::Sys::Sync {
     struct Condvar

@@ -1,5 +1,5 @@
 //
-// file ynk/sys/common/sync/Condvar.h
+// file ynk/sys/common/Sync/Condvar.h
 // author Maximilien M. Cura
 //
 
@@ -7,7 +7,7 @@
 #define __YNK_SYS_SYNC_CONDVAR
 
 #if OS(POSIX)
-#    include <Ynk/sys/any-posix/sync/Condvar.h>
+#    include <Ynk/sys/any-posix/Sync/Condvar.h>
 #else
 #    error "At present, Ynk only supports pthread synchronization primitives"
 #endif
