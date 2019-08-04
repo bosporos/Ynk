@@ -42,9 +42,19 @@ build $builddir/ynk/sys/Sync/Mutex.o: rule-cxx $root/ynk/sys/any-posix/Sync/Mute
 build $builddir/ynk/sys/Sync/RwLock.o: rule-cxx $root/ynk/sys/any-posix/Sync/RwLock.cc
 build $builddir/ynk/sys/Sync/Condvar.o: rule-cxx $root/ynk/sys/any-posix/Sync/Condvar.cc
 
+build $builddir/ynk/sys/Sync/ThreadId.o: rule-cxx $root/ynk/sys/macos/Sync/ThreadId.cc
+
+build $builddir/ynk/num/Integers.o: rule-cxx $root/ynk/num/Integers.cc
+
 # x86_64-svr4 works on x86_64/amd64 systems that use the SVR4 ABI
 build $builddir/ynk/string/utf8_strlen.o: rule-asm $root/ynk/string/utf8_strlen.x86_64-svr4.s
 #build $builddir/ynk/string/utf8_strlen.o: rule-cxx $root/ynk/string/utf8_strlen.cc
+build $builddir/ynk/string/String.o: rule-cxx $root/ynk/string/String.cc
+
+build $builddir/ynk/fmt/Fmt.o: rule-cxx $root/ynk/fmt/Fmt.cc
+
+build $builddir/ynk/panic/Panic.o: rule-cxx $root/ynk/panic/Panic.cc
+build $builddir/ynk/panic/DefaultPanicHook.o: rule-cxx $root/ynk/panic/DefaultPanicHook.cc
 
 build $builddir/libynk.dylib: libdynamic $
         $builddir/ynk/backtrace/Backtrace.o $
@@ -53,7 +63,13 @@ build $builddir/libynk.dylib: libdynamic $
         $builddir/ynk/sys/Sync/Mutex.o $
         $builddir/ynk/sys/Sync/RwLock.o $
         $builddir/ynk/sys/Sync/Condvar.o $
-        $builddir/ynk/string/utf8_strlen.o
+        $builddir/ynk/sys/Sync/ThreadId.o $
+        $builddir/ynk/string/utf8_strlen.o $
+        $builddir/ynk/panic/Panic.o $
+        $builddir/ynk/panic/DefaultPanicHook.o $
+        $builddir/ynk/num/Integers.o $
+        $builddir/ynk/string/String.o $
+        $builddir/ynk/fmt/Fmt.o
     libs = -lc -lm -lpthread -framework GLUT -framework OpenGL -lc++
 
 build $builddir/art/art.o: rule-cxx $root/art/art.cc

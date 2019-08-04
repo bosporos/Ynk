@@ -6,9 +6,15 @@
 #include <Ynk/Bootstrap.h>
 #include <Ynk/App.h>
 
-Ynk::App::Runner * Ynk::App::Runner::_instance = nullptr;
+#include <Ynk/Panic/Panicking.h>
+
+::Ynk::App::Runner * ::Ynk::App::Runner::_instance = nullptr;
 
 int _ynk_bootstrap (int argc, char ** argv)
 {
-    return Ynk::App::Runner::instance ()->launch_runner (argc, argv);
+    try {
+        return Ynk::App::Runner::instance ()->launch_runner (argc, argv);
+    } catch (::Ynk::Panicking::_Uncatchable::_PanicUnwindingException ex) {
+        return -1;
+    }
 }

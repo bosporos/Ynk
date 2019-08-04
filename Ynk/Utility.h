@@ -14,6 +14,8 @@
 #define YNK_NONNULL __attribute__ ((nonnull))
 #define YNK_FN_NONNULL __attribute__ ((returns_nonnull))
 
+#define YNK_NORETURN __attribute__ ((noreturn))
+
 #define YNK_USED __attribute__ ((used))
 #define YNK_UNUSED __attribute__ ((unused))
 

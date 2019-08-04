@@ -8,8 +8,11 @@
 
 #include <Ynk/Num/NativeIntegers.h>
 #include <Ynk/Option/Option.h>
+#include <Ynk/Lang/RemoveIntegerUnsignedness.h>
 
 #include <tuple>
+
+#include <cstdio>
 
 #define ___ynk_int_gen_operator(symbol)       \
     self_type operator symbol (self_type rhs) \
@@ -115,6 +118,9 @@
     }
 
 namespace Ynk {
+    template <unsigned S, class U, class V>
+    struct int_impl;
+
     template <unsigned _Size, typename _Underlying>
     struct uint_impl
     {
@@ -317,6 +323,18 @@ namespace Ynk {
         }
         self_type operator~ () { return ~inner_; }
         bool operator! () { return !inner_; };
+
+        int_impl<_Size, typename Ynk::RemoveIntegerUnsignedness<_Underlying>::Type, _Underlying> operator- ()
+        {
+            if (this->inner_ <= int_impl<_Size, typename Ynk::RemoveIntegerUnsignedness<_Underlying>::Type, _Underlying>::max_value ())
+                return { -static_cast<typename Ynk::RemoveIntegerUnsignedness<_Underlying>::Type> (this->inner_) };
+            else {
+                std::fprintf (stderr, "uint_impl<%u>: cannot perform unary negation: too large", _Size);
+                // Can't backtrace: Backtrace depends Integers
+                // Backtrace::print_backtrace ();
+                std::abort ();
+            }
+        }
 
         operator underlying_type () const { return inner_; }
         operator underlying_type () { return inner_; }
@@ -554,6 +572,8 @@ namespace Ynk {
         self_type operator~ () { return ~inner_; }
         bool operator! () { return !inner_; };
 
+        self_type operator- () { return -inner_; }
+
         operator underlying_type () const { return inner_; }
         operator underlying_type () { return inner_; }
     };
@@ -576,5 +596,21 @@ namespace Ynk {
 #undef ___ynk_int_gen_operator
 #undef ___ynk_int_gen_comparator
 #undef ___ynk_int_gen_modifying_operator
+
+#define ___ynk_int_gen_literal_operator_decl(__TYPE__, __SIZE__, __BANG__)                       \
+    Ynk::__TYPE__ operator""_u##__BANG__ (unsigned long long integral);                          \
+    Ynk::int_impl<__SIZE__,                                                                      \
+                  typename Ynk::RemoveIntegerUnsignedness<Ynk::__TYPE__::underlying_type>::Type, \
+                  Ynk::__TYPE__::underlying_type>                                                \
+        operator""_i##__BANG__ (unsigned long long integral)
+
+___ynk_int_gen_literal_operator_decl (u8, 8, 8);
+___ynk_int_gen_literal_operator_decl (u16, 16, 16);
+___ynk_int_gen_literal_operator_decl (u32, 32, 32);
+___ynk_int_gen_literal_operator_decl (u64, 64, 64);
+static_assert (8 == sizeof (void *));
+___ynk_int_gen_literal_operator_decl (usize, 64, z);
+
+#undef ___ynk_int_gen_literal_operator_decl
 
 #endif /* !@__YNK_NUM_INTEGERS */

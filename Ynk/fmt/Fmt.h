@@ -73,8 +73,6 @@ namespace Ynk::Fmt {
         Binary,
         Octal,
         Decimal,
-        UpperHex0x,
-        LowerHex0x,
         UpperHex,
         LowerHex,
         Default,
@@ -98,14 +96,14 @@ namespace Ynk::Fmt {
         String & carry;
 
         FormatContext (String spec, String & carry)
-            : carry { carry }
-            , sign_plus { false }
+            : sign_plus { false }
             , sign_minus { false }
             , alternate { false }
             , width { 0 }
             , pad_left { 0 }
             , precision { 0 }
             , number_fmt { NumberFormat::Default }
+            , carry { carry }
         {
             if (spec.length ()) {
                 if (spec.inner[0] != ':') {
@@ -113,12 +111,10 @@ namespace Ynk::Fmt {
                         case 'b': this->number_fmt = NumberFormat::Binary; break;
                         case 'o': this->number_fmt = NumberFormat::Octal; break;
                         case 'd': this->number_fmt = NumberFormat::Decimal; break;
-                        case 'X': this->number_fmt = NumberFormat::UpperHex0x; break;
-                        case 'x': this->number_fmt = NumbegrFormat::LowerHex0x; break;
-                        case 'H': this->number_fmt = NumberFormat::UpperHex; break;
-                        case 'h': this->number_fmt = NumberFormat::LowerHex; break;
+                        case 'X': this->number_fmt = NumberFormat::UpperHex; break;
+                        case 'x': this->number_fmt = NumberFormat::LowerHex; break;
                         default:
-                            std::fprintf (stderr, "FormatContext: Unrecognized number format: %c", (char)spec.inner[0]);
+                            std::fprintf (stderr, "FormatContext: Unrecognized number format: %c\n", (char)spec.inner[0]);
                             Backtrace::print_backtrace ();
                             std::abort ();
                     }
@@ -138,16 +134,26 @@ namespace Ynk::Fmt {
         }
 
         template <unsigned S, class U, class V>
-        void write_int (int_impl<S, U, V> ui, u8 base, bool pad)
+        void write_int (int_impl<S, U, V> ui, u8 base, bool pad, bool hexupper, String prefix)
         {
             if (ui < 0) {
                 this->write_char (u8'-');
                 ui.inner_ = -ui.inner_;
             }
-            this->write_int (static_cast<uint_impl<S, V>> (ui), base, pad);
+            this->write_str (prefix);
+            this->write_int (static_cast<uint_impl<S, V>> (ui), base, pad, hexupper);
         }
 
-        //! Supports up to base64
+        template <unsigned S, class U, class V>
+        void write_int (int_impl<S, U, V> ui, u8 base, bool pad, bool hexupper)
+        {
+            if (ui < 0) {
+                this->write_char (u8'-');
+                ui.inner_ = -ui.inner_;
+            }
+            this->write_int (static_cast<uint_impl<S, V>> (ui), base, pad, hexupper);
+        }
+
         template <unsigned S, class U>
         void write_int (uint_impl<S, U> ui, u8 base, bool pad, bool hexupper)
         {
@@ -250,10 +256,7 @@ namespace Ynk::Fmt {
         }
     };
 
-    void format_inner (String fmt_str, String & carry)
-    {
-        carry.push (fmt_str);
-    }
+    void format_inner (String fmt_str, String & carry);
 
     template <class H, class... T>
     void format_inner (String fmt_str, String & carry, H head, T... tail)
@@ -287,8 +290,8 @@ namespace Ynk::Fmt {
             std::abort ();
         } else {
             carry.push (fmt_str.substr (0, static_cast<usize> (index)));
-            String remainder = fmt_str.substr (static_cast<usize> (index));
-            String gather    = remainder.substr (0, static_cast<usize> (lah) - static_cast<usize> (index));
+            String remainder = fmt_str.substr (static_cast<usize> (index + 1));
+            String gather    = remainder.substr (0, static_cast<usize> (lah) - static_cast<usize> (index) - 1);
             FormatContext ctx (gather, carry);
             FormatDispatcher<H>::dispatch (head, ctx);
 
@@ -296,10 +299,7 @@ namespace Ynk::Fmt {
         }
     }
 
-    String format (String fmt_str)
-    {
-        return String (fmt_str);
-    }
+    String format (String fmt_str);
 
     template <class... Args>
     String format (String fmt_str, Args... args)
@@ -308,27 +308,39 @@ namespace Ynk::Fmt {
         format_inner (fmt_str, carry, args...);
         return Ynk::Move (carry);
     }
+}
 
-    void print (String fmt_str)
-    {
-        std::printf ("%s", fmt_str.into_inner_volatile ());
-    }
+namespace Ynk {
+    void print (String fmt_str);
 
-    void println (String fmt_str)
-    {
-        std::printf ("%s\n", fmt_str.into_inner_volatile ());
-    }
+    void println (String fmt_str);
 
     template <class... Args>
     void print (String fmt_str, Args... args)
     {
-        std::printf ("%s", format (fmt_str, args...).into_inner_volatile ());
+        std::printf ("%s", Fmt::format (fmt_str, args...).into_inner_volatile ());
     }
 
     template <class... Args>
     void println (String fmt_str, Args... args)
     {
-        std::printf ("%s\n", format (fmt_str, args...).into_inner_volatile ());
+        std::printf ("%s\n", Fmt::format (fmt_str, args...).into_inner_volatile ());
+    }
+
+    void print_err (String fmt_str);
+
+    void println_err (String fmt_str);
+
+    template <class... Args>
+    void print_err (String fmt_str, Args... args)
+    {
+        std::fprintf (stderr, "%s", Fmt::format (fmt_str, args...).into_inner_volatile ());
+    }
+
+    template <class... Args>
+    void println_err (String fmt_str, Args... args)
+    {
+        std::fprintf (stderr, "%s\n", Fmt::format (fmt_str, args...).into_inner_volatile ());
     }
 }
 

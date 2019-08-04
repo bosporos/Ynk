@@ -1,6 +1,7 @@
 #include <Ynk/App.h>
 #include <Ynk/Backtrace/Backtrace.h>
 #include <Ynk/Fmt/Fmt.h>
+#include <Ynk/Panic/Panic.h>
 
 #include <cstdio>
 
@@ -31,9 +32,9 @@ YNK_APP (Art)
 
     // std::printf ("Hello, %s!\n", u8"Móçtu");
 
-    // Ynk::Fmt::print ("%", u64 (2));
+    // Ynk::print ("%", u64 (2));
 
-    Ynk::Fmt::println ("Hello, {}!", (i32)-3);
+    panic ("Panicking!");
 
     return 0;
 }

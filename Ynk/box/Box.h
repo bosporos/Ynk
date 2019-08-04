@@ -15,6 +15,7 @@
 #include <type_traits>
 #include <cstdlib>
 #include <cstring>
+#include <cstdio>
 
 namespace Ynk {
 
