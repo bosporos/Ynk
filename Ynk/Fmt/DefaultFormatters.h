@@ -25,7 +25,34 @@ namespace Ynk::Fmt {
 
         static void format (resultant_type obj, FormatContext ctx)
         {
-            ctx.write_int (obj, 16, true);
+            int base     = 10;
+            bool prepend = false;
+            bool upper   = false;
+            bool pad     = false;
+            switch (ctx.number_fmt) {
+                case NumberFormat::Binary:
+                    base = 2;
+                    pad  = true;
+                    break;
+                case NumberFormat::Octal:
+                    base = 8;
+                    pad  = true;
+                    break;
+                case NumberFormat::UpperHex:
+                    upper = true;
+                case NumberFormat::LowerHex:
+                    base    = 16;
+                    pad     = true;
+                    prepend = true;
+                    break;
+                case NumberFormat::Decimal:
+                case NumberFormat::Default:
+                    base = 10;
+                    break;
+            }
+            if (prepend)
+                ctx.write_str (u8"0x"_y);
+            ctx.write_int (obj, base, pad, upper);
         }
     };
 
@@ -39,25 +66,32 @@ namespace Ynk::Fmt {
             int base     = 10;
             bool prepend = false;
             bool upper   = false;
+            bool pad     = false;
             switch (ctx.number_fmt) {
-                case NumberFormat::Binary: base = 2; break;
-                case NumberFormat::Octal: base = 8; break;
-                case NumberFormat::UpperHex0x:
-                    prepend = true;
-                case NumberFormat::UpperHex:
-                    base  = 16;
-                    upper = true;
+                case NumberFormat::Binary:
+                    base = 2;
+                    pad  = true;
                     break;
-                case NumberFormat::LowerHex0x:
-                    prepend = true;
+                case NumberFormat::Octal:
+                    base = 8;
+                    pad  = true;
+                    break;
+                case NumberFormat::UpperHex:
+                    upper = true;
                 case NumberFormat::LowerHex:
-                    base  = 16;
-                    upper = false;
+                    base    = 16;
+                    pad     = true;
+                    prepend = true;
+                    break;
+                case NumberFormat::Decimal:
+                case NumberFormat::Default:
+                    base = 10;
                     break;
             }
             if (prepend)
-                ctx.write_str (u8"0x"_y);
-            ctx.write_int (obj, base, true, upper);
+                ctx.write_int (obj, base, pad, upper, "0x"_y);
+            else
+                ctx.write_int (obj, base, pad, upper);
         }
     };
 }
