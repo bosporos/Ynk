@@ -6,6 +6,9 @@
 #ifndef __YNK_SYS_SYNC_CONDVAR
 #define __YNK_SYS_SYNC_CONDVAR
 
+#include <Ynk/Platform.h>
+#include <Ynk/Features.h>
+
 #if OS(POSIX)
 #    include <Ynk/sys/any-posix/Sync/Condvar.h>
 #else

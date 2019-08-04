@@ -6,6 +6,9 @@
 #ifndef __YNK_SYS_SYNC_MUTEX
 #define __YNK_SYS_SYNC_MUTEX
 
+#include <Ynk/Platform.h>
+#include <Ynk/Features.h>
+
 #if OS(POSIX)
 #    include <Ynk/sys/any-posix/Sync/Mutex.h>
 #else
