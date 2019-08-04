@@ -174,14 +174,7 @@ namespace Ynk {
     };
 }
 
-Ynk::String operator""_y (const char * x, Ynk::_usize)
-{
-    return Ynk::String (x);
-}
-
-Ynk::String operator""_y (const char8_t * x, Ynk::_usize)
-{
-    return Ynk::String (x);
-}
+Ynk::String operator""_y (const char * x, Ynk::_usize);
+Ynk::String operator""_y (const char8_t * x, Ynk::_usize);
 
 #endif /* !@__YNK_STRING_STRING */
