@@ -6,6 +6,11 @@
 #ifndef YNK_UTILITY
 #define YNK_UTILITY
 
+#include <Ynk/Compiler.h>
+#include <Ynk/Platform.h>
+#include <Ynk/Config.h>
+#include <Ynk/Features.h>
+
 #define YNK_PUBLIC __attribute__ ((visibility ("default")))
 #define YNK_FACADE __attribute__ ((visibility ("protected")))
 #define YNK_VEILED __attribute__ ((visibility ("hidden")))

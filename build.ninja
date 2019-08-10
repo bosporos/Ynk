@@ -10,13 +10,13 @@ cxxflags = --config ${root}/clang/dev-cxxflags.txt -I$root
 ldflags = --config ${root}/clang/dev-ldflags.txt -L$builddir
 
 rule rule-cxx
-    command = ${cache_engine} ${clang} -MMD -MT $out -MF $out.d ${cxxflags} -c $in -o $out
+    command = ${cache_engine} ${clang} -MMD -MT $out -MF $out.d ${cxxflags} -c $in -o $out $libs
     description = CXX $in
     deps = gcc
     depfile = $out.d
 
 rule rule-c
-    command = ${cache_engine} ${clang} -MMD -MT $out -MF $out.d ${cflags} -c $in -o $out
+    command = ${cache_engine} ${clang} -MMD -MT $out -MF $out.d ${cflags} -c $in -o $out $libs
     description = CC $in
     deps = gcc
     depfile = $out.d
@@ -73,5 +73,9 @@ build $builddir/libynk.dylib: libdynamic $
     libs = -lc -lm -lpthread -framework GLUT -framework OpenGL -lc++
 
 build $builddir/art/art.o: rule-cxx $root/art/art.cc
-build $builddir/ynked: link $builddir/art/art.o
-    libs = -lynk -lc -lc++
+    libs = -F/applications/xcode.app/contents/developer/platforms/macosx.platform/developer/sdks/macosx.sdk/system/library/frameworks
+build $builddir/art/PushRelabel.o: rule-cxx $root/art/PushRelabel.cc
+build $builddir/ynked: link $
+    $builddir/art/art.o $
+    $builddir/art/PushRelabel.o
+    libs = -lynk -lc -framework GLUT -framework OpenGL -lc++

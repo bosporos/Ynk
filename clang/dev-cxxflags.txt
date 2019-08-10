@@ -5,3 +5,5 @@
 
 -Wno-format-extra-args
 -fdollars-in-identifiers
+
+-Wno-deprecated-declarations

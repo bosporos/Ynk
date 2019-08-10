@@ -6,11 +6,9 @@
 #ifndef __YNK_RESULT_RESULT
 #define __YNK_RESULT_RESULT
 
-// #include "panic/panic.hpp"
+#include <Ynk/Panic/Panic.h>
 #include <Ynk/Option/Option.h>
 #include <Ynk/Lang/Move.h>
-
-using Ynk::option::Option;
 
 namespace Ynk {
 
