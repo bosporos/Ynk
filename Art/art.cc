@@ -31,20 +31,7 @@ usize wwidth = 800, wheight = 800;
 //! this work.
 YNK_APP (Art)
 {
-    glutInit (&argc, argv);
-    glutInitDisplayMode (GLUT_RGBA | GLUT_DOUBLE);
-    glutInitWindowSize (wwidth, wheight);
-    // Leave it to the window system to determine
-    glutInitWindowPosition (-1, -1);
-    glutCreateWindow ("Ynk::Art");
-
-    glutReshapeFunc (Art::reshape);
-    glutDisplayFunc (Art::display);
-    // glutIdleFunc (Art::display);
-
-    Art::init ();
-
-    glutMainLoop ();
+    // Art::init();
 
     return 0;
 }
@@ -56,9 +43,22 @@ usize ** tint_saturation;
 
 void Art::init ()
 {
+    glutInit (&argc, argv);
+    glutInitDisplayMode (GLUT_RGBA | GLUT_DOUBLE);
+    glutInitWindowSize (wwidth, wheight);
+    // Leave it to the window system to determine
+    glutInitWindowPosition (-1, -1);
+    glutCreateWindow ("Ynk::Art");
+
+    glutReshapeFunc (Art::reshape);
+    glutDisplayFunc (Art::display);
+    // glutIdleFunc (Art::display);
+
     println ("Initializing");
     glClearColor (0.2039, 0.1804, 0.2157, 1.0);
     glShadeModel (GL_SMOOTH);
+
+    glutMainLoop ();
 }
 
 void Art::display ()
