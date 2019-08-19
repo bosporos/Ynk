@@ -1,5 +1,5 @@
 //
-// file art/art.cc
+// file art/Art.cc
 // author Maximilien M. Cura
 
 #include <Ynk/App.h>
@@ -10,10 +10,13 @@
 #include <OpenGL/glu.h>
 #include <GLUT/glut.h>
 
+#include <Ynk/Geometry/Space.h>
+#include <Art/Model.h>
+
 using namespace Ynk;
 
 namespace Art {
-    void init ();
+    void init (int, char **);
     void reshape (int, int);
     void display ();
 }
@@ -31,7 +34,10 @@ usize wwidth = 800, wheight = 800;
 //! this work.
 YNK_APP (Art)
 {
-    // Art::init();
+    Space<2, double> * two_space = Space<2, double>::instance (SpaceType::Cartesian);
+    two_space->create_vector ({ 0.0, 2.0 }) + two_space->create_vector ({ 1.0, 4.0 });
+    println ("Vector: {}", two_space->create_vector ({ 0.0, 1.0 }));
+    // Art::init (argc, argv);
 
     return 0;
 }
@@ -41,7 +47,7 @@ const usize TINT_MAX;
 usize ** hydrosaturation;
 usize ** tint_saturation;
 
-void Art::init ()
+void Art::init (int argc, char ** argv)
 {
     glutInit (&argc, argv);
     glutInitDisplayMode (GLUT_RGBA | GLUT_DOUBLE);
