@@ -120,7 +120,7 @@ PushRelabelNetwork::PushRelabelNetwork (usize n)
             this->arcs[i][j] = nullptr;
         }
     }
-    usize square_side = sqrt (n - 2);
+    usize square_side = std::sqrt (n.inner_ - 2);
     u8 p              = 0;
     for (isize ix = -1; ix <= 1; ix++) {
         for (int iy = -1; iy <= 1; iy++) {
