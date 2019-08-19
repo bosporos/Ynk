@@ -3,7 +3,7 @@
 // author Maximilien M. Cura
 //
 
-#include <Ynk/Sys/any-posix/Sync/Mutex.h>
+#include <Ynk/Sys/any-posix/Sync/Mutex.hh>
 
 using Ynk::Sys::Sync::Mutex;
 

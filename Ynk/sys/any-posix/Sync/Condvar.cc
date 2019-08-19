@@ -3,7 +3,7 @@
 // author Maximilien M. Cura
 //
 
-#include <Ynk/Sys/any-posix/Sync/Condvar.h>
+#include <Ynk/Sys/any-posix/Sync/Condvar.hh>
 
 using Ynk::Sys::Sync::Condvar;
 

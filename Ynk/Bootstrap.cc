@@ -3,10 +3,10 @@
 // author Maximilien M. Cura
 //
 
-#include <Ynk/Bootstrap.h>
-#include <Ynk/App.h>
+#include <Ynk/Bootstrap.hh>
+#include <Ynk/App.hh>
 
-#include <Ynk/Panic/Panicking.h>
+#include <Ynk/Panic/Panicking.hh>
 
 ::Ynk::App::Runner * ::Ynk::App::Runner::_instance = nullptr;
 

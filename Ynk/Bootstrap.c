@@ -1,4 +1,4 @@
-#include <Ynk/Bootstrap.h>
+#include <Ynk/Bootstrap.hh>
 
 int main (int argc, char ** argv)
 {

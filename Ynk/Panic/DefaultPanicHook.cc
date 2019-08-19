@@ -3,11 +3,11 @@
 // author Maximilien M. Cura
 //
 
-#include <Ynk/Panic/Panic.h>
-#include <Ynk/Backtrace/Backtrace.h>
-#include <Ynk/Fmt/Fmt.h>
+#include <Ynk/Panic/Panic.hh>
+#include <Ynk/Backtrace/Backtrace.hh>
+#include <Ynk/Fmt/Fmt.hh>
 
-#include <Ynk/sys/common/Sync/ThreadId.h>
+#include <Ynk/sys/common/Sync/ThreadId.hh>
 
 #include <cstdio>
 

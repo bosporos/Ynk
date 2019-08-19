@@ -2,15 +2,15 @@
 // file art/Art.cc
 // author Maximilien M. Cura
 
-#include <Ynk/App.h>
-#include <Ynk/Num/Integers.h>
+#include <Ynk/App.hh>
+#include <Ynk/Num/Integers.hh>
 #include <Art/PushRelabel.h>
 
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #include <GLUT/glut.h>
 
-#include <Ynk/Geometry/Space.h>
+#include <Ynk/Geometry/Space.hh>
 #include <Art/Model.h>
 
 using namespace Ynk;

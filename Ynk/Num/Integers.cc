@@ -3,7 +3,7 @@
 // author Maximilien M. Cura
 //
 
-#include <Ynk/Num/Integers.h>
+#include <Ynk/Num/Integers.hh>
 
 #define ___ynk_int_gen_literal_operator(__TYPE__, __SIZE__, __BANG__)                                                     \
     Ynk::__TYPE__ operator""_u##__BANG__ (unsigned long long integral)                                                    \

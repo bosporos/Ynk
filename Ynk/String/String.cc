@@ -3,7 +3,7 @@
 // author Maximilien M. Cura
 //
 
-#include <Ynk/String/String.h>
+#include <Ynk/String/String.hh>
 
 using namespace Ynk;
 

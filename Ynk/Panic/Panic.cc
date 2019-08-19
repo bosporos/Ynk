@@ -3,11 +3,11 @@
 // author Maximilien M. Cura
 //
 
-#include <Ynk/Utility.h>
-#include <Ynk/Panic/Panic.h>
-#include <Ynk/Fmt/Fmt.h>
+#include <Ynk/Utility.hh>
+#include <Ynk/Panic/Panic.hh>
+#include <Ynk/Fmt/Fmt.hh>
 
-#include <Ynk/sys/any-posix/Sync/RwLock.h>
+#include <Ynk/sys/any-posix/Sync/RwLock.hh>
 
 #include <cstdio>
 

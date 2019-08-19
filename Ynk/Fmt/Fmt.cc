@@ -3,7 +3,7 @@
 // author Maximilien M. Cura
 //
 
-#include <Ynk/Fmt/Fmt.h>
+#include <Ynk/Fmt/Fmt.hh>
 
 void Ynk::Fmt::format_inner (String fmt_str, String & carry)
 {

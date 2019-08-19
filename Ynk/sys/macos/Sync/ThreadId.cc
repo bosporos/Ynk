@@ -3,8 +3,8 @@
 // author Maximilien M. Cura
 //
 
-#include <Ynk/Utility.h>
-#include <Ynk/sys/common/Sync/ThreadId.h>
+#include <Ynk/Utility.hh>
+#include <Ynk/sys/common/Sync/ThreadId.hh>
 
 #if COMPILER(CLANG)
 #    pragma clang diagnostic push
