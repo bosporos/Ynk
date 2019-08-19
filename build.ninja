@@ -72,10 +72,12 @@ build $builddir/libynk.dylib: libdynamic $
         $builddir/ynk/fmt/Fmt.o
     libs = -lc -lm -lpthread -framework GLUT -framework OpenGL -lc++
 
-build $builddir/art/art.o: rule-cxx $root/art/art.cc
+build $builddir/art/art.o: rule-cxx $root/art/Art.cc
     libs = -F/applications/xcode.app/contents/developer/platforms/macosx.platform/developer/sdks/macosx.sdk/system/library/frameworks
 build $builddir/art/PushRelabel.o: rule-cxx $root/art/PushRelabel.cc
+build $builddir/art/Model.o: rule-cxx $root/art/Model.cc
 build $builddir/ynked: link $
     $builddir/art/art.o $
-    $builddir/art/PushRelabel.o
+    $builddir/art/PushRelabel.o $
+    $builddir/art/Model.o
     libs = -lynk -lc -framework GLUT -framework OpenGL -lc++
