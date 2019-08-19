@@ -17,8 +17,8 @@
 
 #include <Ynk/Utility.h>
 
-#include <tgmath.h>
-// #include <cmath>
+// #include <tgmath.h>
+#include <cmath>
 #include <inttypes.h>
 
 namespace Ynk::Fmt {
@@ -197,11 +197,11 @@ namespace Ynk::Fmt {
                 this->write_str (str);
             } else if (base == 10) {
                 usize p10 = static_cast<U> (
-                    pow (
+                    std::pow (
                         static_cast<U> (10),
-                        static_cast<u8> (
-                            log10 (uint_impl<S, U>::max_value ()))));
-                String str (static_cast<usize> (log10 (p10)));
+                        static_cast<_u8> (
+                            std::log10 (uint_impl<S, U>::max_value ().inner_))));
+                String str (static_cast<usize> (std::log10 (p10.inner_)));
                 U iterating     = ui.inner_;
                 bool in_padding = true;
                 usize i         = 0;

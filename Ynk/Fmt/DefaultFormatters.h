@@ -7,6 +7,7 @@
 #define __YNK_FMT_FMTD
 
 #include <Ynk/Fmt/Fmt.h>
+#include <stdio.h>
 
 namespace Ynk::Fmt {
     template <>
@@ -92,6 +93,19 @@ namespace Ynk::Fmt {
                 ctx.write_int (obj, base, pad, upper, "0x"_y);
             else
                 ctx.write_int (obj, base, pad, upper);
+        }
+    };
+
+    template <>
+    struct Formatter<double>
+    {
+        static void format (double obj, FormatContext ctx)
+        {
+            char * str;
+            asprintf (&str, "%f", obj);
+            String tmp (str);
+            std::free (str);
+            ctx.write_str (tmp);
         }
     };
 }
