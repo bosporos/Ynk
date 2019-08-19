@@ -3,7 +3,7 @@
 // author Maximilien M. Cura
 //
 
-#include <Art/PushRelabel.h>
+#include <Art/PushRelabel.hh>
 
 #include <tgmath.h>
 #include <stdlib.h> /* arc4random_uniform */

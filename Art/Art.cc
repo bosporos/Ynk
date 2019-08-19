@@ -4,14 +4,14 @@
 
 #include <Ynk/App.hh>
 #include <Ynk/Num/Integers.hh>
-#include <Art/PushRelabel.h>
+#include <Art/PushRelabel.hh>
 
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #include <GLUT/glut.h>
 
 #include <Ynk/Geometry/Space.hh>
-#include <Art/Model.h>
+#include <Art/Model.hh>
 
 using namespace Ynk;
 

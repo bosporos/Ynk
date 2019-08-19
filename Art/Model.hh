@@ -1,12 +1,12 @@
 //
-// file art/model.h
+// file art/Model.hh
 // author Maximilien M. Cura
 //
 
 #ifndef __ART_MODEL
 #define __ART_MODEL
 
-#include <Art/PushRelabel.h>
+#include <Art/PushRelabel.hh>
 
 namespace Art {
 

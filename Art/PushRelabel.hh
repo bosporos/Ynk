@@ -1,5 +1,5 @@
 //
-// file art/pushrelabel.h
+// file art/pushrelabel.hh
 // author Maximilien M. Cura
 //
 
