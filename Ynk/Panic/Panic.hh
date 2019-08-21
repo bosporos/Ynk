@@ -26,6 +26,8 @@ namespace Ynk::Panic {
 
     void default_hook (Panicking::PanicInfo &);
 
+    YNK_NORETURN void begin_panic (const char *, usize, String message);
+
     template <class... Args>
     YNK_NORETURN void begin_panic (const char * file, usize line, String fmt, Args... args)
     {
@@ -33,8 +35,6 @@ namespace Ynk::Panic {
 
         begin_panic (file, line, formatted_msg);
     }
-
-    YNK_NORETURN void begin_panic (const char *, usize, String message);
 }
 
 #endif /* !@__YNK_PANIC_PANIC */

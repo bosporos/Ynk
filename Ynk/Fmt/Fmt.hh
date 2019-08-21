@@ -197,10 +197,14 @@ namespace Ynk::Fmt {
                 this->write_str (str);
             } else if (base == 10) {
                 usize p10 = static_cast<U> (
-                    std::pow (
+                    pad ? std::pow (
                         static_cast<U> (10),
                         static_cast<_u8> (
-                            std::log10 (uint_impl<S, U>::max_value ().inner_))));
+                            std::log10 (uint_impl<S, U>::max_value ().inner_)))
+                        : std::pow (
+                            static_cast<U> (10),
+                            static_cast<_u8> (
+                                std::ceil (std::log10 (ui.inner_)))));
                 String str (static_cast<usize> (std::log10 (p10.inner_)));
                 U iterating     = ui.inner_;
                 bool in_padding = true;
@@ -290,7 +294,7 @@ namespace Ynk::Fmt {
             std::abort ();
         } else {
             carry.push (fmt_str.substr (0, static_cast<usize> (index)));
-            String remainder = fmt_str.substr (static_cast<usize> (index + 1));
+            String remainder = fmt_str.substr (static_cast<usize> (index));
             String gather    = remainder.substr (0, static_cast<usize> (lah) - static_cast<usize> (index) - 1);
             FormatContext ctx (gather, carry);
             FormatDispatcher<H>::dispatch (head, ctx);
@@ -340,7 +344,16 @@ namespace Ynk {
     template <class... Args>
     void println_err (String fmt_str, Args... args)
     {
-        std::fprintf (stderr, "%s\n", Fmt::format (fmt_str, args...).into_inner_volatile ());
+        String fmtd = Fmt::format (fmt_str, args...);
+        // std::printf ("Size: %z\n", fmtd.inner.size ());
+        // for (_usize i = 0; i < fmtd.inner.size (); i++)
+        //     std::printf ("%c", fmtd.inner[i]);
+        // std::printf ("\n");
+        // for (_usize i = 0; i < fmtd.inner.size (); i++)
+        //     std::printf ("%hhx(%c) ", fmtd.inner[i], fmtd.inner[i]);
+        // std::printf ("\n");
+        // std::fflush (stdout);
+        std::fprintf (stderr, "%s\n", fmtd.into_inner_volatile ());
     }
 }
 

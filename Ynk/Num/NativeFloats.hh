@@ -9,4 +9,9 @@
 #ifndef __YNK_NUM_NATIVE_FLOATS
 #define __YNK_NUM_NATIVE_FLOATS
 
+namespace Ynk {
+    typedef float _f32;
+    typedef double _f64;
+}
+
 #endif /* !@__YNK_NUM_NATIVE_FLOATS */

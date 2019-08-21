@@ -22,9 +22,8 @@ void Ynk::Panic::default_hook (Ynk::Panicking::PanicInfo & info)
                       info.file,
                       info.line,
                       info.msg);
+    std::fflush (stderr);
 
     // heapalloc-free
     Ynk::Backtrace::print_backtrace ();
-
-    fflush (stderr);
 }

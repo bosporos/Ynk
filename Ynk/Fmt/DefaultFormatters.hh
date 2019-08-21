@@ -7,6 +7,7 @@
 #define __YNK_FMT_FMTD
 
 #include <Ynk/Fmt/Fmt.hh>
+#include <Ynk/Num/NativeFloats.hh>
 #include <stdio.h>
 
 namespace Ynk::Fmt {
@@ -96,17 +97,39 @@ namespace Ynk::Fmt {
         }
     };
 
+#define _Ynk_DefaultFmt_Helper(T, F)                  \
+    template <>                                       \
+    struct Formatter<T>                               \
+    {                                                 \
+        static void format (T obj, FormatContext ctx) \
+        {                                             \
+            char * asprintf_str;                      \
+            asprintf (&asprintf_str, F, obj);         \
+            String ynk_str (asprintf_str);            \
+            std::free (asprintf_str);                 \
+            ctx.write_str (ynk_str);                  \
+        }                                             \
+    }
+
+    _Ynk_DefaultFmt_Helper (_u8, "%hhu");
+    _Ynk_DefaultFmt_Helper (_u16, "%hu");
+    _Ynk_DefaultFmt_Helper (_u32, "%u");
+    _Ynk_DefaultFmt_Helper (_u64, "%llu");
+    _Ynk_DefaultFmt_Helper (_usize, "%zu");
+
+    _Ynk_DefaultFmt_Helper (_i8, "%hhi");
+    _Ynk_DefaultFmt_Helper (_i16, "%hi");
+    _Ynk_DefaultFmt_Helper (_i32, "%i");
+    _Ynk_DefaultFmt_Helper (_i64, "%lli");
+    _Ynk_DefaultFmt_Helper (_isize, "%zi");
+
+    _Ynk_DefaultFmt_Helper (_f32, "%f");
+    _Ynk_DefaultFmt_Helper (_f64, "%lf");
+
     template <>
-    struct Formatter<double>
+    struct Formatter<const char *>
     {
-        static void format (double obj, FormatContext ctx)
-        {
-            char * str;
-            asprintf (&str, "%f", obj);
-            String tmp (str);
-            std::free (str);
-            ctx.write_str (tmp);
-        }
+        static void format (const char * obj, FormatContext ctx) { ctx.write_str (String (obj)); }
     };
 }
 

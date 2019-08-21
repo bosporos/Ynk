@@ -98,7 +98,7 @@ Option<usize> Ynk::String::index_of (char8_t chr, usize start) const
 String Ynk::String::substr (usize idx) const
 {
     String tmp;
-    tmp.inner.insert (tmp.inner.begin (), this->inner.begin () + idx, this->inner.end ());
+    tmp.inner.insert (tmp.inner.begin (), this->inner.begin () + idx, this->inner.end () - 1);
     return Ynk::Move (tmp);
 }
 

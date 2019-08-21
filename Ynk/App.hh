@@ -18,7 +18,7 @@
 namespace Ynk::App {
     struct Stub
     {
-        virtual int run (int, char **) = 0;
+        virtual int run (int, char **, Stub *) = 0;
     };
 
     struct StubFactory
@@ -66,7 +66,7 @@ namespace Ynk::App {
             }
 
             Stub * stub = this->stub_runner->create_stub ();
-            return stub->run (argc, argv);
+            return stub->run (argc, argv, stub);
         }
 
     private:
@@ -84,24 +84,28 @@ namespace Ynk::App {
 }
 
 #define YNK_APP_NAMED(_name) StubImpl_##_name
+#define YNK_APP_BY_NAME(_name) ::Ynk::App::StubImpl_##_name
+#define YNK_APP_NAME(_name) #_name
 
 //! Uses YNK_UNUSED to silence compiler warnings about argc and argv being unused
 //! parameters
-#define YNK_APP(_name)                                                          \
-    namespace Ynk::App {                                                        \
-        struct YNK_APP_NAMED (_name)                                            \
-            : public Ynk::App::Stub                                             \
-        {                                                                       \
-            static bool registered;                                             \
-                                                                                \
-            int run (int YNK_UNUSED, char ** YNK_UNUSED) override;              \
-        };                                                                      \
-    }                                                                           \
-                                                                                \
-    bool Ynk::App::YNK_APP_NAMED (_name)::registered                            \
-        = Ynk::App::register_stub (                                             \
-            new Ynk::App::StubFactoryImpl<Ynk::App::YNK_APP_NAMED (_name)> ()); \
-                                                                                \
-    int Ynk::App::YNK_APP_NAMED (_name)::run (int YNK_UNUSED argc, char ** YNK_UNUSED argv)
+#define YNK_APP(_name)                                                       \
+    namespace Ynk::App {                                                     \
+        struct YNK_APP_NAMED (_name)                                         \
+            : public Ynk::App::Stub                                          \
+        {                                                                    \
+            static bool registered;                                          \
+            static constexpr const char * const name = YNK_APP_NAME (_name); \
+                                                                             \
+            int run (int YNK_UNUSED, char ** YNK_UNUSED, Stub *) override;   \
+        };                                                                   \
+    }                                                                        \
+                                                                             \
+    int Ynk::App::YNK_APP_NAMED (_name)::run (int YNK_UNUSED argc, char ** YNK_UNUSED argv, Ynk::App::Stub * application)
+
+#define YNK_LAUNCH_APP(_name)                        \
+    bool Ynk::App::YNK_APP_NAMED (_name)::registered \
+        = Ynk::App::register_stub (                  \
+            new Ynk::App::StubFactoryImpl<Ynk::App::YNK_APP_NAMED (_name)> ());
 
 #endif /* !@__YNK_APP */
