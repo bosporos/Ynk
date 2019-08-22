@@ -77,3 +77,23 @@ singleton instance will have that `StubFactoryImpl<StubImpl_AppName>`, which can
 even though `Runner` has absolutely no idea what a `StubImpl_AppName` actually is: all it sees is a `Stub`.
 
 Anyway, that's how the bootstrap process works.
+
+# Changelog
+
+As of Ynk@1b8a51f, a third parameter has been added to YNK_APP's shadow implementation; a pointer to the application stub; also, YNK_LAUNCH_APP(...) must be called in order for the system to work properly.
+
+Recommended usage:
+
+```
+YNK_APP(Test)
+    /* (int, char**, Ynk::App::Stub * application) -> int */
+{
+    auto application = reinterpret_cast<YNK_APP_NY_NAME(Test) *> (application);
+    // A couple useful things: application->name, etc.
+
+    return 0;
+}
+
+// If we don't have this, nothing happens
+YNK_APP_LAUNCH(Test);
+```
