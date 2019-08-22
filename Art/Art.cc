@@ -4,7 +4,7 @@
 //
 
 #include "linmath.h"
-#include <GLAD/glad.h>
+#include <glad/glad.h>
 #include <OpenGL/glu.h>
 #include <glfw/glfw3.h>
 
@@ -14,6 +14,8 @@
 #include <Ynk/Geometry/Space.hh>
 #include <Art/Model.hh>
 #include <Art/Color.hh>
+
+#include <Ynk/GL/Shader.hh>
 
 using namespace Ynk;
 
@@ -49,39 +51,12 @@ YNK_APP (Test)
 }
 YNK_LAUNCH_APP (Test);
 
-// static const struct
-// {
-//     GLfloat x, y;
-//     GLfloat r, g, b;
-// } vertices[3] = {
-//     { -0.6f, -0.4f, 1.0f, 0.f, 0.f },
-//     { 0.6f, -0.4f, 0.f, 1.0f, 0.f },
-//     { 0.f, 0.6f, 0.f, 0.f, 1.0f }
-// };
-
 GLfloat vertices[][5] = {
     { 0.62f, -0.62f, 1.0f, 0.0f, 0.242f },
     { -0.62f, -0.62f, 0.87f, 0.2f, 0.56f },
     { 0.62f, 0.62f, 0.53f, 0.1f, 0.87f },
     { -0.62f, 0.62f, 0.25, 0.25f, 0.54f },
 };
-
-static const char * vshader_raw = "#version 410\n"
-                                  "layout(location = 0) in vec2 vsynk_position;\n"
-                                  "layout(location = 1) in vec3 vsynk_color;\n"
-                                  "out vec3 fsynk_color;\n"
-                                  "void main()\n"
-                                  "{\n"
-                                  "  gl_Position = vec4(vsynk_position, 0.0, 1.0);\n"
-                                  "  fsynk_color = vsynk_color;\n"
-                                  "}\n";
-static const char * fshader_raw = "#version 410\n"
-                                  "in vec3 fsynk_color;\n"
-                                  "out vec4 ynk_FragColor;\n"
-                                  "void main()\n"
-                                  "{\n"
-                                  "  ynk_FragColor  = vec4(fsynk_color, 1.0);\n"
-                                  "}\n";
 
 static void dump_shader_log (GLuint);
 static void dump_prog_log (GLuint);
@@ -100,16 +75,16 @@ int Art::Init (int argc, char ** argv, Ynk::App::Stub * application_raw)
     if (!glfwInit ())
         panic ("Could not initialize GLFW!");
 
-    // glfwWindowHint (GLFW_RESIZABLE, GLFW_TRUE);
-    // glfwWindowHint (GLFW_VISIBLE, GLFW_TRUE);
-    // glfwWindowHint (GLFW_DECORATED, GLFW_FALSE);
-    // glfwWindowHint (GLFW_FOCUSED, GLFW_FALSE);
-    // glfwWindowHint (GLFW_FOCUS_ON_SHOW, GLFW_FALSE);
+    glfwWindowHint (GLFW_RESIZABLE, GLFW_TRUE);
+    glfwWindowHint (GLFW_VISIBLE, GLFW_TRUE);
+    glfwWindowHint (GLFW_DECORATED, GLFW_FALSE);
+    glfwWindowHint (GLFW_FOCUSED, GLFW_FALSE);
+    glfwWindowHint (GLFW_FOCUS_ON_SHOW, GLFW_FALSE);
 
-    // glfwWindowHint (GLFW_RED_BITS, 8);
-    // glfwWindowHint (GLFW_GREEN_BITS, 8);
-    // glfwWindowHint (GLFW_BLUE_BITS, 8);
-    // glfwWindowHint (GLFW_ALPHA_BITS, 8);
+    glfwWindowHint (GLFW_RED_BITS, 8);
+    glfwWindowHint (GLFW_GREEN_BITS, 8);
+    glfwWindowHint (GLFW_BLUE_BITS, 8);
+    glfwWindowHint (GLFW_ALPHA_BITS, 8);
 
     glfwWindowHint (GLFW_CLIENT_API, GLFW_OPENGL_API);
     glfwWindowHint (GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
@@ -137,42 +112,32 @@ int Art::Init (int argc, char ** argv, Ynk::App::Stub * application_raw)
     glfwShowWindow (window);
     glfwFocusWindow (window);
 
-    GLuint vbuffer, vao, vshader, fshader, prog;
+    GLuint vbuffer, vao, prog;
     GLint vpos_loc, vcol_loc;
 
-    vshader = glCreateShader (GL_VERTEX_SHADER);
-    glShaderSource (vshader, 1, &vshader_raw, NULL);
-    glCompileShader (vshader);
-
-    dump_error_values ();
-
-    GLint vshader_compiled = 0;
-    glGetShaderiv (vshader, GL_COMPILE_STATUS, &vshader_compiled);
-    if (vshader_compiled == GL_TRUE) {
-        println ("Vertex Shader compiled successfully");
+    GL::Shader vshader (GL::ShaderType::VertexShader);
+    vshader.load_from ("Art/shaders/core-vertex-shader.glsl");
+    if (!vshader.compile ()) {
+        println_err ("Core vertex shader failed to compile!");
+        println_err ("Dumping infolog:");
+        println_err (vshader.get_info_log ());
     } else {
-        println_err ("Vertex Shader did not compile!");
-
-        dump_shader_log (vshader);
+        println ("Core vertex shader compiled & loaded!");
     }
 
-    fshader = glCreateShader (GL_FRAGMENT_SHADER);
-    glShaderSource (fshader, 1, &fshader_raw, NULL);
-    glCompileShader (fshader);
-
-    GLint fshader_compiled = 0;
-    glGetShaderiv (fshader, GL_COMPILE_STATUS, &fshader_compiled);
-    if (fshader_compiled == GL_TRUE) {
-        println ("Fragment Shader compiled successfully");
+    GL::Shader fshader (GL::ShaderType::FragmentShader);
+    fshader.load_from ("Art/shaders/core-fragment-shader.glsl");
+    if (!fshader.compile ()) {
+        println_err ("Core fragment shader failed to compile!");
+        println_err ("Dumping infolog:");
+        println_err (fshader.get_info_log ());
     } else {
-        println_err ("Fragment Shader did not compile!");
-
-        dump_shader_log (fshader);
+        println ("Core fragment shader compiled & loaded!");
     }
 
     prog = glCreateProgram ();
-    glAttachShader (prog, vshader);
-    glAttachShader (prog, fshader);
+    glAttachShader (prog, vshader.gl_shader ());
+    glAttachShader (prog, fshader.gl_shader ());
     glLinkProgram (prog);
     GLint prog_linked = 0;
     glGetProgramiv (prog, GL_LINK_STATUS, &prog_linked);
@@ -246,18 +211,6 @@ void Art::GLFWHooks::OnWindowSizeFn (GLFWwindow *, int new_width, int new_height
     window_size[1] = new_height;
 
     println ("Resizing window to {} {}", new_width, new_height);
-}
-
-void dump_shader_log (GLuint shader)
-{
-    GLint max_length = 0;
-    glGetShaderiv (shader, GL_INFO_LOG_LENGTH, &max_length);
-    GLchar * buffer = new GLchar[max_length + 1];
-    glGetShaderInfoLog (shader, max_length, &max_length, buffer);
-
-    println_err ("SHADER LOG:");
-    std::printf ("%s", buffer);
-    delete[] buffer;
 }
 
 void dump_prog_log (GLuint prog)
