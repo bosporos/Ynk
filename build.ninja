@@ -56,6 +56,8 @@ build $builddir/ynk/fmt/Fmt.o: rule-cxx $root/ynk/fmt/Fmt.cc
 build $builddir/ynk/panic/Panic.o: rule-cxx $root/ynk/panic/Panic.cc
 build $builddir/ynk/panic/DefaultPanicHook.o: rule-cxx $root/ynk/panic/DefaultPanicHook.cc
 
+build $builddir/ynk/gl/Shader.o: rule-cxx $root/ynk/gl/Shader.cc
+
 build $builddir/libynk.dylib: libdynamic $
         $builddir/ynk/backtrace/Backtrace.o $
         $builddir/ynk/bootstrap.lower.o $
@@ -69,7 +71,8 @@ build $builddir/libynk.dylib: libdynamic $
         $builddir/ynk/panic/DefaultPanicHook.o $
         $builddir/ynk/num/Integers.o $
         $builddir/ynk/string/String.o $
-        $builddir/ynk/fmt/Fmt.o
+        $builddir/ynk/fmt/Fmt.o $
+        $builddir/ynk/gl/Shader.o
     libs = -lc -lm -lpthread -lglfw -framework OpenGL -lc++
 
 build $builddir/art/art.o: rule-cxx $root/art/Art.cc
