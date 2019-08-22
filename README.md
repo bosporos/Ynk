@@ -18,7 +18,7 @@ Atm, to build, you need the following:
 
  - [clang](https://clang.llvm.org) 8
  - [ninja](https://ninja-build.org) 1.3+
- - [OpenGL] (https://opengl.org) 4.1+
+ - [OpenGL](https://opengl.org) 4.1+
  - [GLFW](https://glfw.org) 3.3
  - [GLAD](https://github.com/Dav1dde/glad)
 
