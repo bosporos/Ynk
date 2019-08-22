@@ -23,7 +23,7 @@ namespace Ynk {
     struct Space;
 
     template <unsigned _N, class _T>
-    struct Vector
+    struct Vec
     {
         typedef _T value_type;
 
@@ -31,7 +31,7 @@ namespace Ynk {
 
         _T values[_N];
 
-        Vector (Space<_N, _T> * space, std::initializer_list<_T> values)
+        Vec (Space<_N, _T> * space, std::initializer_list<_T> values)
             : space { space }
         {
             for (usize i = 0; i < _N; i++) {
@@ -39,7 +39,7 @@ namespace Ynk {
             }
         }
 
-        Vector (Vector const & orig)
+        Vec (Vec const & orig)
             : space { orig.space }
         {
             for (usize i = 0; i < _N; i++) {
@@ -50,46 +50,46 @@ namespace Ynk {
         _T & operator[] (usize index) { return this->values[index]; }
         _T const & operator[] (usize index) const { return this->values[index]; }
 
-        Vector operator+ (Vector const & rhs) const
+        Vec operator+ (Vec const & rhs) const
         {
-            Vector tmp { *this };
+            Vec tmp { *this };
             space->op_vec_add (tmp, rhs);
             return tmp;
         }
-        Vector operator- (Vector const & rhs) const
+        Vec operator- (Vec const & rhs) const
         {
-            Vector tmp { *this };
+            Vec tmp { *this };
             space->op_vec_sub (tmp, rhs);
             return tmp;
         }
-        Vector operator* (Vector const & rhs) const
+        Vec operator* (Vec const & rhs) const
         {
-            Vector tmp { *this };
+            Vec tmp { *this };
             space->op_vec_mul (tmp, rhs);
             return tmp;
         }
-        Vector operator/ (Vector const & rhs) const
+        Vec operator/ (Vec const & rhs) const
         {
-            Vector tmp { *this };
+            Vec tmp { *this };
             space->op_vec_div (tmp, rhs);
             return tmp;
         }
-        Vector & operator+= (Vector const & rhs)
+        Vec & operator+= (Vec const & rhs)
         {
             space->op_vec_add (*this, rhs);
             return *this;
         }
-        Vector & operator-= (Vector const & rhs)
+        Vec & operator-= (Vec const & rhs)
         {
             space->op_vec_sub (*this, rhs);
             return *this;
         }
-        Vector & operator*= (Vector const & rhs)
+        Vec & operator*= (Vec const & rhs)
         {
             space->op_vec_mul (*this, rhs);
             return *this;
         }
-        Vector & operator/= (Vector const & rhs)
+        Vec & operator/= (Vec const & rhs)
         {
             space->op_vec_div (*this, rhs);
             return *this;
@@ -121,14 +121,14 @@ namespace Ynk {
 
         // FACTORY OPERATIONS
 
-        Vector<_N, _T> create_vector (std::initializer_list<_T> values)
+        Vec<_N, _T> create_vec (std::initializer_list<_T> values)
         {
-            return Vector<_N, _T> (this, values);
+            return Vec<_N, _T> (this, values);
         }
 
         // SPACIAL TRANSFORMATION OPERATIONS
 
-        Vector<_N, _T> mold_to_shape (Vector<_N, _T> const & vec)
+        Vec<_N, _T> mold_to_shape (Vec<_N, _T> const & vec)
         {
             SpaceType originating_spacial = vec.space->space_type;
             if (originating_spacial == this->space_type)
@@ -139,7 +139,7 @@ namespace Ynk {
 
         // VECTOR OPERATIONS
 
-        void op_vec_add (Vector<_N, _T> & lhs, Vector<_N, _T> const & rhs)
+        void op_vec_add (Vec<_N, _T> & lhs, Vec<_N, _T> const & rhs)
         {
             switch (this->space_type) {
                 case SpaceType::Cartesian:
@@ -152,7 +152,7 @@ namespace Ynk {
             }
         }
 
-        void op_vec_sub (Vector<_N, _T> & lhs, Vector<_N, _T> const & rhs)
+        void op_vec_sub (Vec<_N, _T> & lhs, Vec<_N, _T> const & rhs)
         {
             switch (this->space_type) {
                 case SpaceType::Cartesian:
@@ -165,7 +165,7 @@ namespace Ynk {
             }
         }
 
-        void op_vec_mul (Vector<_N, _T> & lhs, _T scale_factor)
+        void op_vec_mul (Vec<_N, _T> & lhs, _T scale_factor)
         {
             switch (this->space_type) {
                 case SpaceType::Cartesian:
@@ -179,7 +179,7 @@ namespace Ynk {
             }
         }
 
-        void op_vec_div (Vector<_N, _T> & lhs, _T scale_factor)
+        void op_vec_div (Vec<_N, _T> & lhs, _T scale_factor)
         {
             switch (this->space_type) {
                 case SpaceType::Cartesian:
@@ -193,7 +193,7 @@ namespace Ynk {
             }
         }
 
-        void op_vec_normalize (Vector<_N, _T> & vec)
+        void op_vec_normalize (Vec<_N, _T> & vec)
         {
             switch (this->space_type) {
                 case SpaceType::Cartesian:
@@ -205,7 +205,7 @@ namespace Ynk {
             }
         }
 
-        _T op_vec_maximum (Vector<_N, _T> const & vec)
+        _T op_vec_maximum (Vec<_N, _T> const & vec)
         {
             switch (this->space_type) {
                 case SpaceType::Cartesian: {
@@ -221,7 +221,7 @@ namespace Ynk {
             }
         }
 
-        _T op_vec_minimum (Vector<_N, _T> const & vec)
+        _T op_vec_minimum (Vec<_N, _T> const & vec)
         {
             switch (this->space_type) {
                 case SpaceType::Cartesian: {
@@ -237,7 +237,7 @@ namespace Ynk {
             }
         }
 
-        _T op_vec_magnitude (Vector<_N, _T> const & vec)
+        _T op_vec_magnitude (Vec<_N, _T> const & vec)
         {
             switch (this->space_type) {
                 case SpaceType::Cartesian: {
@@ -252,7 +252,7 @@ namespace Ynk {
             }
         }
 
-        void op_vec_abs (Vector<_N, _T> & vec)
+        void op_vec_abs (Vec<_N, _T> & vec)
         {
             switch (this->space_type) {
                 case SpaceType::Cartesian:
@@ -267,7 +267,7 @@ namespace Ynk {
             }
         }
 
-        _T op_vec_product (Vector<_N, _T> const & vec)
+        _T op_vec_product (Vec<_N, _T> const & vec)
         {
             // Multiplicative identity
             _T product = 1;
@@ -277,7 +277,7 @@ namespace Ynk {
             return product;
         }
 
-        _T op_vec_sum (Vector<_N, _T> const & vec)
+        _T op_vec_sum (Vec<_N, _T> const & vec)
         {
             // Additive identity
             _T sum = 0;
@@ -287,7 +287,7 @@ namespace Ynk {
             return sum;
         }
 
-        _T op_vec_dot (Vector<_N, _T> const & lhs, Vector<_N, _T> const & rhs)
+        _T op_vec_dot (Vec<_N, _T> const & lhs, Vec<_N, _T> const & rhs)
         {
             _T sum = 0;
             for (usize i = 0; i < _N; i++) {
@@ -305,9 +305,9 @@ namespace Ynk {
 
 namespace Ynk::Fmt {
     template <unsigned _N, class _T>
-    struct Formatter<::Ynk::Vector<_N, _T>>
+    struct Formatter<::Ynk::Vec<_N, _T>>
     {
-        static void format (::Ynk::Vector<_N, _T> vec, FormatContext ctx)
+        static void format (::Ynk::Vec<_N, _T> vec, FormatContext ctx)
         {
             ctx.write_char ('<');
             for (usize i = 0; i < _N; i++) {
