@@ -17,13 +17,14 @@ namespace Art {
     struct WaterLayerComponent
     {
         Ynk::u64 hydrosaturation;
-        Ynk::u64 maximal_hydrosaturation;
+        Ynk::u64 standing_water;
+        Ynk::u64 maximal_moment_hydrosaturation;
     };
 
     struct TintLayerComponent
     {
         Ynk::u64 chromosaturation;
-        Ynk::u64 maximal_chronosaturation;
+        Ynk::u64 maximal_moment_chronosaturation;
 
         Ynk::u32 tint;
     };
