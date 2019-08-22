@@ -44,8 +44,10 @@ Ynk::String::String (const char8_t * x)
 }
 
 Ynk::String::String (usize len)
-    : inner (len)
-{}
+    : inner (len + 1)
+{
+    this->inner[len] = static_cast<char8_t> ('\0');
+}
 
 Ynk::String::String (String const & x)
     : inner (x.inner)

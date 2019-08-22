@@ -205,19 +205,23 @@ namespace Ynk::Fmt {
                             static_cast<U> (10),
                             static_cast<_u8> (
                                 std::ceil (std::log10 (ui.inner_)))));
-                String str (static_cast<usize> (std::log10 (p10.inner_)));
+                String str (p10.inner_ == 1 ? static_cast<usize> (1) : static_cast<usize> (std::log10 (p10.inner_)));
                 U iterating     = ui.inner_;
                 bool in_padding = true;
                 usize i         = 0;
-                while (iterating) {
-                    u8 n = static_cast<u8> (iterating / p10);
-                    if (n && in_padding)
-                        in_padding = false;
-                    if (n || (pad || !in_padding)) {
-                        str.inner[i++] = u8'0' + n;
-                        iterating -= p10 * n;
+                if (iterating != 0) {
+                    while (iterating) {
+                        u8 n = static_cast<u8> (iterating / p10);
+                        if (n && in_padding)
+                            in_padding = false;
+                        if (n || (pad || !in_padding)) {
+                            str.inner[i++] = u8'0' + n;
+                            iterating -= p10 * n;
+                        }
+                        p10 /= 10;
                     }
-                    p10 /= 10;
+                } else {
+                    this->write_char (u8'0');
                 }
                 this->write_str (str);
             } else if (base == 16) {
