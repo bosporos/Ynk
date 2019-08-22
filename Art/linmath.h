@@ -1,3 +1,6 @@
+// linmath, from GLFW's dependency list
+// https://github.com/glfw/glfw/blob/master/deps/linmath.h
+
 #ifndef LINMATH_H
 #    define LINMATH_H
 
