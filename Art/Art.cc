@@ -45,7 +45,21 @@ Vector<2, isize> window_size (iz2, { 800_iz, 800_iz });
 //! this work.
 YNK_APP (Test)
 {
-    Art::Init (argc, argv, application);
+    // Art::Init (argc, argv, application);
+    Art::PushRelabelNetwork prn (6);
+    prn.source               = prn.nodes[0];
+    prn.target               = prn.nodes[5];
+    prn.arcs[0][1]->capacity = 15_i64;
+    prn.arcs[0][2]->capacity = 4_i64;
+    prn.arcs[1][3]->capacity = 12_i64;
+    prn.arcs[2][4]->capacity = 10_i64;
+    prn.arcs[4][1]->capacity = 5_i64;
+    prn.arcs[3][2]->capacity = 3_i64;
+    prn.arcs[4][5]->capacity = 10_i64;
+    prn.arcs[3][5]->capacity = 7_i64;
+
+    prn.ready ();
+    println ("Maximum flow: {}", prn.compute ());
 
     return 0;
 }

@@ -17,9 +17,17 @@ isize max (isize a, isize b) { return a > b ? a : b; }
 Node::Node (usize id)
     : id { id }
     , label { 0 }
-    , excess { 0 }
-    , current_arc { 0 }
     , arc_roll { 0 }
+    , current_arc { 0 }
+    , excess { 0 }
+{}
+
+Node::Node (Node const & orig)
+    : id { orig.id }
+    , label { orig.label }
+    , arc_roll { orig.arc_roll }
+    , current_arc { orig.current_arc }
+    , excess { orig.excess }
 {}
 
 Arc::Arc (Node * src, Node * target)
@@ -28,6 +36,14 @@ Arc::Arc (Node * src, Node * target)
     , inverse { nullptr }
     , capacity { 0 }
     , flow { 0 }
+{}
+
+Arc::Arc (Arc const & orig)
+    : source { orig.source }
+    , target { orig.target }
+    , inverse { orig.inverse }
+    , capacity { orig.capacity }
+    , flow { orig.flow }
 {}
 
 i64 Arc::residual_capacity ()
@@ -42,7 +58,7 @@ i64 PushRelabelNetwork::push (Node * u, Node * v)
     arc->flow += delta;
     arc->inverse->flow -= delta;
     u->excess -= delta;
-    v->excess -= delta;
+    v->excess += delta;
     return delta;
 }
 
@@ -115,9 +131,16 @@ PushRelabelNetwork::PushRelabelNetwork (usize n)
     this->arcs  = new Arc **[N];
     for (usize i = 0; i < N; i++) {
         this->nodes[i] = new Node (i);
-        this->arcs[i]  = new Arc *[N];
+    }
+    for (usize i = 0; i < N; i++) {
+        this->arcs[i] = new Arc *[N];
         for (usize j = 0; j < N; j++) {
-            this->arcs[i][j] = nullptr;
+            this->arcs[i][j] = new Arc (this->nodes[i], this->nodes[j]);
+        }
+    }
+    for (usize i = 0; i < N; i++) {
+        for (usize j = 0; j < N; j++) {
+            this->arcs[i][j]->inverse = this->arcs[j][i];
         }
     }
     usize square_side = std::sqrt (n.inner_ - 2);

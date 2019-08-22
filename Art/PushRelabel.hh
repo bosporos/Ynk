@@ -22,11 +22,12 @@ namespace Art {
     {
         Ynk::usize id;
         Ynk::usize label;
-        Ynk::i64 excess;
-        Ynk::usize current_arc;
         Ynk::usize arc_roll;
+        Ynk::usize current_arc;
+        Ynk::i64 excess;
 
         Node (Ynk::usize id);
+        Node (Node const &);
     };
 
     struct Arc
@@ -38,6 +39,7 @@ namespace Art {
         Ynk::i64 flow;
 
         Arc (Node * src, Node * target);
+        Arc (Arc const &);
         Ynk::i64 residual_capacity ();
     };
 
