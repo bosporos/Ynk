@@ -21,6 +21,7 @@ Atm, to build, you need the following:
  - [OpenGL](https://opengl.org) 4.1+
  - [GLFW](https://glfw.org) 3.3
  - [GLAD](https://github.com/Dav1dde/glad)
+ - [linmath](https://github.com/datenwolf/linmath.h) or as provided in GLFW deps
 
 Brief note: currently, there is NO support for Windows platforms; if you do have
 MS compatibility patches, feel free to add them- Ynk has only been tested on macOS,

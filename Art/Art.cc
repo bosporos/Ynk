@@ -3,7 +3,9 @@
 // author Maximilien M. Cura
 //
 
-#include "linmath.h"
+#if !__has_include(<linmath.h>)
+#    include "linmath.h"
+#endif
 #include <glad/glad.h>
 #include <OpenGL/glu.h>
 #include <glfw/glfw3.h>
