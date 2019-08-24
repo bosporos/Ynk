@@ -15,8 +15,8 @@
 #include <Art/PushRelabel.hh>
 #include <Ynk/Geometry/Space.hh>
 #include <Art/Model/Model.hh>
-#include <Art/Color.hh>
 
+#include <Ynk/UX/Color.hh>
 #include <Ynk/GL/Shader.hh>
 
 using namespace Ynk;
