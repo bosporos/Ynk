@@ -326,7 +326,7 @@ namespace Ynk {
 
         int_impl<_Size, typename Ynk::RemoveIntegerUnsignedness<_Underlying>::Type, _Underlying> operator- ()
         {
-            if (this->inner_ <= int_impl<_Size, typename Ynk::RemoveIntegerUnsignedness<_Underlying>::Type, _Underlying>::max_value ())
+            if (this->inner_ <= static_cast<_Underlying> (int_impl<_Size, typename Ynk::RemoveIntegerUnsignedness<_Underlying>::Type, _Underlying>::max_value ()))
                 return { -static_cast<typename Ynk::RemoveIntegerUnsignedness<_Underlying>::Type> (this->inner_) };
             else {
                 std::fprintf (stderr, "uint_impl<%u>: cannot perform unary negation: too large", _Size);

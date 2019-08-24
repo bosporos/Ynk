@@ -101,7 +101,7 @@ namespace Ynk::App {
         };                                                                   \
     }                                                                        \
                                                                              \
-    int Ynk::App::YNK_APP_NAMED (_name)::run (int YNK_UNUSED argc, char ** YNK_UNUSED argv, Ynk::App::Stub * application)
+    int Ynk::App::YNK_APP_NAMED (_name)::run (int YNK_UNUSED argc, char ** YNK_UNUSED argv, YNK_UNUSED Ynk::App::Stub * application)
 
 #define YNK_LAUNCH_APP(_name)                        \
     bool Ynk::App::YNK_APP_NAMED (_name)::registered \

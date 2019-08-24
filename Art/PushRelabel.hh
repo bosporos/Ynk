@@ -47,12 +47,14 @@ namespace Art {
     {
         const Ynk::usize N;
         Node * source;
-        Node * target;
+        Node * sink;
         Node ** nodes;
         Arc *** arcs;
         Ynk::isize offsets[8];
 
         PushRelabelNetwork (Ynk::usize n);
+
+        void reset_capacities ();
 
         Node * poll_excess ();
         Node * poll_active ();

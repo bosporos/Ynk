@@ -79,9 +79,9 @@ Node * PushRelabelNetwork::poll_excess ()
 {
     for (usize i = 0; i < N; i++) {
         Node * v = this->nodes[i];
-        // Put the source & target checks first. The excess check might require
+        // Put the source & sink checks first. The excess check might require
         // forcing a page fault, 'cause it's more indirected
-        if (v != this->source && v != this->target && v->excess > 0) {
+        if (v != this->source && v != this->sink && v->excess > 0) {
             return v;
         }
     }
@@ -92,7 +92,7 @@ Node * PushRelabelNetwork::poll_active ()
 {
     for (usize i = 0; i < N; i++) {
         Node * v = this->nodes[i];
-        if (v != this->source && v != this->target && v->excess > 0 && v->label <= N) {
+        if (v != this->source && v != this->sink && v->excess > 0 && v->label <= N) {
             return v;
         }
     }
@@ -105,7 +105,7 @@ void PushRelabelNetwork::discharge (Node * u)
         if (u->current_arc < 9_uz) {
             Node * v;
             if (u->current_arc == 0_uz) {
-                v = this->target;
+                v = this->sink;
             } else {
                 isize offset = this->offsets[(u->current_arc - 1 + u->arc_roll) % 8];
                 v            = this->nodes[max (offset + u->id, 0) % N];
@@ -154,6 +154,15 @@ PushRelabelNetwork::PushRelabelNetwork (usize n)
     }
 }
 
+void PushRelabelNetwork::reset_capacities ()
+{
+    for (usize i = 0; i < N; i++) {
+        for (usize j = 0; j < N; j++) {
+            this->arcs[i][j]->capacity = 0;
+        }
+    }
+}
+
 void PushRelabelNetwork::ready ()
 {
     for (usize x = 0; x < N; x++) {
@@ -190,7 +199,7 @@ usize PushRelabelNetwork::compute ()
         this->discharge (u);
     }
 
-    return static_cast<usize> (this->target->excess);
+    return static_cast<usize> (this->sink->excess);
 }
 
 Arc * PushRelabelNetwork::edge (Node * u, Node * v)

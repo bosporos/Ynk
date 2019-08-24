@@ -12,7 +12,7 @@
 #include <Ynk/Num/Integers.hh>
 #include <Art/PushRelabel.hh>
 #include <Ynk/Geometry/Space.hh>
-#include <Art/Model.hh>
+#include <Art/Model/Model.hh>
 #include <Art/Color.hh>
 
 #include <Ynk/GL/Shader.hh>
@@ -32,7 +32,7 @@ namespace Art {
 
 Space<2, double> * d2 = Space<2, double>::instance (SpaceType::Cartesian);
 Space<2, isize> * iz2 = Space<2, isize>::instance (SpaceType::Cartesian);
-Vector<2, isize> window_size (iz2, { 800_iz, 800_iz });
+Vec<2, isize> window_size (iz2, { 800_iz, 800_iz });
 
 ///! Main function
 //!
@@ -46,20 +46,6 @@ Vector<2, isize> window_size (iz2, { 800_iz, 800_iz });
 YNK_APP (Test)
 {
     // Art::Init (argc, argv, application);
-    Art::PushRelabelNetwork prn (6);
-    prn.source               = prn.nodes[0];
-    prn.target               = prn.nodes[5];
-    prn.arcs[0][1]->capacity = 15_i64;
-    prn.arcs[0][2]->capacity = 4_i64;
-    prn.arcs[1][3]->capacity = 12_i64;
-    prn.arcs[2][4]->capacity = 10_i64;
-    prn.arcs[4][1]->capacity = 5_i64;
-    prn.arcs[3][2]->capacity = 3_i64;
-    prn.arcs[4][5]->capacity = 10_i64;
-    prn.arcs[3][5]->capacity = 7_i64;
-
-    prn.ready ();
-    println ("Maximum flow: {}", prn.compute ());
 
     return 0;
 }
@@ -72,12 +58,11 @@ GLfloat vertices[][5] = {
     { -0.62f, 0.62f, 0.25, 0.25f, 0.54f },
 };
 
-static void dump_shader_log (GLuint);
-static void dump_prog_log (GLuint);
-static void purge_errors (const char *);
-static void dump_error_values ();
+YNK_USED static void dump_prog_log (GLuint);
+YNK_USED static void purge_errors (const char *);
+YNK_USED static void dump_error_values ();
 
-int Art::Init (int argc, char ** argv, Ynk::App::Stub * application_raw)
+int Art::Init (YNK_UNUSED int argc, YNK_UNUSED char ** argv, YNK_UNUSED Ynk::App::Stub * application_raw)
 {
     auto application = reinterpret_cast<YNK_APP_BY_NAME (Test) *> (application_raw);
     glfwSetErrorCallback (GLFWHooks::OnErrorFn);
@@ -127,7 +112,6 @@ int Art::Init (int argc, char ** argv, Ynk::App::Stub * application_raw)
     glfwFocusWindow (window);
 
     GLuint vbuffer, vao, prog;
-    GLint vpos_loc, vcol_loc;
 
     GL::Shader vshader (GL::ShaderType::VertexShader);
     vshader.load_from ("Art/shaders/core-vertex-shader.glsl");
@@ -207,7 +191,7 @@ int Art::Init (int argc, char ** argv, Ynk::App::Stub * application_raw)
     return 0;
 }
 
-void Art::Render (GLFWwindow * window)
+void Art::Render (YNK_UNUSED GLFWwindow * window)
 {}
 
 void Art::GLFWHooks::OnErrorFn (int code, const char * text)
