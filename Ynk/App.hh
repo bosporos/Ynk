@@ -41,46 +41,19 @@ namespace Ynk::App {
     struct Runner
     {
         static Runner * _instance;
-        static Runner * instance ()
-        {
-            if (Runner::_instance == nullptr) {
-                _instance = new Runner ();
-            }
-
-            return _instance;
-        }
+        static Runner * instance ();
 
         StubFactory * stub_runner = nullptr;
 
-        void fix_runner (StubFactory * runner)
-        {
-            this->stub_runner = runner;
-        }
+        void fix_runner (StubFactory * runner);
 
-        int launch_runner (int argc, char ** argv)
-        {
-            if (this->stub_runner == nullptr) {
-                std::fprintf (stderr, "ynk: can't launch runner: no fixed runner");
-                std::fprintf (stderr, "ynk: aborting");
-                std::abort ();
-            }
-
-            Stub * stub = this->stub_runner->create_stub ();
-            return stub->run (argc, argv, stub);
-        }
+        int launch_runner (int argc, char ** argv);
 
     private:
-        Runner ()
-            : stub_runner { nullptr }
-        {}
+        Runner ();
     };
 
-    bool register_stub (StubFactory * sr)
-    {
-        Runner::instance ()->fix_runner (sr);
-
-        return true;
-    }
+    bool register_stub (StubFactory * sr);
 }
 
 #define YNK_APP_NAMED(_name) StubImpl_##_name

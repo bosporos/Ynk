@@ -6,6 +6,13 @@
 #ifndef __YNK_UX_COLOR_ADAPTERS
 #define __YNK_UX_COLOR_ADAPTERS
 
+// #if !__has_include(<linmath.h>)
+// #    include "linmath.h"
+// #endif
+#include <glad/glad.h>
+#include <OpenGL/glu.h>
+#include <glfw/glfw3.h>
+
 #include <Ynk/String/String.hh>
 #include <Ynk/Fmt/Fmt.hh>
 #include <Ynk/UX/Color.hh>
@@ -32,16 +39,8 @@ namespace Ynk::UX {
         GLSetColorAdapter<W>::SetColor (c);
     }
 
-    String ANSI (RGBA c)
-    {
-        return Fmt::format ("\x1b[38;2;{};{};{}m", c.irgba.red, c.irgba.green, c.irgba.blue);
-    }
-
-    String ANSIRst ()
-    {
-        return String ("\x1b[0m");
-    }
-
+    String ANSI (RGBA c);
+    String ANSIRst ();
 }
 
 #endif /* !@__YNK_UX_COLOR_ADAPTERS */

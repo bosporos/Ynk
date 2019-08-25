@@ -3,38 +3,18 @@
 // author Maximilien M. Cura
 //
 
-#if !__has_include(<linmath.h>)
-#    include "linmath.h"
-#endif
-#include <glad/glad.h>
-#include <OpenGL/glu.h>
-#include <glfw/glfw3.h>
+#include <Art/Art.hh>
 
-#include <Ynk/App.hh>
-#include <Ynk/Num/Integers.hh>
 #include <Art/PushRelabel.hh>
-#include <Ynk/Geometry/Space.hh>
 #include <Art/Model/Model.hh>
-
-#include <Ynk/UX/Color.hh>
+#include <Ynk/UX/ColorAdapters.hh>
 #include <Ynk/GL/Shader.hh>
 
 using namespace Ynk;
 
-namespace Art::GLFWHooks {
-    void OnErrorFn (int, const char *);
-    void OnKeyFn (GLFWwindow *, int, int, int, int);
-    void OnWindowSizeFn (GLFWwindow *, int, int);
-}
-
-namespace Art {
-    int Init (int, char **, Ynk::App::Stub *);
-    void Render (GLFWwindow *);
-}
-
-Space<3, double> * d3 = Space<3, double>::instance (SpaceType::Cartesian);
-Space<2, i64> * iq2   = Space<2, i64>::instance (SpaceType::Cartesian);
-Vec<2, i64> window_size (iq2, { 800_i64, 800_i64 });
+Space<3, double> * Art::d3 = Space<3, double>::instance (SpaceType::Cartesian);
+Space<2, i64> * Art::iq2   = Space<2, i64>::instance (SpaceType::Cartesian);
+Vec<2, i64> window_size (Art::iq2, { 800_i64, 800_i64 });
 
 ///! Main function
 //!
@@ -52,38 +32,42 @@ YNK_APP (Test)
     // XXX
     //  X
     Art::Bristle bristles[5] = {
-        Art::Bristle (d3->create_vec ({ 0, -1, 0 }), 65336),
-        Art::Bristle (d3->create_vec ({ -1, 0, 0 }), 65336),
-        Art::Bristle (d3->create_vec ({ 0, 0, 0 }), 65336),
-        Art::Bristle (d3->create_vec ({ 1, 0, 0 }), 65336),
-        Art::Bristle (d3->create_vec ({ 0, 1, 0 }), 65336)
+        Art::Bristle (Art::d3->create_vec ({ 0, -1, 0 }), 65336),
+        Art::Bristle (Art::d3->create_vec ({ -1, 0, 0 }), 65336),
+        Art::Bristle (Art::d3->create_vec ({ 0, 0, 0 }), 65336),
+        Art::Bristle (Art::d3->create_vec ({ 1, 0, 0 }), 65336),
+        Art::Bristle (Art::d3->create_vec ({ 0, 1, 0 }), 65336)
     };
     Art::Brush brush (
         bristles,
         5,
         UX::RGBA (0x9f, 0xa0, 0xff, 0xff));
-    brush.position += d3->create_vec ({ 4, 4, 0 });
+    brush.position += Art::d3->create_vec ({ 4, 4, 0 });
 
-    auto layer_size = iq2->create_vec ({ 100, 100 });
+    auto layer_size = Art::iq2->create_vec ({ 100, 100 });
 
     Art::PaperLayer pl (layer_size, Art::PaperConfiguration ());
     Art::WaterLayer wl (layer_size, &brush);
-    println ("[\x1b[32mArt\x1b[0m]]: constructing PR network...");
-    wl._pr_construct (&pl);
-    println ("[\x1b[32mArt\x1b[0m]]: constructing PR network... done!");
 
-    println ("[\x1b[32mArt\x1b[0m]: readying PR network... ");
+    Art::Notify ("Constructing PR network...");
+    wl._pr_construct (&pl);
+    Art::Notify ("Constructing PR network... done");
+
+    Art::Notify ("Readying PR network... ");
     wl._pr_ready ();
     wl._pr_accrete (&pl);
     wl._pr_ready ();
-    println ("[\x1b[32mArt\x1b[0m]: readying PR network... done!");
-    println ("[\x1b[32mArt\x1b[0m]: running PR network... ");
+    Art::Notify ("Readying PR network... done");
+
+    Art::Notify ("Running PR network...");
     wl._pr_run ();
-    println ("[\x1b[32mArt\x1b[0m]: running PR network... done!");
+    Art::Notify ("Running PR network... done");
+
     wl._pr_accrete (&pl);
 
     return 0;
 }
+
 YNK_LAUNCH_APP (Test);
 
 GLfloat vertices[][5] = {

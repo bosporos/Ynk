@@ -58,6 +58,9 @@ build $builddir/ynk/panic/DefaultPanicHook.o: rule-cxx $root/ynk/panic/DefaultPa
 
 build $builddir/ynk/gl/Shader.o: rule-cxx $root/ynk/gl/Shader.cc
 build $builddir/ynk/ux/Color.o: rule-cxx $root/ynk/ux/Color.cc
+build $builddir/ynk/ux/ColorAdapters.o: rule-cxx $root/ynk/ux/ColorAdapters.cc
+
+build $builddir/ynk/App.o: rule-cxx $root/ynk/App.cc
 
 build $builddir/libynk.dylib: libdynamic $
         $builddir/ynk/backtrace/Backtrace.o $
@@ -74,10 +77,13 @@ build $builddir/libynk.dylib: libdynamic $
         $builddir/ynk/string/String.o $
         $builddir/ynk/fmt/Fmt.o $
         $builddir/ynk/gl/Shader.o $
-        $builddir/ynk/ux/Color.o
+        $builddir/ynk/ux/Color.o $
+        $builddir/ynk/ux/ColorAdapters.o $
+        $builddir/ynk/App.o
     libs = -lc -lm -lpthread -lglfw -framework OpenGL -lc++
 
-build $builddir/art/art.o: rule-cxx $root/art/Art.cc
+build $builddir/art/Art.o: rule-cxx $root/art/Art.cc
+build $builddir/art/Notes.o: rule-cxx $root/art/Notes.cc
 build $builddir/art/PushRelabel.o: rule-cxx $root/art/PushRelabel.cc
 build $builddir/art/model/Model.o: rule-cxx $root/art/model/Model.cc
 build $builddir/art/model/WaterLayer.o: rule-cxx $root/art/model/WaterLayer.cc
@@ -86,7 +92,8 @@ build $builddir/art/model/PaperLayer.o: rule-cxx $root/art/model/PaperLayer.cc
 build $builddir/art/model/Brush.o: rule-cxx $root/art/model/Brush.cc
 build $builddir/GLAD/glad.o: rule-c $root/GLAD/glad.c
 build $builddir/ynked: link $
-    $builddir/art/art.o $
+    $builddir/art/Art.o $
+    $builddir/art/Notes.o $
     $builddir/art/PushRelabel.o $
     $builddir/art/model/Model.o $
     $builddir/art/model/WaterLayer.o $
