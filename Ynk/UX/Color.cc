@@ -21,19 +21,17 @@ RGBA::RGBA (_u8 r, _u8 g, _u8 b, _u8 a)
     irgba.alpha = a;
 }
 
+RGBA::RGBA (_u8 r, _u8 g, _u8 b)
+{
+    irgba.red   = r;
+    irgba.green = g;
+    irgba.blue  = b;
+    irgba.alpha = 0xFF;
+}
+
 RGBA::RGBA (_u32 c)
 {
     inner = c;
-}
-
-void RGBA::gl_color3 ()
-{
-    glColor3ub (irgba.red, irgba.green, irgba.blue);
-}
-
-void RGBA::gl_color4 ()
-{
-    glColor4ub (irgba.red, irgba.green, irgba.blue, irgba.alpha);
 }
 
 RGBA RGBA::lerp (RGBA rhs, float amt)

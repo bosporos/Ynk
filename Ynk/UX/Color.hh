@@ -34,10 +34,10 @@ namespace Ynk::UX {
             _u32 inner;
         };
 
+        RGBA (_u8, _u8, _u8);
         RGBA (_u8, _u8, _u8, _u8);
         RGBA (_u32);
-        void gl_color3 ();
-        void gl_color4 ();
+
         RGBA lerp (RGBA, float);
         RGBA blend (RGBA);
         RGBA blend_add_pin (RGBA);
