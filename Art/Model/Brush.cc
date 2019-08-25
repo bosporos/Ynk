@@ -34,26 +34,21 @@ Brush::Brush (Bristle * bristles, usize n_bristles, UX::RGBA ink)
 
 usize Brush::_pr_num_nodes ()
 {
-    return this->num_bristles + 1;
+    return 1;
 }
 
-void Brush::_pr_attach (PushRelabelNetwork * prn, usize bristles_index, Vec2i space)
+void Brush::_pr_attach (PushRelabelNetwork * prn, Vec2i space)
 {
-    usize source = prn->source->id;
     // Bristles are bristles_index...prn.N-1
-    for (usize i = bristles_index; i < (bristles_index + num_bristles); i++) {
+    for (usize i = 0; i < num_bristles; i++) {
         // @TODO: Add code to base outflow amount on bristle contact
-        prn->arcs[source][i]->capacity = Math::min (256_u64, this->bristles[i - bristles_index].tint_remaining);
-        Vec3d tip_position             = bristles[i - bristles_index].tip_offset + position;
+        Vec3d tip_position = bristles[i].tip_offset + position;
         if (tip_position[2] <= 0) {
             i64 x = static_cast<_i64> (std::round (tip_position[0]));
             i64 y = static_cast<_i64> (std::round (tip_position[1]));
             if (x >= 0 && x < space[0] && y >= 0 && y < space[1])
                 // Connect bristle to paper
-                prn->arcs[i][x + space[1] * y]->capacity = 256;
-        } else {
-            // Dead ends take up valuable time, so prevent that
-            prn->arcs[source][i]->capacity = 0;
+                prn->capacities[prn->S][x + space[1] * y] = Math::min (256_u64, this->bristles[i].tint_remaining);
         }
     }
 }

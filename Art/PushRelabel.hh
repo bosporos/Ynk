@@ -15,92 +15,29 @@
 
 #include <Ynk/Panic/Panic.hh>
 
-// Inspired by JGraphT
-
 namespace Art {
-    struct Node
-    {
-        Ynk::usize id;
-        Ynk::usize label;
-        Ynk::usize arc_roll;
-        Ynk::usize current_arc;
-        Ynk::i64 excess;
-
-        Node (Ynk::usize id);
-        Node (Node const &);
-    };
-
-    struct Arc
-    {
-        Node * source;
-        Node * target;
-        Arc * inverse;
-        Ynk::i64 capacity;
-        Ynk::i64 flow;
-
-        Arc (Node * src, Node * target);
-        Arc (Arc const &);
-        Ynk::i64 residual_capacity ();
-    };
-
     struct PushRelabelNetwork
     {
-        const Ynk::usize N;
-        Node * source;
-        Node * sink;
-        Node ** nodes;
-        Arc *** arcs;
-        Ynk::isize offsets[8];
+        Ynk::usize N;
+        Ynk::i64 ** flows;
+        Ynk::i64 ** capacities;
+        Ynk::usize * labels;
+        Ynk::i64 * excesses;
+        Ynk::usize * currents;
+        Ynk::usize * rolls;
+        Ynk::isize * offsets;
 
-        PushRelabelNetwork (Ynk::usize n);
+        Ynk::usize S, T, EOLN;
 
-        void reset_capacities ();
-
-        Node * poll_excess ();
-        Node * poll_active ();
-
-        Ynk::i64 push (Node *, Node *);
-        Ynk::usize relabel (Node *);
-        void discharge (Node *);
-        void discharge_layer (Node *);
-        void discharge_general (Node *);
+        PushRelabelNetwork (Ynk::usize);
 
         void ready ();
-        Ynk::usize compute ();
-        void decompose ();
+        void compute ();
 
-        Arc * edge (Node *, Node *);
-    };
-}
-
-namespace Ynk::Fmt {
-    template <>
-    struct Formatter<::Art::Arc>
-    {
-        static void format (::Art::Arc arc, FormatContext ctx)
-        {
-            ctx.write_str (
-                Fmt::format ("({},{}),c:{},f:{}",
-                             *arc.source,
-                             *arc.target,
-                             arc.capacity,
-                             arc.flow));
-        }
-    };
-
-    template <>
-    struct Formatter<::Art::Node>
-    {
-        static void format (::Art::Node node, FormatContext ctx)
-        {
-            ctx.write_str (Fmt::format ("({}:{})", node.id, node.label));
-            if (node.excess != 0) {
-                if (node.excess > 0) {
-                    ctx.write_char ('+');
-                }
-                ctx.write_int (node.excess, 10, false, false);
-            }
-        }
+        Ynk::isize poll_active ();
+        void push (Ynk::usize, Ynk::usize);
+        void relabel (Ynk::usize);
+        void discharge (Ynk::usize);
     };
 }
 

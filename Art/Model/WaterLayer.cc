@@ -30,8 +30,9 @@ Art::WaterLayer::WaterLayer (Art::Vec2i size, Brush * brush)
             this->components[i][j] = new WaterLayerComponent ();
         }
     }
-    this->prn.source = this->prn.nodes[_pr_sink_index + 1];
-    this->prn.sink   = this->prn.nodes[_pr_sink_index];
+    prn.S    = _pr_sink_index + 1;
+    prn.T    = _pr_sink_index;
+    prn.EOLN = _pr_sink_index;
 }
 
 Art::WaterLayer::~WaterLayer ()
@@ -53,17 +54,8 @@ void Art::WaterLayer::_pr_construct (Art::PaperLayer * pl)
             for (i64 ix = (x != 0 ? -1 : 0); ix <= (x != w - 1 ? 1 : 0); ix++) {
                 for (i64 iy = (y != 0 ? -w : 0_i64); iy <= (y != h - 1 ? w : 0_i64); iy += w) {
                     if (LIKELY (!(ix == 0 && iy == 0))) {
-                        prn.arcs
-                            [_pr_index (x, y)]
-                            [_pr_index (x, y) + ix + iy]
-                                ->capacity
-                            = WLAYER_SLIDE_QTY;
-                        prn.arcs
-                            [_pr_index (x, y)]
-                            [_pr_index (x, y) + ix + iy]
-                                ->inverse
-                                ->capacity
-                            = WLAYER_SLIDE_QTY;
+                        prn.capacities[_pr_index (x, y)][_pr_index (x, y) + ix + iy] = WLAYER_SLIDE_QTY;
+                        prn.capacities[_pr_index (x, y) + ix + iy][_pr_index (x, y)] = WLAYER_SLIDE_QTY;
                     }
                 }
             }
@@ -79,12 +71,12 @@ void Art::WaterLayer::_pr_ready ()
 
     // Basically, we have to reset the (v,t) arc capacities, and fix them all
     for (usize i = 0; i < this->_pr_sink_index; i++) {
-        Art::Vec2i pos                        = _pr_deindex (i);
-        Art::WaterLayerComponent * wlc        = this->components[pos[1]][pos[0]];
-        prn.arcs[i][_pr_sink_index]->capacity = wlc->maximal_moment_hydrosaturation;
+        Art::Vec2i pos                    = _pr_deindex (i);
+        Art::WaterLayerComponent * wlc    = this->components[pos[1]][pos[0]];
+        prn.capacities[i][_pr_sink_index] = wlc->maximal_moment_hydrosaturation;
     }
 
-    brush->_pr_attach (&prn, _pr_sink_index + 2, size);
+    brush->_pr_attach (&prn, size);
     // Zero flows, prep & all
     prn.ready ();
 }
@@ -100,7 +92,7 @@ void Art::WaterLayer::_pr_accrete (Art::PaperLayer * pl)
     Ynk::i64 quantities[size[1].inner_][size[1].inner_];
     for (i64 y = 0; y < h; y++) {
         for (i64 x = 0; x < w; x++) {
-            quantities[y][x] = prn.arcs[_pr_index (x, y)][_pr_sink_index]->flow;
+            quantities[y][x] = prn.flows[_pr_index (x, y)][_pr_sink_index];
 
             // -(-u64) -> i64
             i64 sat_delta         = Math::min (quantities[y][x], -(-components[y][x]->maximal_moment_hydrosaturation));

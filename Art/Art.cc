@@ -62,30 +62,22 @@ YNK_APP (Test)
         bristles,
         5,
         UX::RGBA (0x9f, 0xa0, 0xff, 0xff));
+    brush.position += d3->create_vec ({ 4, 4, 0 });
 
-    auto layer_size = iq2->create_vec ({ 4, 4 });
+    auto layer_size = iq2->create_vec ({ 100, 100 });
 
     Art::PaperLayer pl (layer_size, Art::PaperConfiguration ());
     Art::WaterLayer wl (layer_size, &brush);
     wl._pr_construct (&pl);
-    for (int i = 0; i < 16; i++) {
-        for (int j = 0; j < 16; j++) {
-            if (!wl.prn.arcs[i][j]->capacity.inner_) {
-                std::printf ("  ");
-            }
-            std::printf ("%lli ", wl.prn.arcs[i][j]->capacity.inner_);
-        }
-        std::printf ("\n");
-    }
 
-    print ("[\x1b[32mArt\x1b[0m]: readying PR network... ");
+    println ("[\x1b[32mArt\x1b[0m]: readying PR network... ");
     wl._pr_ready ();
     wl._pr_accrete (&pl);
     wl._pr_ready ();
-    println ("done");
-    print ("[\x1b[32mArt\x1b[0m]: running PR network... ");
+    println ("[\x1b[32mArt\x1b[0m]: readying PR network... done!");
+    println ("[\x1b[32mArt\x1b[0m]: running PR network... ");
     wl._pr_run ();
-    println ("done");
+    println ("[\x1b[32mArt\x1b[0m]: running PR network... done!");
     wl._pr_accrete (&pl);
 
     return 0;

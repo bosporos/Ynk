@@ -49,7 +49,7 @@ namespace Art {
         Brush (Brush && husk);
 
         Ynk::usize _pr_num_nodes ();
-        void _pr_attach (PushRelabelNetwork *, Ynk::usize, Vec2i);
+        void _pr_attach (PushRelabelNetwork *, Vec2i);
     };
 
     //
