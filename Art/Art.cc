@@ -68,7 +68,9 @@ YNK_APP (Test)
 
     Art::PaperLayer pl (layer_size, Art::PaperConfiguration ());
     Art::WaterLayer wl (layer_size, &brush);
+    println ("[\x1b[32mArt\x1b[0m]]: constructing PR network...");
     wl._pr_construct (&pl);
+    println ("[\x1b[32mArt\x1b[0m]]: constructing PR network... done!");
 
     println ("[\x1b[32mArt\x1b[0m]: readying PR network... ");
     wl._pr_ready ();

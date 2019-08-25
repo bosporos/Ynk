@@ -3,13 +3,15 @@
 # C++2a standard
 -std=c++2a
 
--fno-inline
+# You may want to turn this on for debugging purposes
+#-fno-inline
 
 -Wno-format-extra-args
 -fdollars-in-identifiers
 
 -Wno-deprecated-declarations
 
+# Kludge
 -isystem/Users/max.cura/toolchain/street/include
 -isystem/Users/max.cura/toolchain/street/include/c++/v1
 -isystem/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/usr/include

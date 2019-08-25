@@ -110,7 +110,7 @@ void PRN::relabel (usize u)
 
 void PRN::discharge (usize u)
 {
-    println ("======== \x1b[34mDISCHARGE\x1b[0m {}:{}+{}", u, labels[u], excesses[u]);
+    // println ("======== \x1b[34mDISCHARGE\x1b[0m {}:{}+{}", u, labels[u], excesses[u]);
     while (excesses[u] > 0 && labels[u] <= N) {
         usize v;
         if (u <= EOLN)
