@@ -3,6 +3,8 @@
 # C++2a standard
 -std=c++2a
 
+-fno-inline
+
 -Wno-format-extra-args
 -fdollars-in-identifiers
 

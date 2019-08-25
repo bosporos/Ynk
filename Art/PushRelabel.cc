@@ -55,10 +55,12 @@ i64 PushRelabelNetwork::push (Node * u, Node * v)
 {
     Arc * arc = this->edge (u, v);
     i64 delta = min (u->excess, arc->residual_capacity ());
+    print_err ("Pushing {} along {}", delta, *arc);
     arc->flow += delta;
     arc->inverse->flow -= delta;
     u->excess -= delta;
     v->excess += delta;
+    println_err ("-> {}", *arc);
     return delta;
 }
 
@@ -72,7 +74,9 @@ usize PushRelabelNetwork::relabel (Node * u)
                 minimum_neighbouring_label = arc->target->label;
         }
     }
-    return u->label = minimum_neighbouring_label + 1;
+    println_err ("Relabeling {} -> {}", *u, minimum_neighbouring_label + 1);
+    u->label = minimum_neighbouring_label + 1;
+    return u->label;
 }
 
 Node * PushRelabelNetwork::poll_excess ()
@@ -90,18 +94,23 @@ Node * PushRelabelNetwork::poll_excess ()
 
 Node * PushRelabelNetwork::poll_active ()
 {
-    for (usize i = 0; i < N; i++) {
-        Node * v = this->nodes[i];
-        if (v != this->source && v != this->sink && v->excess > 0 && v->label <= N) {
-            return v;
+    usize r { arc4random_uniform (N) };
+    // usize r { 0 };
+    usize q = 0;
+    for (usize i = 0;; i++) {
+        Node * v = this->nodes[i % N];
+        if (v != this->source && v != this->sink && v->excess > 0 && v->label < N) {
+            if (q == r)
+                return v;
+            q++;
         }
     }
     return nullptr;
 }
 
-void PushRelabelNetwork::discharge (Node * u)
+void PushRelabelNetwork::discharge_layer (Node * u)
 {
-    while (u->excess > 0 && u->label <= N) {
+    while (u->excess > 0 && u->label < N) {
         if (u->current_arc < 9_uz) {
             Node * v;
             if (u->current_arc == 0_uz) {
@@ -111,6 +120,76 @@ void PushRelabelNetwork::discharge (Node * u)
                 v            = this->nodes[max (offset + u->id, 0) % N];
             }
             Arc * arc = this->edge (u, v);
+            if (arc->residual_capacity () && u->label > v->label) {
+                this->push (u, v);
+            } else {
+                u->current_arc++;
+            }
+        } else {
+            // if (u->id == 0_uz)
+            //     println_err ("[F {}\n {}\n {}\n {}]",
+            //                  *arcs[0][1],
+            //                  *arcs[0][4],
+            //                  *arcs[0][5],
+            //                  *edge (u, sink));
+            usize old_lbl = u->label;
+            this->relabel (u);
+            // no change in label when relabeling, so break out
+            if (old_lbl == u->label)
+                return;
+            // if (u->label == 2_uz && ol == 2_uz) {
+            //     for (isize i = 0; i < (_isize)N.inner_; i++) {
+            //         println_err ("NODE {}", *nodes[i]);
+            //     }
+            //     for (isize i = -1; i < (_isize)N.inner_; i++) {
+            //         if (i == -1) {
+            //             std::printf ("   ");
+            //             for (isize j = 0; j < (_isize)N.inner_; j++) {
+            //                 if (j < 10)
+            //                     std::printf (" ");
+            //                 print ("  {} ", j);
+            //             }
+            //             std::printf ("\n");
+            //             continue;
+            //         }
+            //         for (isize j = -1; j < (_isize)N.inner_; j++) {
+            //             if (j == -1) {
+            //                 if (i < 10)
+            //                     std::printf (" ");
+            //                 print ("{} ", i);
+            //                 continue;
+            //             }
+            //             if (arcs[i][j]->flow.inner_ != -128 && arcs[i][j]->flow.inner_ != -256)
+            //                 std::printf (" ");
+            //             if (arcs[i][j]->flow.inner_ != -128
+            //                 && arcs[i][j]->flow.inner_ != -256
+            //                 && arcs[i][j]->flow.inner_ != 256
+            //                 && arcs[i][j]->flow.inner_ != 128
+            //                 && arcs[i][j]->flow.inner_ != -96
+            //                 && arcs[i][j]->flow.inner_ != -64
+            //                 && arcs[i][j]->flow.inner_ != -32)
+            //                 std::printf (" ");
+            //             if (!arcs[i][j]->flow.inner_)
+            //                 std::printf (" ");
+            //             std::printf ("%lli ", arcs[i][j]->flow.inner_);
+            //         }
+            //         std::printf ("\n");
+            //     }
+            //     panic ("DEAD (RELABEL LOOP)");
+            // }
+            u->current_arc = 0;
+            u->arc_roll    = static_cast<usize> (arc4random_uniform ((uint32_t)9));
+            return;
+        }
+    }
+}
+
+void PushRelabelNetwork::discharge_general (Node * u)
+{
+    while (u->excess > 0 && u->label < N) {
+        if (u->current_arc < N) {
+            Node * v  = this->nodes[u->current_arc];
+            Arc * arc = this->edge (u, v);
             if (arc->residual_capacity () && u->label - 1 == v->label) {
                 this->push (u, v);
             } else {
@@ -119,7 +198,6 @@ void PushRelabelNetwork::discharge (Node * u)
         } else {
             this->relabel (u);
             u->current_arc = 0;
-            u->arc_roll    = static_cast<usize> (arc4random_uniform ((uint32_t)9));
         }
     }
 }
@@ -190,10 +268,19 @@ void PushRelabelNetwork::ready ()
     }
 }
 
+void PushRelabelNetwork::discharge (Node * u)
+{
+    if (u->id < sink->id) {
+        // println_err ("Discharging layer node: {}", *u);
+        this->discharge_layer (u);
+    } else {
+        println_err ("Discharging general node: {}", *u);
+        this->discharge_general (u);
+    }
+}
+
 usize PushRelabelNetwork::compute ()
 {
-    this->ready ();
-
     Node * u;
     while ((u = this->poll_active ()) != nullptr) {
         this->discharge (u);

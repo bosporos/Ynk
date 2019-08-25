@@ -18,7 +18,7 @@ namespace Ynk::Math {
     }
 
     template <unsigned S, class U, class T>
-    int_impl<S, U, T> min (int_impl<S, U, T> lhs, int_impl<S, U, T> rhs)
+    int_impl<S, U, T> min (int_impl<S, U, T> const & lhs, int_impl<S, U, T> const & rhs)
     {
         if (lhs < rhs)
             return lhs;
@@ -26,7 +26,7 @@ namespace Ynk::Math {
     }
 
     template <unsigned S, class U>
-    uint_impl<S, U> min (uint_impl<S, U> lhs, uint_impl<S, U> rhs)
+    uint_impl<S, U> min (uint_impl<S, U> const & lhs, uint_impl<S, U> const & rhs)
     {
         if (lhs < rhs)
             return lhs;

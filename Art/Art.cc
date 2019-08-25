@@ -32,9 +32,9 @@ namespace Art {
     void Render (GLFWwindow *);
 }
 
-Space<2, double> * d2 = Space<2, double>::instance (SpaceType::Cartesian);
-Space<2, isize> * iz2 = Space<2, isize>::instance (SpaceType::Cartesian);
-Vec<2, isize> window_size (iz2, { 800_iz, 800_iz });
+Space<3, double> * d3 = Space<3, double>::instance (SpaceType::Cartesian);
+Space<2, i64> * iq2   = Space<2, i64>::instance (SpaceType::Cartesian);
+Vec<2, i64> window_size (iq2, { 800_i64, 800_i64 });
 
 ///! Main function
 //!
@@ -48,6 +48,45 @@ Vec<2, isize> window_size (iz2, { 800_iz, 800_iz });
 YNK_APP (Test)
 {
     // Art::Init (argc, argv, application);
+    //  X
+    // XXX
+    //  X
+    Art::Bristle bristles[5] = {
+        Art::Bristle (d3->create_vec ({ 0, -1, 0 }), 65336),
+        Art::Bristle (d3->create_vec ({ -1, 0, 0 }), 65336),
+        Art::Bristle (d3->create_vec ({ 0, 0, 0 }), 65336),
+        Art::Bristle (d3->create_vec ({ 1, 0, 0 }), 65336),
+        Art::Bristle (d3->create_vec ({ 0, 1, 0 }), 65336)
+    };
+    Art::Brush brush (
+        bristles,
+        5,
+        UX::RGBA (0x9f, 0xa0, 0xff, 0xff));
+
+    auto layer_size = iq2->create_vec ({ 4, 4 });
+
+    Art::PaperLayer pl (layer_size, Art::PaperConfiguration ());
+    Art::WaterLayer wl (layer_size, &brush);
+    wl._pr_construct (&pl);
+    for (int i = 0; i < 16; i++) {
+        for (int j = 0; j < 16; j++) {
+            if (!wl.prn.arcs[i][j]->capacity.inner_) {
+                std::printf ("  ");
+            }
+            std::printf ("%lli ", wl.prn.arcs[i][j]->capacity.inner_);
+        }
+        std::printf ("\n");
+    }
+
+    print ("[\x1b[32mArt\x1b[0m]: readying PR network... ");
+    wl._pr_ready ();
+    wl._pr_accrete (&pl);
+    wl._pr_ready ();
+    println ("done");
+    print ("[\x1b[32mArt\x1b[0m]: running PR network... ");
+    wl._pr_run ();
+    println ("done");
+    wl._pr_accrete (&pl);
 
     return 0;
 }

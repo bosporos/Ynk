@@ -45,7 +45,7 @@ Art::WaterLayer::~WaterLayer ()
     delete[] this->components;
 }
 
-void Art::WaterLayer::_pr_construct ()
+void Art::WaterLayer::_pr_construct (Art::PaperLayer * pl)
 {
     i64 w = this->size[0], h = this->size[1];
     for (i64 x = 0; x < w; x++) {
@@ -85,7 +85,6 @@ void Art::WaterLayer::_pr_ready ()
     }
 
     brush->_pr_attach (&prn, _pr_sink_index + 2, size);
-
     // Zero flows, prep & all
     prn.ready ();
 }
@@ -113,11 +112,11 @@ void Art::WaterLayer::_pr_accrete (Art::PaperLayer * pl)
             if (components[y][x]->hydrosaturation) {
                 components[y][x]->maximal_moment_hydrosaturation
                     /* more residual saturation capacity = higher moment saturability */
-                    = WLAYER_SAT_EP1 * (((pl->components[y][x]->saturability - components[y][x]->hydrosaturation) / components[y][x]->hydrosaturation) + 1)
+                    = WLAYER_SAT_EP1 * (((pl->components[y][x]->saturability / 64 - components[y][x]->hydrosaturation) / components[y][x]->hydrosaturation) + 1)
                     /* more standing water = less moment saturability */
                     * WLAYER_SAT_EP0 / (WLAYER_SAT_EP0 + components[y][x]->standing_water);
             } else {
-                components[y][x]->maximal_moment_hydrosaturation = WLAYER_SAT_EP1;
+                components[y][x]->maximal_moment_hydrosaturation = WLAYER_SAT_EP1 * pl->components[y][x]->saturability / 64;
             }
         }
     }

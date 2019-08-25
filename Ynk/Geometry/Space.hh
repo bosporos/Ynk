@@ -15,8 +15,8 @@
 
 namespace Ynk {
     enum class SpaceType : _usize {
-        Cartesian, /* <x, y, z, ...> */
-        Polar, /* <r, theta, phi, ...> */
+        Cartesian = 0, /* <x, y, z, ...> */
+        Polar     = 1, /* <r, theta, phi, ...> */
     };
 
     template <unsigned _N, class _T>
@@ -105,13 +105,12 @@ namespace Ynk {
         {
             static Space<_N, _T> ** insts = nullptr;
             if (insts == nullptr) {
-                insts = new Space<_N, _T> *[2];
-                for (usize i = 0; i < 2_uz; i++) {
-                    insts[i] = new Space<_N, _T> (
-                        static_cast<SpaceType> (
-                            static_cast<_usize> (i)));
-                }
+                insts    = new Space<_N, _T> *[2];
+                insts[0] = new Space<_N, _T> (SpaceType::Cartesian);
+                insts[1] = new Space<_N, _T> (SpaceType::Polar);
             }
+            if (st < SpaceType::Cartesian || st >= SpaceType::Polar)
+                st = SpaceType::Cartesian;
             return insts[static_cast<_usize> (st)];
         }
 

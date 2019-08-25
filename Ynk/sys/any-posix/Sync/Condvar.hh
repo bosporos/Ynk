@@ -11,7 +11,7 @@
 #include <Ynk/Lang/NonCopyable.hh>
 #include <Ynk/Lang/NonMoveable.hh>
 
-#include <Ynk/Sys/any-posix/Sync/Mutex.hh>
+#include <Ynk/sys/any-posix/Sync/Mutex.hh>
 
 namespace Ynk::Sys::Sync {
     struct Condvar

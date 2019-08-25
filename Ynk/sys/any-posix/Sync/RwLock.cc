@@ -3,8 +3,9 @@
 // author Maximilien M. Cura
 //
 
-#include <Ynk/Sys/any-posix/Sync/RwLock.hh>
+#include <Ynk/sys/any-posix/Sync/RwLock.hh>
 #include <Ynk/Atomic/Ordering.hh>
+#include <Ynk/Utility.hh>
 
 #include <errno.h>
 
@@ -20,7 +21,7 @@ RwLock::RwLock ()
 
 RwLock::~RwLock ()
 {
-    int r = pthread_rwlock_destroy (&this->inner);
+    YNK_UNUSED int r = pthread_rwlock_destroy (&this->inner);
     // debug_assert_eq(r, 0);
 }
 
@@ -91,7 +92,7 @@ bool RwLock::try_write ()
 
 void RwLock::raw_unlock ()
 {
-    int r = pthread_rwlock_unlock (&this->inner);
+    YNK_UNUSED const int r = pthread_rwlock_unlock (&this->inner);
     // debug_assert_eq (r, 0);
 }
 

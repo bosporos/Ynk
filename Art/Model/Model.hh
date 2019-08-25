@@ -33,6 +33,8 @@ namespace Art {
         Vec3d tip_offset;
         // Handled by TintLayer
         Ynk::u64 tint_remaining;
+
+        Bristle (Vec3d, Ynk::u64);
     };
 
     struct Brush
@@ -41,9 +43,9 @@ namespace Art {
         Bristle * bristles;
 
         Vec3d position;
-        Tint ink;
+        Ynk::UX::RGBA ink;
 
-        Brush (Bristle *, Ynk::usize, Tint);
+        Brush (Bristle *, Ynk::usize, Ynk::UX::RGBA);
         Brush (Brush && husk);
 
         Ynk::usize _pr_num_nodes ();
@@ -123,7 +125,7 @@ namespace Art {
         WaterLayer (Art::Vec2i, Brush * brush);
         ~WaterLayer ();
 
-        void _pr_construct ();
+        void _pr_construct (PaperLayer *);
         void _pr_ready ();
         void _pr_run ();
         void _pr_accrete (PaperLayer *);

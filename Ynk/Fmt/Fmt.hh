@@ -214,9 +214,17 @@ namespace Ynk::Fmt {
                         u8 n = static_cast<u8> (iterating / p10);
                         if (n && in_padding)
                             in_padding = false;
-                        if (n || (pad || !in_padding)) {
+                        if (pad || !in_padding) {
                             str.inner[i++] = u8'0' + n;
-                            iterating -= p10 * n;
+                            if (iterating == p10 * n && !in_padding) {
+                                iterating -= p10 * n;
+                                while (p10 >= 10_uz) {
+                                    str.inner[i++] = u8'0';
+                                    p10 /= 10;
+                                }
+                            } else {
+                                iterating -= p10 * n;
+                            }
                         }
                         p10 /= 10;
                     }
@@ -327,12 +335,14 @@ namespace Ynk {
     void print (String fmt_str, Args... args)
     {
         std::printf ("%s", Fmt::format (fmt_str, args...).into_inner_volatile ());
+        std::fflush (stdout);
     }
 
     template <class... Args>
     void println (String fmt_str, Args... args)
     {
         std::printf ("%s\n", Fmt::format (fmt_str, args...).into_inner_volatile ());
+        std::fflush (stdout);
     }
 
     void print_err (String fmt_str);
@@ -343,6 +353,7 @@ namespace Ynk {
     void print_err (String fmt_str, Args... args)
     {
         std::fprintf (stderr, "%s", Fmt::format (fmt_str, args...).into_inner_volatile ());
+        std::fflush (stderr);
     }
 
     template <class... Args>
@@ -358,6 +369,7 @@ namespace Ynk {
         // std::printf ("\n");
         // std::fflush (stdout);
         std::fprintf (stderr, "%s\n", fmtd.into_inner_volatile ());
+        std::fflush (stderr);
     }
 }
 

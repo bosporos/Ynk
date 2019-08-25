@@ -3,7 +3,8 @@
 // author Maximilien M. Cura
 //
 
-#include <Ynk/Sys/any-posix/Sync/Mutex.hh>
+#include <Ynk/sys/any-posix/Sync/Mutex.hh>
+#include <Ynk/Utility.hh>
 
 using Ynk::Sys::Sync::Mutex;
 
@@ -19,17 +20,17 @@ Mutex::Mutex ()
 
 Mutex::~Mutex ()
 {
-    const int r = pthread_mutex_destroy (&this->inner);
+    YNK_UNUSED const int r = pthread_mutex_destroy (&this->inner);
 }
 
 void Mutex::lock ()
 {
-    const int r = pthread_mutex_lock (&this->inner);
+    YNK_UNUSED const int r = pthread_mutex_lock (&this->inner);
 }
 
 void Mutex::unlock ()
 {
-    const int r = pthread_mutex_unlock (&this->inner);
+    YNK_UNUSED const int r = pthread_mutex_unlock (&this->inner);
 }
 
 bool Mutex::try_lock ()

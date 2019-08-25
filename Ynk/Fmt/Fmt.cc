@@ -18,19 +18,23 @@ Ynk::String Ynk::Fmt::format (String fmt_str)
 void Ynk::print_err (String fmt_str)
 {
     std::fprintf (stderr, "%s", fmt_str.into_inner_volatile ());
+    std::fflush (stderr);
 }
 
 void Ynk::println_err (String fmt_str)
 {
     std::fprintf (stderr, "%s\n", fmt_str.into_inner_volatile ());
+    std::fflush (stderr);
 }
 
 void Ynk::print (String fmt_str)
 {
     std::printf ("%s", fmt_str.into_inner_volatile ());
+    std::fflush (stdout);
 }
 
 void Ynk::println (String fmt_str)
 {
     std::printf ("%s\n", fmt_str.into_inner_volatile ());
+    std::fflush (stdout);
 }

@@ -62,6 +62,8 @@ namespace Art {
         Ynk::i64 push (Node *, Node *);
         Ynk::usize relabel (Node *);
         void discharge (Node *);
+        void discharge_layer (Node *);
+        void discharge_general (Node *);
 
         void ready ();
         Ynk::usize compute ();
