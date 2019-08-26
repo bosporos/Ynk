@@ -13,11 +13,15 @@ using namespace Ynk;
 
 using Art::Model;
 
+// Layer Component
+
 Art::WaterLayerComponent::WaterLayerComponent ()
     : hydrosaturation { 0 }
     , standing_water { 0 }
     , maximal_moment_hydrosaturation { 0 }
 {}
+
+// Layer Proper
 
 Art::WaterLayer::WaterLayer (Art::Vec2i size, Brush * brush)
     : size { size }
@@ -49,7 +53,7 @@ Art::WaterLayer::~WaterLayer ()
     delete[] this->components;
 }
 
-void Art::WaterLayer::_pr_construct (Art::PaperLayer * pl)
+void Art::WaterLayer::_pr_construct (YNK_UNUSED Art::PaperLayer * pl)
 {
     i64 w = this->size[0], h = this->size[1];
     for (i64 x = 0; x < w; x++) {
@@ -110,6 +114,7 @@ void Art::WaterLayer::_pr_accrete (Art::PaperLayer * pl)
             components[y][x]->hydrosaturation += sat_delta;
             components[y][x]->standing_water += sat_reverse_delta;
 
+            // Drying process...
             components[y][x]->hydrosaturation = (long double)components[y][x]->hydrosaturation * WLAYER_DRY_RATE;
 
             if (components[y][x]->hydrosaturation) {
@@ -128,6 +133,4 @@ void Art::WaterLayer::_pr_accrete (Art::PaperLayer * pl)
             }
         }
     }
-
-    // ~~Drying processes are run by the Model~~
 }

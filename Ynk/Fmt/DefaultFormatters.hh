@@ -131,6 +131,12 @@ namespace Ynk::Fmt {
     {
         static void format (const char * obj, FormatContext ctx) { ctx.write_str (String (obj)); }
     };
+
+    template <>
+    struct Formatter<char *>
+    {
+        static void format (char * obj, FormatContext ctx) { ctx.write_str (String (obj)); }
+    };
 }
 
 #endif /* !@__YNK_FMT_FMTD */

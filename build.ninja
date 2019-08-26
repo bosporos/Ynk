@@ -97,6 +97,7 @@ build $builddir/GLAD/glad.o: rule-c $root/GLAD/glad.c
 build $builddir/art/gl/Hooks.o: rule-cxx art/gl/Hooks.cc
 build $builddir/art/gl/Errors.o: rule-cxx art/gl/Errors.cc
 build $builddir/art/gl/Main.o: rule-cxx art/gl/Main.cc
+build $builddir/art/GLOutput.o: rule-cxx art/GLOutput.cc
 build $builddir/ynked: link $
     $builddir/art/Art.o $
     $builddir/art/Notes.o $
@@ -109,5 +110,6 @@ build $builddir/ynked: link $
     $builddir/art/gl/Hooks.o $
     $builddir/art/gl/Errors.o $
     $builddir/art/gl/Main.o $
+    $builddir/art/GLOutput.o $
     $builddir/GLAD/glad.o
     libs = -lynk -lc -lglfw -framework OpenGL -lc++

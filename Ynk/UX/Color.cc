@@ -15,18 +15,18 @@ using UX::RGBA;
 
 RGBA::RGBA (_u8 r, _u8 g, _u8 b, _u8 a)
 {
-    irgba.red   = r;
-    irgba.green = g;
-    irgba.blue  = b;
-    irgba.alpha = a;
+    iargb.red   = r;
+    iargb.green = g;
+    iargb.blue  = b;
+    iargb.alpha = a;
 }
 
 RGBA::RGBA (_u8 r, _u8 g, _u8 b)
 {
-    irgba.red   = r;
-    irgba.green = g;
-    irgba.blue  = b;
-    irgba.alpha = 0xFF;
+    iargb.red   = r;
+    iargb.green = g;
+    iargb.blue  = b;
+    iargb.alpha = 0xFF;
 }
 
 RGBA::RGBA (_u32 c)
@@ -34,12 +34,17 @@ RGBA::RGBA (_u32 c)
     inner = c;
 }
 
+RGBA::RGBA ()
+{
+    inner = 0;
+}
+
 RGBA RGBA::lerp (RGBA rhs, float amt)
 {
-    return RGBA (static_cast<_u8> (irgba.red + (rhs.irgba.red - irgba.red) * amt),
-                 static_cast<_u8> (irgba.green + (rhs.irgba.green - irgba.green) * amt),
-                 static_cast<_u8> (irgba.blue + (rhs.irgba.blue - irgba.blue) * amt),
-                 static_cast<_u8> (irgba.alpha + (rhs.irgba.alpha - irgba.alpha) * amt));
+    return RGBA (static_cast<_u8> (iargb.red + (rhs.iargb.red - iargb.red) * amt),
+                 static_cast<_u8> (iargb.green + (rhs.iargb.green - iargb.green) * amt),
+                 static_cast<_u8> (iargb.blue + (rhs.iargb.blue - iargb.blue) * amt),
+                 static_cast<_u8> (iargb.alpha + (rhs.iargb.alpha - iargb.alpha) * amt));
 }
 
 // Color blending from processing.core.PImage (https://github.com/processing/processing/blob/master/core/src/processing/core/PImage.java)
@@ -49,10 +54,10 @@ RGBA RGBA::lerp (RGBA rhs, float amt)
 // O = S
 RGBA RGBA::blend (RGBA rhs)
 {
-    u8 lhs_alpha = irgba.alpha + (irgba.alpha >= 0x7F ? 1 : 0);
+    u8 lhs_alpha = iargb.alpha + (iargb.alpha <= 0x7F ? 1 : 0);
     u8 rhs_alpha = 0x100 - lhs_alpha;
 
-    return RGBA (std::min ((rhs.inner >> 24) + irgba.alpha, 0xFFu) << 24
+    return RGBA (std::min ((rhs.inner >> 24) + iargb.alpha, 0xFFu) << 24
                  | (((rhs.inner & RB_MASK) * rhs_alpha + (inner & RB_MASK) * lhs_alpha) >> 8 & RB_MASK)
                  | (((rhs.inner & GN_MASK) * rhs_alpha + (inner & GN_MASK) * lhs_alpha) >> 8 & GN_MASK));
 }
@@ -60,12 +65,12 @@ RGBA RGBA::blend (RGBA rhs)
 // O = min(D + S, 1)
 RGBA RGBA::blend_add_pin (RGBA rhs)
 {
-    u8 lhs_alpha = irgba.alpha + (irgba.alpha >= 0x7F ? 1 : 0);
+    u8 lhs_alpha = iargb.alpha + (iargb.alpha >= 0x7F ? 1 : 0);
 
     _u32 rb = (rhs.inner & RB_MASK) + ((inner & RB_MASK) * lhs_alpha >> 8 & RB_MASK);
     _u32 gn = (rhs.inner & GN_MASK) + ((inner & GN_MASK) * lhs_alpha >> 8);
 
-    return RGBA (std::min ((rhs.inner >> 24) + irgba.alpha, 0xFFu) << 24
+    return RGBA (std::min ((rhs.inner >> 24) + iargb.alpha, 0xFFu) << 24
                  | std::min (rb & 0xFFFF0000, static_cast<_u32> (RED_MASK))
                  | std::min (gn & 0x00FFFF00, static_cast<_u32> (GREEN_MASK))
                  | std::min (rb & 0x0000FFFF, static_cast<_u32> (BLUE_MASK)));
@@ -74,12 +79,12 @@ RGBA RGBA::blend_add_pin (RGBA rhs)
 // O = max(0, D - S)
 RGBA RGBA::blend_sub_pin (RGBA rhs)
 {
-    int lhs_alpha = irgba.alpha + (irgba.alpha >= 0x7F ? 1 : 0);
+    int lhs_alpha = iargb.alpha + (iargb.alpha >= 0x7F ? 1 : 0);
 
     _u32 rb = ((inner & RB_MASK) * lhs_alpha >> 8);
     _u32 gn = ((inner & GREEN_MASK) * lhs_alpha >> 8);
 
-    return RGBA (std::min ((rhs.inner >> 24) + irgba.alpha, 0xFFu) << 24
+    return RGBA (std::min ((rhs.inner >> 24) + iargb.alpha, 0xFFu) << 24
                  | std::max ((rhs.inner & RED_MASK) - (rb & RED_MASK), 0u)
                  | std::max ((rhs.inner & GREEN_MASK) - (gn & GREEN_MASK), 0u)
                  | std::max ((rhs.inner & BLUE_MASK) - (rb & BLUE_MASK), 0u));

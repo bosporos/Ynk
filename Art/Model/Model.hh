@@ -22,6 +22,8 @@ namespace Art {
     {
         Ynk::UX::RGBA color;
         Ynk::u64 quantity;
+
+        void blend (Tint);
     };
 
     //
@@ -60,7 +62,6 @@ namespace Art {
     {
         Ynk::u64 hydrosaturation;
         Ynk::u64 standing_water;
-        // Computed from prev. two + PaperLayerComponent::saturability
         Ynk::u64 maximal_moment_hydrosaturation;
 
         WaterLayerComponent ();
@@ -68,10 +69,10 @@ namespace Art {
 
     struct TintLayerComponent
     {
-        Ynk::u64 chromosaturation;
-        Ynk::u64 maximal_moment_chronosaturation;
-
+        Ynk::u64 maximal_moment_chromosaturation;
         Tint tint;
+
+        TintLayerComponent ();
     };
 
     struct PaperLayerComponent
@@ -139,16 +140,31 @@ namespace Art {
         }
     };
 
+#define TLAYER_TQ_EP0 64.0L
+
     struct TintLayer
     {
         Art::Vec2i size;
         Brush * brush;
         TintLayerComponent *** components;
 
-        PushRelabelNetwork pln;
+        PushRelabelNetwork prn;
+
+        Ynk::usize _pr_sink_index;
 
         TintLayer (Art::Vec2i, Brush * brush);
         ~TintLayer ();
+
+        void _pr_construct (PaperLayer *, WaterLayer *);
+        void _pr_ready (PaperLayer *, WaterLayer *);
+        void _pr_run ();
+        void _pr_accrete (PaperLayer *, WaterLayer *);
+
+        inline Ynk::usize _pr_index (Ynk::i64 x, Ynk::i64 y) { return (x + (y.inner_ * size[1].inner_)).inner_; }
+        inline Vec2i _pr_deindex (Ynk::usize i)
+        {
+            return size.space->create_vec ({ i.inner_ % size[1].inner_, i.inner_ / size[1].inner_ });
+        }
     };
 
     struct Model

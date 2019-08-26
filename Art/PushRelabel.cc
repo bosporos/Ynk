@@ -3,6 +3,7 @@
 // author Maximilien M. Cura
 //
 
+#include <Art/Art.hh>
 #include <Art/PushRelabel.hh>
 
 #include <cmath>
@@ -17,6 +18,7 @@ using PRN = Art::PushRelabelNetwork;
 PRN::PushRelabelNetwork (usize n)
     : N { n }
 {
+    Art::Warn (Fmt::format ("Push-relabel network with {} nodes", n));
     flows      = new i64 *[n];
     capacities = new i64 *[n];
     for (usize i = 0; i < n; i++) {

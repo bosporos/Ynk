@@ -22,7 +22,7 @@
 namespace Ynk::UX {
     struct RGBA
     {
-        struct InternalRGBA
+        struct InternalARGB
         {
             _u32 alpha : 8;
             _u32 red : 8;
@@ -30,13 +30,14 @@ namespace Ynk::UX {
             _u32 blue : 8;
         };
         union {
-            InternalRGBA irgba;
+            InternalARGB iargb;
             _u32 inner;
         };
 
         RGBA (_u8, _u8, _u8);
         RGBA (_u8, _u8, _u8, _u8);
         RGBA (_u32);
+        RGBA ();
 
         RGBA lerp (RGBA, float);
         RGBA blend (RGBA);

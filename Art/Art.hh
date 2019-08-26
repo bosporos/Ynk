@@ -19,6 +19,8 @@
 #include <Ynk/UX/Color.hh>
 #include <Ynk/Geometry/Space.hh>
 
+#include <Ynk/GL/Program.hh>
+
 namespace Art {
     namespace GLFWHooks {
         void OnErrorFn (int, const char *);
@@ -27,12 +29,16 @@ namespace Art {
     }
 
     int Init (int, char **, Ynk::App::Stub *);
-    void Render (GLFWwindow *);
+    void Render ();
+    void Teardown ();
 
     extern Ynk::Space<3, double> * d3;
     extern Ynk::Space<2, Ynk::i64> * iq2;
 
     extern Ynk::Vec<2, Ynk::i64> window_size;
+
+    extern GLFWwindow * window;
+    extern Ynk::GL::Program * program;
 
     void Notify (Ynk::String);
     void Warn (Ynk::String);

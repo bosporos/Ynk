@@ -13,6 +13,7 @@ Future plans:
  - Infinite-length numbers and other maths support
  - Better support for common patterns + structures (i.e. Iterator, etc.)
  - Testing framework
+ - CMake. Seriously. The build on this thing is just a big ninjafile right now. Like, I literally have includes sticking into my home directory, and the ninjafile assumes in-tree GLAD. Yep. CMake. Pls send help
 
 Atm, to build, you need the following:
 

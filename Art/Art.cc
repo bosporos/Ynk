@@ -14,7 +14,7 @@ using namespace Ynk;
 
 Space<3, double> * Art::d3 = Space<3, double>::instance (SpaceType::Cartesian);
 Space<2, i64> * Art::iq2   = Space<2, i64>::instance (SpaceType::Cartesian);
-Vec<2, i64> Art::window_size (Art::iq2, { 800_i64, 800_i64 });
+Vec<2, i64> Art::window_size (Art::iq2, { 200_i64, 200_i64 });
 
 void Simulation ();
 
@@ -29,8 +29,16 @@ void Simulation ();
 //! this work.
 YNK_APP (Test)
 {
-    // Art::Init (argc, argv, application);
-    Simulation ();
+    if (argc > 1) {
+        if (!strcmp (argv[1], "text")) {
+            // Art::Init (argc, argv, application);
+            Simulation ();
+        } else if (!strcmp (argv[1], "gl")) {
+            Art::Init (argc, argv, application);
+            Art::Render ();
+            Art::Teardown ();
+        }
+    }
 
     return 0;
 }
@@ -49,22 +57,30 @@ void Simulation ()
     Art::Brush brush (
         bristles,
         5,
-        UX::RGBA (0x9f, 0xa0, 0xff, 0xff));
+        UX::RGBA (0xff, 0x4b, 0x3e, 0x10));
     brush.position += Art::d3->create_vec ({ 0, 0, 0 });
 
     auto layer_size = Art::iq2->create_vec ({ 25, 25 });
 
     Art::PaperLayer pl (layer_size, Art::PaperConfiguration ());
     Art::WaterLayer wl (layer_size, &brush);
+    Art::TintLayer tl (layer_size, &brush);
 
-    Art::Notify ("Constructing PR network...");
+    Art::Notify ("Constructing WaterLayer PR network...");
     wl._pr_construct (&pl);
-    Art::Notify ("Constructing PR network... done");
+    Art::Notify ("Constructing WaterLayer PR network... done");
 
-    Art::Notify ("Initializing PR network...");
+    Art::Notify ("Constructing TintLayer PR network...");
+    // Does nothing atm
+    tl._pr_construct (&pl, &wl);
+    Art::Notify ("Constructing TintLayer PR network... done");
+
+    Art::Notify ("Initializing WaterLayer PR network...");
+    Art::Notify ("Readying...");
     wl._pr_ready ();
+    Art::Notify ("Accreting initial layer (filling hydrosaturation fields)...");
     wl._pr_accrete (&pl);
-    Art::Notify ("Initializing PR network... done");
+    Art::Notify ("Initializing WaterLayer PR network... done");
 
     getchar ();
 
@@ -79,11 +95,59 @@ void Simulation ()
         wl._pr_ready ();
         wl._pr_run ();
 
+        tl._pr_ready (&pl, &wl);
+        tl._pr_run ();
+
         wl._pr_accrete (&pl);
+        tl._pr_accrete (&pl, &wl);
         for (i64 y = 0; y < layer_size[1]; y++) {
             for (i64 x = 0; x < layer_size[0]; x++) {
                 print ("{}#{}",
-                       UX::ANSI (UX::hsva (354, (float)wl.components[y][x]->hydrosaturation / 100.0, 0.86, 1)),
+                       UX::ANSI (UX::hsva (317, (float)wl.components[y][x]->hydrosaturation / 100.0, 0.86, 1)),
+                       UX::ANSIRst ());
+            }
+            print ("    ");
+            for (i64 x = 0; x < layer_size[0]; x++) {
+                char * str;
+                if (tl.components[y][x]->tint.quantity > 1000) {
+                    str = "!";
+                } else {
+                    str = "#";
+                }
+                print ("{}{}{}",
+                       UX::ANSI (UX::hsva (212, (float)tl.components[y][x]->tint.quantity / 96.0, 0.86, 1)),
+                       str,
+                       UX::ANSIRst ());
+            }
+            print ("    ");
+            for (i64 x = 0; x < layer_size[0]; x++) {
+                UX::RGBA col     = tl.components[y][x]->tint.color.blend (pl.components[y][x]->tint.color);
+                const char * str = "#";
+                print ("{}{}{}",
+                       UX::ANSI (col),
+                       str,
+                       UX::ANSIRst ());
+            }
+            print ("    ");
+            for (i64 x = 0; x < layer_size[0]; x++) {
+                const char * str = (((float)tl.components[y][x]->tint.color.iargb.alpha) > 0
+                                        ? "#"
+                                        : "!");
+                print ("{}{}{}",
+                       UX::ANSI (UX::hsva (212, 0, (float)tl.components[y][x]->tint.color.iargb.alpha / 255.0, 1)),
+                       str,
+                       UX::ANSIRst ());
+            }
+            print ("    ");
+            for (i64 x = 0; x < layer_size[0]; x++) {
+                print ("{}#{}",
+                       UX::ANSI (tl.components[y][x]->tint.color),
+                       UX::ANSIRst ());
+            }
+            print ("    ");
+            for (i64 x = 0; x < layer_size[0]; x++) {
+                print ("{}#{}",
+                       UX::ANSI (pl.components[y][x]->tint.color),
                        UX::ANSIRst ());
             }
             println ("");

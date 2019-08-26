@@ -24,13 +24,13 @@ namespace Ynk::UX {
     template <>
     struct GLSetColorAdapter<3>
     {
-        void SetColor (RGBA c) { glColor3ub (c.irgba.red, c.irgba.green, c.irgba.blue); }
+        void SetColor (RGBA c) { glColor3ub (c.iargb.red, c.iargb.green, c.iargb.blue); }
     };
 
     template <>
     struct GLSetColorAdapter<4>
     {
-        void SetColor (RGBA c) { glColor4ub (c.irgba.red, c.irgba.green, c.irgba.blue, c.irgba.alpha); }
+        void SetColor (RGBA c) { glColor4ub (c.iargb.red, c.iargb.green, c.iargb.blue, c.iargb.alpha); }
     };
 
     template <unsigned W = 4>

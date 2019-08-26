@@ -33,7 +33,8 @@ Art::Tint Art::PaperConfiguration::paper_color_real (YNK_UNUSED Art::Vec2i pos)
 {
     return Tint {
         UX::hsva (349, 0.07, 0.96, 1.0),
-        0x100
+        80
+        // 0
     };
 }
 
