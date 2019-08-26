@@ -94,7 +94,9 @@ build $builddir/art/model/PaperLayer.o: rule-cxx $root/art/model/PaperLayer.cc
 build $builddir/art/model/Brush.o: rule-cxx $root/art/model/Brush.cc
 # Comment this with out-of-tree GLAD
 build $builddir/GLAD/glad.o: rule-c $root/GLAD/glad.c
-build $builddir/art/gl/Hooks.o: rule-cxx art/gl/hooks.cc
+build $builddir/art/gl/Hooks.o: rule-cxx art/gl/Hooks.cc
+build $builddir/art/gl/Errors.o: rule-cxx art/gl/Errors.cc
+build $builddir/art/gl/Main.o: rule-cxx art/gl/Main.cc
 build $builddir/ynked: link $
     $builddir/art/Art.o $
     $builddir/art/Notes.o $
@@ -105,5 +107,7 @@ build $builddir/ynked: link $
     $builddir/art/model/PaperLayer.o $
     $builddir/art/model/Brush.o $
     $builddir/art/gl/Hooks.o $
+    $builddir/art/gl/Errors.o $
+    $builddir/art/gl/Main.o $
     $builddir/GLAD/glad.o
     libs = -lynk -lc -lglfw -framework OpenGL -lc++

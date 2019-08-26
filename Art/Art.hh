@@ -38,6 +38,9 @@ namespace Art {
     void Warn (Ynk::String);
     void Error (Ynk::String);
     void _notification_base (Ynk::String);
+
+    void _gl_dump_error_codes ();
+    void _gl_purge_error_stack (Ynk::String);
 }
 
-#endif
+#endif /* !@__ART */

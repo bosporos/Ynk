@@ -19,6 +19,7 @@ namespace Ynk::App {
     struct Stub
     {
         virtual int run (int, char **, Stub *) = 0;
+        virtual const char * get_name ()       = 0;
     };
 
     struct StubFactory
@@ -71,6 +72,7 @@ namespace Ynk::App {
             static constexpr const char * const name = YNK_APP_NAME (_name); \
                                                                              \
             int run (int YNK_UNUSED, char ** YNK_UNUSED, Stub *) override;   \
+            const char * get_name () override { return this->name; }         \
         };                                                                   \
     }                                                                        \
                                                                              \
