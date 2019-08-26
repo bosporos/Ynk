@@ -32,6 +32,8 @@ namespace Art {
     extern Ynk::Space<3, double> * d3;
     extern Ynk::Space<2, Ynk::i64> * iq2;
 
+    extern Ynk::Vec<2, Ynk::i64> window_size;
+
     void Notify (Ynk::String);
     void Warn (Ynk::String);
     void Error (Ynk::String);

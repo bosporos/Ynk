@@ -6,15 +6,33 @@
 #include <Art/Art.hh>
 
 #include <Art/PushRelabel.hh>
+
 #include <Art/Model/Model.hh>
+
 #include <Ynk/UX/ColorAdapters.hh>
+
 #include <Ynk/GL/Shader.hh>
+#include <Ynk/GL/Program.hh>
+
+#include <unistd.h>
 
 using namespace Ynk;
 
 Space<3, double> * Art::d3 = Space<3, double>::instance (SpaceType::Cartesian);
 Space<2, i64> * Art::iq2   = Space<2, i64>::instance (SpaceType::Cartesian);
-Vec<2, i64> window_size (Art::iq2, { 800_i64, 800_i64 });
+Vec<2, i64> Art::window_size (Art::iq2, { 800_i64, 800_i64 });
+
+void Simulation ();
+
+const char * vshader_paths[] = {
+    "Art/shaders/core-vertex-shader.glsl",
+    "Library/shaders/core-vertex-shader.glsl",
+};
+
+const char * fshader_paths[] = {
+    "Art/shaders/core-fragment-shader.glsl",
+    "Library/shaders/core-fragment-shader.glsl",
+};
 
 ///! Main function
 //!
@@ -27,43 +45,8 @@ Vec<2, i64> window_size (Art::iq2, { 800_i64, 800_i64 });
 //! this work.
 YNK_APP (Test)
 {
-    // Art::Init (argc, argv, application);
-    //  X
-    // XXX
-    //  X
-    Art::Bristle bristles[5] = {
-        Art::Bristle (Art::d3->create_vec ({ 0, -1, 0 }), 65336),
-        Art::Bristle (Art::d3->create_vec ({ -1, 0, 0 }), 65336),
-        Art::Bristle (Art::d3->create_vec ({ 0, 0, 0 }), 65336),
-        Art::Bristle (Art::d3->create_vec ({ 1, 0, 0 }), 65336),
-        Art::Bristle (Art::d3->create_vec ({ 0, 1, 0 }), 65336)
-    };
-    Art::Brush brush (
-        bristles,
-        5,
-        UX::RGBA (0x9f, 0xa0, 0xff, 0xff));
-    brush.position += Art::d3->create_vec ({ 4, 4, 0 });
-
-    auto layer_size = Art::iq2->create_vec ({ 100, 100 });
-
-    Art::PaperLayer pl (layer_size, Art::PaperConfiguration ());
-    Art::WaterLayer wl (layer_size, &brush);
-
-    Art::Notify ("Constructing PR network...");
-    wl._pr_construct (&pl);
-    Art::Notify ("Constructing PR network... done");
-
-    Art::Notify ("Readying PR network... ");
-    wl._pr_ready ();
-    wl._pr_accrete (&pl);
-    wl._pr_ready ();
-    Art::Notify ("Readying PR network... done");
-
-    Art::Notify ("Running PR network...");
-    wl._pr_run ();
-    Art::Notify ("Running PR network... done");
-
-    wl._pr_accrete (&pl);
+    Art::Init (argc, argv, application);
+    // Simulation();
 
     return 0;
 }
@@ -130,44 +113,35 @@ int Art::Init (YNK_UNUSED int argc, YNK_UNUSED char ** argv, YNK_UNUSED Ynk::App
     glfwShowWindow (window);
     glfwFocusWindow (window);
 
-    GLuint vbuffer, vao, prog;
+    GLuint vbuffer, vao;
+
+    usize load_from_library = (0 == access ("Info.plist", F_OK | R_OK) ? 1 : 0);
+    Art::Warn ("Loading from application bundle (macOS only)...");
 
     GL::Shader vshader (GL::ShaderType::VertexShader);
-    vshader.load_from ("Art/shaders/core-vertex-shader.glsl");
+    vshader.load_from (vshader_paths[load_from_library]);
     if (!vshader.compile ()) {
-        println_err ("Core vertex shader failed to compile!");
-        println_err ("Dumping infolog:");
-        println_err (vshader.get_info_log ());
+        Art::Error (Fmt::format ("Core vertex shader failed to compile!\nDumping infolog:\n{}", vshader.get_info_log ()));
     } else {
-        println ("Core vertex shader compiled & loaded!");
+        Art::Notify ("Core vertex shader compiled & loaded!");
     }
 
     GL::Shader fshader (GL::ShaderType::FragmentShader);
-    fshader.load_from ("Art/shaders/core-fragment-shader.glsl");
+    fshader.load_from (fshader_paths[load_from_library]);
     if (!fshader.compile ()) {
-        println_err ("Core fragment shader failed to compile!");
-        println_err ("Dumping infolog:");
-        println_err (fshader.get_info_log ());
+        Art::Error (Fmt::format ("Core fragment shader failed to compile!\nDumping infolog:\n{}", fshader.get_info_log ()));
     } else {
-        println ("Core fragment shader compiled & loaded!");
+        Art::Notify ("Core fragment shader compiled & loaded!");
     }
 
-    prog = glCreateProgram ();
-    glAttachShader (prog, vshader.gl_shader ());
-    glAttachShader (prog, fshader.gl_shader ());
-    glLinkProgram (prog);
-    GLint prog_linked = 0;
-    glGetProgramiv (prog, GL_LINK_STATUS, &prog_linked);
-    if (prog_linked == GL_TRUE) {
-        println ("Program linked successfully");
+    GL::Program program;
+    program.attach (vshader);
+    program.attach (fshader);
+    if (!program.link ()) {
+        Art::Error (Fmt::format ("Could not link GL program!\nDumping infolog:\n{}", program.get_info_log ()));
     } else {
-        println_err ("Program did not link!");
-
-        dump_prog_log (prog);
+        Art::Notify ("GL program linked successfully!");
     }
-
-    // vpos_loc = glGetUniformLocation (prog, "vPos");
-    // vcol_loc = glGetUniformLocation (prog, "vCol");
 
     glGenVertexArrays (1, &vao);
     glGenBuffers (1, &vbuffer);
@@ -195,7 +169,7 @@ int Art::Init (YNK_UNUSED int argc, YNK_UNUSED char ** argv, YNK_UNUSED Ynk::App
         // glMatrixMode (GL_PROJECTION);
         // glLoadIdentity ();
 
-        glUseProgram (prog);
+        glUseProgram (program.gl_program ());
         glBindVertexArray (vao);
         glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
         glBindVertexArray (0);
@@ -212,23 +186,6 @@ int Art::Init (YNK_UNUSED int argc, YNK_UNUSED char ** argv, YNK_UNUSED Ynk::App
 
 void Art::Render (YNK_UNUSED GLFWwindow * window)
 {}
-
-void Art::GLFWHooks::OnErrorFn (int code, const char * text)
-{
-    panic ("GLFW Error [{}]: {}", code, text);
-}
-
-void Art::GLFWHooks::OnKeyFn (GLFWwindow *, int, int, int, int)
-{
-}
-
-void Art::GLFWHooks::OnWindowSizeFn (GLFWwindow *, int new_width, int new_height)
-{
-    window_size[0] = new_width;
-    window_size[1] = new_height;
-
-    println ("Resizing window to {} {}", new_width, new_height);
-}
 
 void dump_prog_log (GLuint prog)
 {
@@ -283,4 +240,58 @@ void dump_error_values ()
     __ynk_gl_error_dump (GL_OUT_OF_MEMORY);
     __ynk_gl_error_dump (GL_STACK_OVERFLOW);
     __ynk_gl_error_dump (GL_STACK_UNDERFLOW);
+}
+
+void Simulation ()
+{
+    Art::Bristle bristles[5] = {
+        Art::Bristle (Art::d3->create_vec ({ 0, -1, 0 }), 65336),
+        Art::Bristle (Art::d3->create_vec ({ -1, 0, 0 }), 65336),
+        Art::Bristle (Art::d3->create_vec ({ 0, 0, 0 }), 65336),
+        Art::Bristle (Art::d3->create_vec ({ 1, 0, 0 }), 65336),
+        Art::Bristle (Art::d3->create_vec ({ 0, 1, 0 }), 65336)
+    };
+    Art::Brush brush (
+        bristles,
+        5,
+        UX::RGBA (0x9f, 0xa0, 0xff, 0xff));
+    brush.position += Art::d3->create_vec ({ 0, 0, 0 });
+
+    auto layer_size = Art::iq2->create_vec ({ 25, 25 });
+
+    Art::PaperLayer pl (layer_size, Art::PaperConfiguration ());
+    Art::WaterLayer wl (layer_size, &brush);
+
+    Art::Notify ("Constructing PR network...");
+    wl._pr_construct (&pl);
+    Art::Notify ("Constructing PR network... done");
+
+    Art::Notify ("Initializing PR network...");
+    wl._pr_ready ();
+    wl._pr_accrete (&pl);
+    Art::Notify ("Initializing PR network... done");
+
+    getchar ();
+
+    for (int i = 0; i < 1000; i++) {
+        if (!arc4random_uniform (4)) {
+            brush.position += Art::d3->create_vec ({ 2.0 - arc4random_uniform (4),
+                                                     2.0 - arc4random_uniform (4),
+                                                     0 });
+        }
+        print ("\x1b[1;1H");
+        println ("BRUSH {} {} {}", brush.position[0], brush.position[1], brush.position[2]);
+        wl._pr_ready ();
+        wl._pr_run ();
+
+        wl._pr_accrete (&pl);
+        for (i64 y = 0; y < layer_size[1]; y++) {
+            for (i64 x = 0; x < layer_size[0]; x++) {
+                print ("{}#{}",
+                       UX::ANSI (UX::hsva (354, (float)wl.components[y][x]->hydrosaturation / 100.0, 0.86, 1)),
+                       UX::ANSIRst ());
+            }
+            println ("");
+        }
+    }
 }

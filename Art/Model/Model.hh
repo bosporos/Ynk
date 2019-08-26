@@ -111,6 +111,8 @@ namespace Art {
 #define WLAYER_SAT_EP0 96
 /* maximal amount on (u,t) edges is EP1 * paper::saturability */
 #define WLAYER_SAT_EP1 1
+#define WLAYER_T_EP2 64
+#define WLAYER_DRY_RATE 0.9L
 
     struct WaterLayer
     {

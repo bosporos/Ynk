@@ -18,6 +18,7 @@ cp Artisan/macos/libglfw.3.3.dylib build/YnkExported.app/Contents/Library
 install_name_tool -change build/libynk.dylib @executable_path/../Library/libynk.dylib build/YnkExported.app/Contents/Library/ynked
 install_name_tool -change lib/libglfw.3.dylib @executable_path/../Library/libglfw.3.3.dylib build/YnkExported.app/Contents/Library/ynked
 install_name_tool -change lib/libglfw.3.dylib @executable_path/../Library/libglfw.3.3.dylib build/YnkExported.app/Contents/Library/libynk.dylib
+cp -R Art/shaders build/YnkExported.app/Contents/Library
 
 mkdir -p build/YnkExported.app/Contents/MacOS
 echo "#!/bin/bash" > build/YnkExported.app/Contents/MacOS/YnkExported

@@ -6,6 +6,9 @@
 #include <Art/Model/Model.hh>
 #include <Ynk/Math/Math.hh>
 
+#include <cmath>
+#include <algorithm>
+
 using namespace Ynk;
 
 using Art::Model;
@@ -74,6 +77,12 @@ void Art::WaterLayer::_pr_ready ()
         Art::Vec2i pos                    = _pr_deindex (i);
         Art::WaterLayerComponent * wlc    = this->components[pos[1]][pos[0]];
         prn.capacities[i][_pr_sink_index] = wlc->maximal_moment_hydrosaturation;
+        // Reset bristle-to-water arcs
+        for (usize j = _pr_sink_index; j < prn.N; j++) {
+            if (prn.capacities[j][i] > 0) {
+                prn.capacities[j][i] = 0;
+            }
+        }
     }
 
     brush->_pr_attach (&prn, size);
@@ -101,17 +110,24 @@ void Art::WaterLayer::_pr_accrete (Art::PaperLayer * pl)
             components[y][x]->hydrosaturation += sat_delta;
             components[y][x]->standing_water += sat_reverse_delta;
 
+            components[y][x]->hydrosaturation = (long double)components[y][x]->hydrosaturation * WLAYER_DRY_RATE;
+
             if (components[y][x]->hydrosaturation) {
-                components[y][x]->maximal_moment_hydrosaturation
-                    /* more residual saturation capacity = higher moment saturability */
-                    = WLAYER_SAT_EP1 * (((pl->components[y][x]->saturability / 64 - components[y][x]->hydrosaturation) / components[y][x]->hydrosaturation) + 1)
-                    /* more standing water = less moment saturability */
-                    * WLAYER_SAT_EP0 / (WLAYER_SAT_EP0 + components[y][x]->standing_water);
+                // components[y][x]->maximal_moment_hydrosaturation
+                //     /* more residual saturation capacity = higher moment saturability */
+                //     = WLAYER_SAT_EP1 * (((pl->components[y][x]->saturability / WLAYER_T_EP2 - components[y][x]->hydrosaturation) / components[y][x]->hydrosaturation) + 1)
+                //     /* more standing water = less moment saturability */
+                //     * WLAYER_SAT_EP0 / (WLAYER_SAT_EP0 + components[y][x]->standing_water);
+
+                // base value
+                components[y][x]->maximal_moment_hydrosaturation = WLAYER_SAT_EP1 * pl->components[y][x]->saturability / WLAYER_T_EP2;
+                components[y][x]->maximal_moment_hydrosaturation = static_cast<long double> (components[y][x]->maximal_moment_hydrosaturation)
+                    * (std::exp (-(static_cast<long double> (components[y][x]->hydrosaturation) / 64.0L)));
             } else {
-                components[y][x]->maximal_moment_hydrosaturation = WLAYER_SAT_EP1 * pl->components[y][x]->saturability / 64;
+                components[y][x]->maximal_moment_hydrosaturation = WLAYER_SAT_EP1 * pl->components[y][x]->saturability / WLAYER_T_EP2;
             }
         }
     }
 
-    // Drying processes are run by the Model
+    // ~~Drying processes are run by the Model~~
 }

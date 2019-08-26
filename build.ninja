@@ -33,10 +33,11 @@ rule link
     command = ${clang} ${ldflags} -o $out $in $libs
     description = LINK $out
 
-build $builddir/ynk/backtrace/Backtrace.o: rule-cxx $root/ynk/backtrace/Backtrace.cc
-
 build $builddir/ynk/bootstrap.lower.o: rule-c $root/ynk/Bootstrap.c
 build $builddir/ynk/bootstrap.upper.o: rule-cxx $root/ynk/Bootstrap.cc
+build $builddir/ynk/App.o: rule-cxx $root/ynk/App.cc
+
+build $builddir/ynk/backtrace/Backtrace.o: rule-cxx $root/ynk/backtrace/Backtrace.cc
 
 build $builddir/ynk/sys/Sync/Mutex.o: rule-cxx $root/ynk/sys/any-posix/Sync/Mutex.cc
 build $builddir/ynk/sys/Sync/RwLock.o: rule-cxx $root/ynk/sys/any-posix/Sync/RwLock.cc
@@ -57,10 +58,10 @@ build $builddir/ynk/panic/Panic.o: rule-cxx $root/ynk/panic/Panic.cc
 build $builddir/ynk/panic/DefaultPanicHook.o: rule-cxx $root/ynk/panic/DefaultPanicHook.cc
 
 build $builddir/ynk/gl/Shader.o: rule-cxx $root/ynk/gl/Shader.cc
+build $builddir/ynk/gl/Program.o: rule-cxx $root/ynk/gl/Program.cc
+
 build $builddir/ynk/ux/Color.o: rule-cxx $root/ynk/ux/Color.cc
 build $builddir/ynk/ux/ColorAdapters.o: rule-cxx $root/ynk/ux/ColorAdapters.cc
-
-build $builddir/ynk/App.o: rule-cxx $root/ynk/App.cc
 
 build $builddir/libynk.dylib: libdynamic $
         $builddir/ynk/backtrace/Backtrace.o $
@@ -77,6 +78,7 @@ build $builddir/libynk.dylib: libdynamic $
         $builddir/ynk/string/String.o $
         $builddir/ynk/fmt/Fmt.o $
         $builddir/ynk/gl/Shader.o $
+        $builddir/ynk/gl/Program.o $
         $builddir/ynk/ux/Color.o $
         $builddir/ynk/ux/ColorAdapters.o $
         $builddir/ynk/App.o
@@ -90,7 +92,9 @@ build $builddir/art/model/WaterLayer.o: rule-cxx $root/art/model/WaterLayer.cc
 build $builddir/art/model/TintLayer.o: rule-cxx $root/art/model/TintLayer.cc
 build $builddir/art/model/PaperLayer.o: rule-cxx $root/art/model/PaperLayer.cc
 build $builddir/art/model/Brush.o: rule-cxx $root/art/model/Brush.cc
+# Comment this with out-of-tree GLAD
 build $builddir/GLAD/glad.o: rule-c $root/GLAD/glad.c
+build $builddir/art/gl/Hooks.o: rule-cxx art/gl/hooks.cc
 build $builddir/ynked: link $
     $builddir/art/Art.o $
     $builddir/art/Notes.o $
@@ -100,5 +104,6 @@ build $builddir/ynked: link $
     $builddir/art/model/TintLayer.o $
     $builddir/art/model/PaperLayer.o $
     $builddir/art/model/Brush.o $
+    $builddir/art/gl/Hooks.o $
     $builddir/GLAD/glad.o
     libs = -lynk -lc -lglfw -framework OpenGL -lc++
