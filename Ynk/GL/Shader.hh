@@ -28,6 +28,7 @@ namespace Ynk::GL {
         GLuint inner;
 
         Shader (ShaderType type);
+        Shader (Shader && husk);
         ~Shader ();
 
         void load_from (const char * os_path);

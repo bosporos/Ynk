@@ -23,11 +23,21 @@ GL::Shader::Shader (GL::ShaderType type)
     this->inner = glCreateShader (static_cast<GLenum> (type));
 }
 
+GL::Shader::Shader (GL::Shader && husk)
+    : type { husk.type }
+    , raw { husk.raw }
+    , inner { husk.inner }
+{
+    husk.raw = nullptr;
+}
+
 GL::Shader::~Shader ()
 {
-    if (this->raw != nullptr)
+    if (this->raw != nullptr) {
         delete[] this->raw;
-    glDeleteShader (this->inner);
+        if (glIsShader (this->inner) == GL_TRUE)
+            glDeleteShader (this->inner);
+    }
 }
 
 // Adapted from https://wiki.sei.cmu.edu/confluence/display/c/FIO19-C.+Do+not+use+fseek%28%29+and+ftell%28%29+to+compute+the+size+of+a+regular+file
@@ -73,7 +83,7 @@ String GL::Shader::get_info_log ()
     GLint infolog_len = 0;
     glGetShaderiv (this->inner, GL_INFO_LOG_LENGTH, &infolog_len);
     // GL_INFO_LOG_LENGTH includes the \0 terminator
-    if (infolog_len == 0) {
+    if (infolog_len != 0) {
         GLchar * buffer = new GLchar[infolog_len];
         glGetShaderInfoLog (this->inner, infolog_len, &infolog_len, buffer);
         buffer[infolog_len - 1] = '\0';
