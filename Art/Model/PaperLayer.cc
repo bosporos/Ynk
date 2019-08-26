@@ -32,7 +32,7 @@ u64 Art::PaperConfiguration::saturability_real (YNK_UNUSED Art::Vec2i pos)
 Art::Tint Art::PaperConfiguration::paper_color_real (YNK_UNUSED Art::Vec2i pos)
 {
     return Tint {
-        UX::hsva (349, 0.07, 0.96, 1.0),
+        UX::RGBA (0xE8, 0xE9, 0xEB, 0xFF),
         80
         // 0
     };

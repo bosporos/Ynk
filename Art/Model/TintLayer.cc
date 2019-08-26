@@ -148,10 +148,7 @@ void Art::TintLayer::_pr_accrete (Art::PaperLayer * pl, Art::WaterLayer * wl)
 
             i64 addition_quantity = Math::min (quantities[y][x], -(-components[y][x]->maximal_moment_chromosaturation));
             Art::Tint addition { brush->ink, 0_u64 + addition_quantity };
-            // pl->components[y][x]->tint.blend (addition);
             components[y][x]->tint.blend (addition);
-            // ? ? README
-            // pl->components[y][x].tint is the same as components[y][x]->tint
         }
     }
 }

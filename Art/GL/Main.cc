@@ -17,6 +17,10 @@
 
 using namespace Ynk;
 
+Vec<2, i64> Art::window_size (Art::iq2, { 800_i64, 800_i64 });
+
+Vec<2, i64> target (Art::iq2, { 35_i64, 35_i64 });
+
 void Art::Render ()
 {
     Art::Warn ("Rendering...");
@@ -37,9 +41,9 @@ void Art::Render ()
         Art::Bristle (Art::d3->create_vec ({ 0, 1, 0 }), 65336)
     };
     Art::Notify ("Brush creation...");
-    Art::Brush brush (bristles, 5, UX::RGBA (0xff, 0x4b, 0x3e, 0x08));
-    brush.position  = Art::d3->create_vec ({ 0, 0 });
-    auto layer_size = Art::iq2->create_vec ({ 50, 50 });
+    Art::Brush brush (bristles, 5, UX::RGBA (0x40, 0x3F, 0x4C, 0x08));
+    brush.position  = Art::d3->create_vec ({ 10, 10 });
+    auto layer_size = Art::iq2->create_vec ({ 60, 60 });
 
     Art::Notify (Fmt::format ("Creating pixelbuffer [{}x{} -> {}]...", layer_size[0], layer_size[1], layer_size[0] * layer_size[1]));
     UX::RGBA pixelbuffer[layer_size[0].inner_ * layer_size[1].inner_];
@@ -75,10 +79,10 @@ void Art::Render ()
         GLfloat r, g, b, a;
         GLfloat s, t;
     } vertices[] = {
-        { 0.25f, 0.25f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f },
-        { 0.25f, -0.25f, 1.f, 0.f, 1.f, 1.f, 1.f, 0.f },
-        { -0.25f, -0.25f, 0.f, 1.f, 1.f, 1.f, 0.f, 0.f },
-        { -0.25f, 0.25f, 1.f, 1.f, 0.f, 1.f, 0.f, 1.f }
+        { 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f },
+        { 1.f, -1.f, 1.f, 0.f, 1.f, 1.f, 1.f, 0.f },
+        { -1.f, -1.f, 0.f, 1.f, 1.f, 1.f, 0.f, 0.f },
+        { -1.f, 1.f, 1.f, 1.f, 0.f, 1.f, 0.f, 1.f }
     };
     GLuint triangles[] = {
         0,
@@ -139,13 +143,34 @@ void Art::Render ()
 
     Art::Warn ("Starting mainloop");
 
+    u8 counter = 0;
     while (!glfwWindowShouldClose (window)) {
         glClear (GL_COLOR_BUFFER_BIT);
 
-        if (!arc4random_uniform (4)) {
-            brush.position += Art::d3->create_vec ({ 2.0 - arc4random_uniform (4),
-                                                     2.0 - arc4random_uniform (4),
-                                                     0 });
+        if (counter++ == 3) {
+            double xpos, ypos;
+            glfwGetCursorPos (Art::window, &xpos, &ypos);
+            if (xpos > 0)
+                xpos *= (double)layer_size[0] / (double)Art::window_size[0];
+            else
+                return;
+            if (ypos > 0)
+                ypos *= (double)layer_size[1] / (double)Art::window_size[1];
+            else
+                return;
+            if (xpos > (double)layer_size[0] || ypos > (double)layer_size[1])
+                return;
+            ypos      = (double)layer_size[1] - ypos;
+            target[0] = i64 { (long)xpos };
+            target[1] = i64 { (long)ypos };
+
+            double ix = 2.0 - arc4random_uniform (3), iy = 2.0 - arc4random_uniform (3);
+            if (brush.position[0] > target[0])
+                ix = -ix;
+            if (brush.position[1] > target[1])
+                iy = -iy;
+            brush.position += Art::d3->create_vec ({ ix, iy, 0 });
+            counter = 0;
         }
 
         // Art::Notify ("WL::PR");
@@ -163,6 +188,7 @@ void Art::Render ()
         for (i64 y = 0; y < layer_size[1]; y++) {
             for (i64 x = 0; x < layer_size[0]; x++) {
                 pixelbuffer[p++] = tl.components[y][x]->tint.color.blend (pl.components[y][x]->tint.color);
+                // ;
             }
         }
         glTexSubImage2D (GL_TEXTURE_2D,

@@ -14,7 +14,6 @@ using namespace Ynk;
 
 Space<3, double> * Art::d3 = Space<3, double>::instance (SpaceType::Cartesian);
 Space<2, i64> * Art::iq2   = Space<2, i64>::instance (SpaceType::Cartesian);
-Vec<2, i64> Art::window_size (Art::iq2, { 200_i64, 200_i64 });
 
 void Simulation ();
 

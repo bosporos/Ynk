@@ -65,7 +65,7 @@ RGBA RGBA::blend (RGBA rhs)
 // O = min(D + S, 1)
 RGBA RGBA::blend_add_pin (RGBA rhs)
 {
-    u8 lhs_alpha = iargb.alpha + (iargb.alpha >= 0x7F ? 1 : 0);
+    u8 lhs_alpha = iargb.alpha + (iargb.alpha <= 0x7F ? 1 : 0);
 
     _u32 rb = (rhs.inner & RB_MASK) + ((inner & RB_MASK) * lhs_alpha >> 8 & RB_MASK);
     _u32 gn = (rhs.inner & GN_MASK) + ((inner & GN_MASK) * lhs_alpha >> 8);
@@ -79,7 +79,7 @@ RGBA RGBA::blend_add_pin (RGBA rhs)
 // O = max(0, D - S)
 RGBA RGBA::blend_sub_pin (RGBA rhs)
 {
-    int lhs_alpha = iargb.alpha + (iargb.alpha >= 0x7F ? 1 : 0);
+    int lhs_alpha = iargb.alpha + (iargb.alpha <= 0x7F ? 1 : 0);
 
     _u32 rb = ((inner & RB_MASK) * lhs_alpha >> 8);
     _u32 gn = ((inner & GREEN_MASK) * lhs_alpha >> 8);
