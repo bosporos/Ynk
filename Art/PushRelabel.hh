@@ -28,6 +28,11 @@ namespace Art {
         Ynk::usize * currents;
         Ynk::usize * rolls;
         Ynk::isize * offsets;
+        Ynk::isize * reverse_offsets;
+        // Note to self: square_side == layer_size.x
+        const Ynk::isize square_side;
+        const Ynk::isize reverse_offset_width;
+        Ynk::i64 ___zero;
 
         // HL
 
@@ -40,8 +45,13 @@ namespace Art {
 
         PushRelabelNetwork (Ynk::usize);
 
+        void stabilize ();
+
         void ready ();
         void compute ();
+
+        Ynk::i64 & flow (Ynk::usize, Ynk::usize);
+        Ynk::i64 & capacity (Ynk::usize, Ynk::usize);
 
         Ynk::isize poll_active ();
         bool is_active (Ynk::usize);

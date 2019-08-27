@@ -48,7 +48,7 @@ void Brush::_pr_attach (PushRelabelNetwork * prn, Vec2i space)
             i64 y = static_cast<_i64> (std::round (tip_position[1]));
             if (x >= 0 && x < space[0] && y >= 0 && y < space[1])
                 // Connect bristle to paper
-                prn->capacities[prn->S][x + space[1] * y] = Math::min (256_u64, this->bristles[i].tint_remaining);
+                prn->capacity (prn->S, 0_uz + x + space[1] * y) = Math::min (256_u64, this->bristles[i].tint_remaining);
         }
     }
 }
