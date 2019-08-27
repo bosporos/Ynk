@@ -17,13 +17,15 @@ using PRN = Art::PushRelabelNetwork;
 
 PRN::PushRelabelNetwork (usize n)
     : N { n }
+    , square_side { (_usize)std::sqrt (n.inner_ - 2) }
+    , reverse_offset_width { 3 + 2 * (_usize)std::sqrt (n.inner_ - 2) }
 {
     Art::Warn (Fmt::format ("Push-relabel network with {} nodes", n));
-    flows      = new i64 *[n];
-    capacities = new i64 *[n];
+    _flows      = new i64 *[n];
+    _capacities = new i64 *[n];
     for (usize i = 0; i < n; i++) {
-        flows[i]      = new i64[n];
-        capacities[i] = new i64[n];
+        _flows[i]      = new i64[n];
+        _capacities[i] = new i64[n];
     }
 
     labels   = new usize[n];
@@ -32,8 +34,7 @@ PRN::PushRelabelNetwork (usize n)
     rolls    = new usize[n];
     offsets  = new isize[8];
 
-    const usize square_side = std::sqrt (n.inner_ - 2);
-    u8 p                    = 0;
+    u8 p = 0;
     for (isize ix = -1; ix <= 1; ix++) {
         for (isize iy = -1; iy <= 1; iy++) {
             if (!(ix == 0 && iy == 0)) {
@@ -42,7 +43,42 @@ PRN::PushRelabelNetwork (usize n)
         }
     }
 
+    reverse_offsets = new usize[reverse_offset_width];
+
+    reverse_offsets[0]                             = 0;
+    reverse_offsets[1]                             = 1;
+    reverse_offsets[2]                             = 2;
+    reverse_offsets[square_side - 1]               = 3;
+    reverse_offsets[square_side + 1]               = 4;
+    reverse_offsets[square_side + square_side - 1] = 5;
+    reverse_offsets[square_side + square_side]     = 6;
+    reverse_offsets[square_side + square_side + 1] = 7;
+
     labeled_sets = new std::list<Ynk::usize>[n];
+}
+
+void PRN::stabilize ()
+{
+}
+
+i64 PRN::flow (usize u, usize v)
+{
+    return _flows[u][v];
+}
+
+i64 PRN::cap (usize u, usize v)
+{
+    return _capacities[u][v];
+}
+
+void PRN::flow (usize u, usize v, i64 f)
+{
+    _flows[u][v] = f;
+}
+
+void PRN::cap (usize u, usize v, i64 c)
+{
+    _capacities[u][v] = c;
 }
 
 void PRN::ready ()
@@ -56,19 +92,28 @@ void PRN::ready ()
     }
 
     for (usize i = 0; i < N; i++) {
-        for (usize j = 0; j < N; j++) {
-            flows[i][j] = 0;
+        if (i == S || i == T) {
+            for (usize j = 0; j < N; j++) {
+                flow (i, j, 0);
+            }
+        } else {
+            flow (i, T, 0);
+            flow (i, T, 0);
+            for (usize j = 0; j < 8; j++) {
+                usize k = i + offsets[j];
+                if (k < N)
+                    flow (i, k, 0);
+            }
         }
     }
 
     labels[S] = N;
     for (usize i = 0; i < N; i++) {
-        if (capacities[S][i] > 0)
-            excesses[S] += capacities[S][i];
+        if (cap (S, i) > 0)
+            excesses[S] += cap (S, i);
         push (S, i);
     }
 
-    // HL
     for (usize i = 0; i < N; i++) {
         labeled_sets[i].clear ();
     }
@@ -79,22 +124,11 @@ void PRN::ready ()
             try_activate (i);
         }
     }
-    // Apparently supposed to do this?
     this->labeled_sets[0].push_back (S);
-
-    // END HL
 }
 
 void PRN::compute ()
 {
-    // isize u;
-    // while ((u = poll_active ()) != -1) {
-    //     usize w = 0_uz + u;
-    //     discharge (w);
-    // }
-
-    // HL
-
     while (highest_label >= 0_iz) {
         usize u;
         if (labeled_sets[highest_label].size ()) {
@@ -105,25 +139,12 @@ void PRN::compute ()
             highest_label--;
         }
     }
-
-    // END HL
-}
-
-isize PRN::poll_active ()
-{
-    for (usize i = 0; i < N; i++) {
-        if (is_active (i))
-            return 0_iz + i;
-    }
-    return -1;
 }
 
 bool PRN::is_active (usize i)
 {
     return excesses[i] > 0 && i != T && i != S && labels[i] < N;
 }
-
-// HL
 
 void PRN::try_activate (usize i)
 {
@@ -134,14 +155,12 @@ void PRN::try_activate (usize i)
     }
 }
 
-// END HL
-
 void PRN::push (usize u, usize v)
 {
-    i64 delta = std::min (excesses[u], capacities[u][v] - flows[u][v]);
+    i64 delta = std::min (excesses[u], cap (u, v) - flow (u, v));
     // println ("PUSH {} ({}:{}+{})->({}:{}+{})@{}/{}", delta, u, labels[u], excesses[u], v, labels[v], excesses[v], flows[u][v], capacities[u][v]);
-    flows[u][v] += delta;
-    flows[v][u] -= delta;
+    flow (u, v, flow (u, v) + delta);
+    flow (v, u, flow (v, u) - delta);
     excesses[u] -= delta;
     excesses[v] += delta;
 
@@ -152,9 +171,20 @@ void PRN::relabel (usize u)
 {
     // String tmp      = Fmt::format ("RELABEL {}:{}+{}", u, labels[u], excesses[u]);
     usize label_min = labels[u];
-    for (usize v = 0; v < N; v++) {
-        if (capacities[u][v] > flows[u][v])
-            label_min = std::min (label_min, labels[v]);
+    // for (usize v = 0; v < N; v++) {
+    //     if (capacities[u][v] > flows[u][v])
+    //         label_min = std::min (label_min, labels[v]);
+    // }
+    if (cap (u, S) > flow (u, S))
+        label_min = std::min (label_min, labels[S]);
+    if (cap (u, T) > flow (u, T))
+        label_min = std::min (label_min, labels[T]);
+    for (usize v = 0; v < 8; v++) {
+        // exploit unsignedness
+        usize w = u + offsets[v];
+        if (w < N)
+            if (cap (u, w) > flow (u, w))
+                label_min = std::min (label_min, labels[w]);
     }
     // usize old_label = labels[u];
     labels[u] = label_min + 1;
@@ -169,13 +199,13 @@ void PRN::discharge (usize u)
     // println ("======== \x1b[34mDISCHARGE\x1b[0m {}:{}+{}", u, labels[u], excesses[u]);
     while (excesses[u] > 0 && labels[u] <= N) {
         usize v;
-        if (u <= EOLN)
+        if (u != S && u != T) {
             if (currents[u] < 9) {
                 if (currents[u] == 0)
                     v = T;
                 else
                     v = std::max (u + offsets[(currents[u] - 1 + rolls[u]) % 8], 0_uz) % N;
-                if (capacities[u][v] > flows[u][v] && labels[u] > labels[v]) {
+                if (cap (u, v) > flow (u, v) && labels[u] > labels[v]) {
                     push (u, v);
                 } else
                     currents[u]++;
@@ -185,9 +215,9 @@ void PRN::discharge (usize u)
                 rolls[u]    = arc4random_uniform (9);
                 // return;
             }
-        else if (currents[u] < N) {
+        } else if (currents[u] < N) {
             v = currents[u];
-            if (capacities[u][v] > flows[u][v] && labels[u] > labels[v])
+            if (cap (u, v) > flow (u, v) && labels[u] > labels[v])
                 push (u, v);
             else
                 currents[u]++;

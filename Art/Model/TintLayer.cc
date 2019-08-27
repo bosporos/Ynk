@@ -64,6 +64,7 @@ Art::TintLayer::TintLayer (Art::Vec2i size, Art::Brush * brush)
     prn.S    = _pr_sink_index + 1;
     prn.T    = _pr_sink_index;
     prn.EOLN = _pr_sink_index;
+    prn.stabilize ();
 }
 
 Art::TintLayer::~TintLayer ()
@@ -99,26 +100,26 @@ void Art::TintLayer::_pr_ready (YNK_UNUSED Art::PaperLayer * pl, Art::WaterLayer
                 for (i64 iy = (y != 0 ? -w : 0_i64); iy <= (y != h - 1 ? w : 0_i64); iy += w) {
                     if (LIKELY (!(ix == 0 && iy == 0))) {
                         Ynk::usize j = _pr_index (x, y) + ix + iy;
-                        if (wl->prn.flows[i][j] > 0) {
-                            Ynk::u64 cap = static_cast<Ynk::_u64> (
-                                static_cast<long double> (wl->prn.flows[i][j]) * 0.75L);
+                        if (wl->prn.flow (i, j) > 0) {
+                            Ynk::i64 cap = static_cast<Ynk::_i64> (
+                                static_cast<long double> (wl->prn.flow (i, j)) * 0.75L);
                             // Bidirectional
-                            prn.capacities[i][j] = cap;
-                            prn.capacities[j][i] = cap;
+                            prn.cap (i, j, cap);
+                            prn.cap (j, i, cap);
                         } else {
-                            prn.capacities[i][j] = 0;
+                            prn.cap (i, j, 0);
                         }
                     }
                 }
             }
             // Take care of (v,t) capacities
-            Art::Vec2i pos                    = _pr_deindex (i);
-            Art::TintLayerComponent * tlc     = this->components[pos[1]][pos[0]];
-            prn.capacities[i][_pr_sink_index] = tlc->maximal_moment_chromosaturation;
+            Art::Vec2i pos                = _pr_deindex (i);
+            Art::TintLayerComponent * tlc = this->components[pos[1]][pos[0]];
+            prn.cap (i, _pr_sink_index, 0_i64 + tlc->maximal_moment_chromosaturation);
             // Reset bristle arcs
             for (usize j = this->_pr_sink_index; j < prn.N; j++) {
-                if (prn.capacities[j][i] > 0) {
-                    prn.capacities[j][i] = 0;
+                if (prn.cap (j, i) > 0) {
+                    prn.cap (j, i, 0);
                 }
             }
             components[y][x]->maximal_moment_chromosaturation = static_cast<long double> (pl->components[y][x]->saturability)
@@ -144,7 +145,7 @@ void Art::TintLayer::_pr_accrete (Art::PaperLayer * pl, Art::WaterLayer * wl)
     Ynk::i64 quantities[size[1].inner_][size[0].inner_];
     for (i64 y = 0; y < h; y++) {
         for (i64 x = 0; x < w; x++) {
-            quantities[y][x] = prn.flows[_pr_index (x, y)][_pr_sink_index];
+            quantities[y][x] = prn.flow (_pr_index (x, y), _pr_sink_index);
 
             i64 addition_quantity = Math::min (quantities[y][x], -(-components[y][x]->maximal_moment_chromosaturation));
             Art::Tint addition { brush->ink, 0_u64 + addition_quantity };

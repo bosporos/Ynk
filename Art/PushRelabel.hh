@@ -21,13 +21,19 @@ namespace Art {
     struct PushRelabelNetwork
     {
         Ynk::usize N;
-        Ynk::i64 ** flows;
-        Ynk::i64 ** capacities;
+        Ynk::i64 ** _flows;
+        Ynk::i64 ** _capacities;
         Ynk::usize * labels;
         Ynk::i64 * excesses;
         Ynk::usize * currents;
         Ynk::usize * rolls;
         Ynk::isize * offsets;
+
+        Ynk::usize * reverse_offsets;
+
+        const Ynk::usize square_side;
+        const Ynk::usize reverse_offset_width;
+        Ynk::i64 _zero;
 
         // HL
 
@@ -40,15 +46,21 @@ namespace Art {
 
         PushRelabelNetwork (Ynk::usize);
 
+        void stabilize ();
         void ready ();
         void compute ();
 
-        Ynk::isize poll_active ();
         bool is_active (Ynk::usize);
         void try_activate (Ynk::usize);
+
         void push (Ynk::usize, Ynk::usize);
         void relabel (Ynk::usize);
         void discharge (Ynk::usize);
+
+        Ynk::i64 flow (Ynk::usize, Ynk::usize);
+        void flow (Ynk::usize, Ynk::usize, Ynk::i64);
+        Ynk::i64 cap (Ynk::usize, Ynk::usize);
+        void cap (Ynk::usize, Ynk::usize, Ynk::i64);
     };
 }
 
