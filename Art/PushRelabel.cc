@@ -24,8 +24,8 @@ PRN::PushRelabelNetwork (usize n)
     _flows      = new i64 *[n];
     _capacities = new i64 *[n];
     for (usize i = 0; i < n; i++) {
-        _flows[i]      = new i64[n];
-        _capacities[i] = new i64[n];
+        _flows[i]      = new i64[10];
+        _capacities[i] = new i64[10];
     }
 
     labels   = new usize[n];
@@ -45,6 +45,8 @@ PRN::PushRelabelNetwork (usize n)
 
     reverse_offsets = new usize[reverse_offset_width];
 
+    for (usize i = 0; i < reverse_offset_width; i++)
+        reverse_offsets[i] = 8;
     reverse_offsets[0]                             = 0;
     reverse_offsets[1]                             = 1;
     reverse_offsets[2]                             = 2;
@@ -59,26 +61,86 @@ PRN::PushRelabelNetwork (usize n)
 
 void PRN::stabilize ()
 {
+    delete[] _flows[S];
+    delete[] _flows[T];
+    delete[] _capacities[S];
+    delete[] _capacities[T];
+
+    _flows[S]      = new i64[N];
+    _flows[T]      = new i64[N];
+    _capacities[S] = new i64[N];
+    _capacities[T] = new i64[N];
 }
 
 i64 PRN::flow (usize u, usize v)
 {
-    return _flows[u][v];
+    if (u == S || u == T) {
+        return _flows[u][v];
+    }
+    if (v == S)
+        return _flows[u][0];
+    if (v == T)
+        return _flows[u][1];
+    if (u == v)
+        return 0_i64;
+    isize offset = square_side + 1 + (isize)v - (isize)u;
+    if (offset >= 0 && offset < reverse_offset_width) {
+        if (reverse_offsets[offset] != 8)
+            return _flows[u][2 + reverse_offsets[offset]];
+        else
+            return 0_i64;
+    }
+    return 0_i64;
 }
 
 i64 PRN::cap (usize u, usize v)
 {
-    return _capacities[u][v];
+    if (u == S || u == T)
+        return _capacities[u][v];
+    if (v == S)
+        return _capacities[u][0];
+    if (v == T)
+        return _capacities[u][1];
+    if (u == v)
+        return 0_i64;
+    isize offset = square_side + 1 + (isize)v - (isize)u;
+    if (offset >= 0 && offset < reverse_offset_width) {
+        if (reverse_offsets[offset] != 8)
+            return _capacities[u][2 + reverse_offsets[offset]];
+        else
+            return 0_i64;
+    }
+    return 0_i64;
 }
 
 void PRN::flow (usize u, usize v, i64 f)
 {
-    _flows[u][v] = f;
+    if (u == S || u == T)
+        _flows[u][v] = f;
+    if (v == S)
+        _flows[u][0] = f;
+    if (v == T)
+        _flows[u][1] = f;
+    isize offset = square_side + 1 + (isize)v - (isize)u;
+    if (offset >= 0 && offset < reverse_offset_width) {
+        if (reverse_offsets[offset] != 8)
+            _flows[u][2 + reverse_offsets[offset]] = f;
+    }
 }
 
 void PRN::cap (usize u, usize v, i64 c)
 {
-    _capacities[u][v] = c;
+    if (u == S || u == T)
+        _capacities[u][v] = c;
+    if (v == S)
+        _capacities[u][0] = c;
+    if (v == T)
+        _capacities[u][1] = c;
+    isize offset = square_side + 1 + (isize)v - (isize)u;
+    if (offset >= 0 && offset < reverse_offset_width) {
+        if (reverse_offsets[offset] != 8)
+            _capacities[u][2 + reverse_offsets[offset]] = c;
+    }
 }
 
 void PRN::ready ()
@@ -118,7 +180,7 @@ void PRN::ready ()
         labeled_sets[i].clear ();
     }
 
-    this->highest_label = N;
+    this->highest_label = 0;
     for (usize i = 0; i < N; i++) {
         if (is_active (i)) {
             try_activate (i);

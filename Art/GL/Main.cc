@@ -43,7 +43,7 @@ void Art::Render ()
     Art::Notify ("Brush creation...");
     Art::Brush brush (bristles, 5, UX::RGBA (0x40, 0x3F, 0x4C, 0x08));
     brush.position  = Art::d3->create_vec ({ 10, 10 });
-    auto layer_size = Art::iq2->create_vec ({ 60, 60 });
+    auto layer_size = Art::iq2->create_vec ({ 400, 400 });
 
     Art::Notify (Fmt::format ("Creating pixelbuffer [{}x{} -> {}]...", layer_size[0], layer_size[1], layer_size[0] * layer_size[1]));
     UX::RGBA pixelbuffer[layer_size[0].inner_ * layer_size[1].inner_];
@@ -153,13 +153,15 @@ void Art::Render ()
             if (xpos > 0)
                 xpos *= (double)layer_size[0] / (double)Art::window_size[0];
             else
-                return;
+                xpos = target[0];
             if (ypos > 0)
                 ypos *= (double)layer_size[1] / (double)Art::window_size[1];
             else
-                return;
-            if (xpos > (double)layer_size[0] || ypos > (double)layer_size[1])
-                return;
+                ypos = target[1];
+            if (xpos > (double)layer_size[0])
+                xpos = target[0];
+            if (ypos > (double)layer_size[1])
+                ypos = target[1];
             ypos      = (double)layer_size[1] - ypos;
             target[0] = i64 { (long)xpos };
             target[1] = i64 { (long)ypos };
