@@ -15,6 +15,8 @@
 
 #include <Ynk/Panic/Panic.hh>
 
+#include <list>
+
 namespace Art {
     struct PushRelabelNetwork
     {
@@ -27,6 +29,13 @@ namespace Art {
         Ynk::usize * rolls;
         Ynk::isize * offsets;
 
+        // HL
+
+        std::list<Ynk::usize> * labeled_sets;
+        Ynk::isize highest_label;
+
+        // END HL
+
         Ynk::usize S, T, EOLN;
 
         PushRelabelNetwork (Ynk::usize);
@@ -35,6 +44,8 @@ namespace Art {
         void compute ();
 
         Ynk::isize poll_active ();
+        bool is_active (Ynk::usize);
+        void try_activate (Ynk::usize);
         void push (Ynk::usize, Ynk::usize);
         void relabel (Ynk::usize);
         void discharge (Ynk::usize);

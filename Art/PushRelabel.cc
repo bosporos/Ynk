@@ -41,6 +41,8 @@ PRN::PushRelabelNetwork (usize n)
             }
         }
     }
+
+    labeled_sets = new std::list<Ynk::usize>[n];
 }
 
 void PRN::ready ()
@@ -65,25 +67,74 @@ void PRN::ready ()
             excesses[S] += capacities[S][i];
         push (S, i);
     }
+
+    // HL
+    for (usize i = 0; i < N; i++) {
+        labeled_sets[i].clear ();
+    }
+
+    this->highest_label = N;
+    for (usize i = 0; i < N; i++) {
+        if (is_active (i)) {
+            try_activate (i);
+        }
+    }
+    // Apparently supposed to do this?
+    this->labeled_sets[0].push_back (S);
+
+    // END HL
 }
 
 void PRN::compute ()
 {
-    isize u;
-    while ((u = poll_active ()) != -1) {
-        usize w = 0_uz + u;
-        discharge (w);
+    // isize u;
+    // while ((u = poll_active ()) != -1) {
+    //     usize w = 0_uz + u;
+    //     discharge (w);
+    // }
+
+    // HL
+
+    while (highest_label >= 0_iz) {
+        usize u;
+        if (labeled_sets[highest_label].size ()) {
+            u = labeled_sets[highest_label].front ();
+            labeled_sets[highest_label].pop_front ();
+            discharge (u);
+        } else {
+            highest_label--;
+        }
     }
+
+    // END HL
 }
 
 isize PRN::poll_active ()
 {
     for (usize i = 0; i < N; i++) {
-        if (excesses[i] > 0 && i != T && i != S && labels[i] <= N)
+        if (is_active (i))
             return 0_iz + i;
     }
     return -1;
 }
+
+bool PRN::is_active (usize i)
+{
+    return excesses[i] > 0 && i != T && i != S && labels[i] < N;
+}
+
+// HL
+
+void PRN::try_activate (usize i)
+{
+    if (is_active (i)) {
+        labeled_sets[labels[i]].push_back (i);
+        if (labels[i] > highest_label)
+            highest_label = -(-labels[i]);
+    }
+}
+
+// END HL
 
 void PRN::push (usize u, usize v)
 {
@@ -93,6 +144,8 @@ void PRN::push (usize u, usize v)
     flows[v][u] -= delta;
     excesses[u] -= delta;
     excesses[v] += delta;
+
+    try_activate (v);
 }
 
 void PRN::relabel (usize u)
@@ -108,6 +161,7 @@ void PRN::relabel (usize u)
     // String out      = Fmt::format ("{} -> {}", tmp, labels[u]);
     // if (labels[u] != old_label)
     // println (out);
+    try_activate (u);
 }
 
 void PRN::discharge (usize u)
