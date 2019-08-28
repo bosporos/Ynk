@@ -41,8 +41,8 @@
 
 `Art/shaders` contains the GLSL shaders used in the OpenGL rendering pipeline.
 
-Ynk Core Rendering OpenGL GPU program:
+Ynk Core Rendering OpenGL GPU program (for the watercolor image):
  - `Art/shaders/core-vertex-shader.glsl` defines the vertex shader
  - `Art/shaders/core-fragment-shader.glsl` defines the fragment shader
 
-They're both just passthrough shaders, so there's not much to look at there.
+They're both just (texture) passthrough shaders, so there's not much to look at there.
