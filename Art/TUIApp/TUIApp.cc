@@ -6,7 +6,7 @@
 // Grab all the definitions/declarations for Art + various utilities everything uses.
 #include <Art/Art.hh>
 
-#include <Art/PushRelabel.hh>
+#include <Art/PushRelabel/PushRelabel.hh>
 #include <Art/Model/Model.hh>
 
 #include <Ynk/UX/ColorAdapters.hh>
@@ -76,12 +76,7 @@ void Art::TUIApp ()
             }
             print ("    ");
             for (i64 x = 0; x < layer_size[0]; x++) {
-                char * str;
-                if (tl.components[y][x]->tint.quantity > 1000) {
-                    str = "!";
-                } else {
-                    str = "#";
-                }
+                const char * str = (tl.components[y][x]->tint.quantity > 1000_u64) ? "!" : "#";
                 print ("{}{}{}",
                        UX::ANSI (UX::hsva (212, (float)tl.components[y][x]->tint.quantity / 96.0, 0.86, 1)),
                        str,

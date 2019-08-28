@@ -1,10 +1,10 @@
 //
-// file art/pushrelabel.cc
+// file art/pushrelabel/pushrelabel.cc
 // author Maximilien M. Cura
 //
 
 #include <Art/Art.hh>
-#include <Art/PushRelabel.hh>
+#include <Art/PushRelabel/PushRelabel.hh>
 
 #include <cmath>
 #include <algorithm>
@@ -123,7 +123,7 @@ void PRN::ready ()
             }
         } else {
             // Just go through the offsets, and zero the flows
-            for (usize j = 0; j < 8; j++) {
+            for (usize j = 0; j < 8_uz; j++) {
                 usize k = i + offsets[j];
                 if (k < N)
                     flow (i, k, 0);
@@ -243,7 +243,7 @@ void PRN::relabel (usize u)
         label_min = std::min (label_min, labels[S]);
     if (cap (u, T) > flow (u, T))
         label_min = std::min (label_min, labels[T]);
-    for (usize v = 0; v < 8; v++) {
+    for (usize v = 0; v < 8_uz; v++) {
         // exploit unsignedness
         usize w = u + offsets[v];
         if (w < N)
@@ -281,12 +281,12 @@ void PRN::discharge (usize u)
     // operation is only applied before the loop breaks, we don't need to constantly
     // check the label; we only need to check the excess
     while (excesses[u] > 0) {
-        if (currents[u] < 9) {
+        if (currents[u] < 9_uz) {
             usize v;
             // Make sure that the sink is always checked first (because currents[u]
             // is always reset to 0), so that water isn't just gliding across the
             // page
-            if (currents[u] == 0)
+            if (currents[u] == 0_uz)
                 v = T;
             else
                 // Use the offset LUT, clamped to [0,N) (that's basically all it does- it looks more complicated than it is)
@@ -344,7 +344,7 @@ i64 PRN::flow (usize u, usize v)
     // greater than reverse_offset_width, and only need the following check:
     if (offset < reverse_offset_width) {
         // Validity check
-        if (reverse_offsets[offset] != 8)
+        if (reverse_offsets[offset] != 8_uz)
             // Grab and return
             return _flows[u][2 + reverse_offsets[offset]];
         else
@@ -369,7 +369,7 @@ i64 PRN::cap (usize u, usize v)
         return 0_i64;
     usize offset = square_side + 1 + (isize)v - (isize)u;
     if (offset < reverse_offset_width) {
-        if (reverse_offsets[offset] != 8)
+        if (reverse_offsets[offset] != 8_uz)
             return _capacities[u][2 + reverse_offsets[offset]];
         else
             return 0_i64;
@@ -387,7 +387,7 @@ void PRN::flow (usize u, usize v, i64 f)
         _flows[u][1] = f;
     usize offset = square_side + 1 + (isize)v - (isize)u;
     if (offset < reverse_offset_width) {
-        if (reverse_offsets[offset] != 8)
+        if (reverse_offsets[offset] != 8_uz)
             _flows[u][2 + reverse_offsets[offset]] = f;
     }
 }
@@ -402,7 +402,7 @@ void PRN::cap (usize u, usize v, i64 c)
         _capacities[u][1] = c;
     usize offset = square_side + 1 + (isize)v - (isize)u;
     if (offset < reverse_offset_width) {
-        if (reverse_offsets[offset] != 8)
+        if (reverse_offsets[offset] != 8_uz)
             _capacities[u][2 + reverse_offsets[offset]] = c;
     }
 }

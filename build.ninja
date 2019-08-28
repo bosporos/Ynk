@@ -86,7 +86,7 @@ build $builddir/libynk.dylib: libdynamic $
 
 build $builddir/art/Art.o: rule-cxx $root/art/Art.cc
 build $builddir/art/Notes.o: rule-cxx $root/art/Notes.cc
-build $builddir/art/PushRelabel.o: rule-cxx $root/art/PushRelabel.cc
+build $builddir/art/pushrelabel/PushRelabel.o: rule-cxx $root/art/pushrelabel/PushRelabel.cc
 build $builddir/art/model/WaterLayer.o: rule-cxx $root/art/model/WaterLayer.cc
 build $builddir/art/model/TintLayer.o: rule-cxx $root/art/model/TintLayer.cc
 build $builddir/art/model/PaperLayer.o: rule-cxx $root/art/model/PaperLayer.cc
@@ -101,7 +101,7 @@ build $builddir/art/TUIApp/TUIApp.o: rule-cxx art/TUIApp/TUIApp.cc
 build $builddir/ynked: link $
     $builddir/art/Art.o $
     $builddir/art/Notes.o $
-    $builddir/art/PushRelabel.o $
+    $builddir/art/pushrelabel/PushRelabel.o $
     $builddir/art/model/Model.o $
     $builddir/art/model/WaterLayer.o $
     $builddir/art/model/TintLayer.o $

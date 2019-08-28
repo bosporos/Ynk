@@ -9,7 +9,7 @@
 #include <Ynk/GL/Program.hh>
 #include <Ynk/UX/ColorAdapters.hh>
 
-#include <Art/PushRelabel.hh>
+#include <Art/PushRelabel/PushRelabel.hh>
 #include <Art/Model/Model.hh>
 
 #include <unistd.h>

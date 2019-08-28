@@ -6,7 +6,7 @@
 #ifndef __ART_MODEL
 #define __ART_MODEL
 
-#include <Art/PushRelabel.hh>
+#include <Art/PushRelabel/PushRelabel.hh>
 #include <Ynk/Geometry/Space.hh>
 #include <Ynk/Num/NativeFloats.hh>
 #include <Ynk/UX/Color.hh>

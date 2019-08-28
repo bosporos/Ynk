@@ -20,8 +20,8 @@
 YNK_VEILED
 static Ynk::_u64 __YNK_THREAD_ID__ ()
 {
-    Ynk::_u64 tid_tmp = 0;
-    const int r       = pthread_threadid_np (NULL, &tid_tmp);
+    Ynk::_u64 tid_tmp      = 0;
+    YNK_UNUSED const int r = pthread_threadid_np (NULL, &tid_tmp);
     // debug_assert_eq(r, 0);
     return tid_tmp;
 }
