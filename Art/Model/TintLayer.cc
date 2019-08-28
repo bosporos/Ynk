@@ -140,7 +140,7 @@ void Art::TintLayer::_pr_run ()
     prn.compute ();
 }
 
-void Art::TintLayer::_pr_accrete (Art::PaperLayer * pl, Art::WaterLayer * wl)
+void Art::TintLayer::_pr_accrete (YNK_UNUSED Art::PaperLayer * pl, YNK_UNUSED Art::WaterLayer * wl)
 {
     i64 w = size[0], h = size[1];
     Ynk::i64 quantities[size[1].inner_][size[0].inner_];

@@ -167,20 +167,6 @@ namespace Art {
             return size.space->create_vec ({ i.inner_ % size[1].inner_, i.inner_ / size[1].inner_ });
         }
     };
-
-    struct Model
-    {
-        Vec2i size;
-        Space2i * space;
-
-        WaterLayer water_layer;
-        TintLayer tint_layer;
-        PaperLayer paper_layer;
-
-        Brush brush;
-
-        Model (Brush brush, Vec2i paper_size);
-    };
 }
 
 #endif /* !@__ART_MODEL */

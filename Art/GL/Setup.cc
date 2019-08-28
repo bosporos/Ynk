@@ -1,5 +1,5 @@
 //
-// file art/gloutput.cc
+// file art/gl/setup.cc
 // author Maximilien M. Cura
 //
 
@@ -25,7 +25,7 @@ YNK_VEILED static const char * fshader_paths[] = {
 GLFWwindow * Art::window;
 GL::Program * Art::program;
 
-int Art::Init (YNK_UNUSED int argc, YNK_UNUSED char ** argv, YNK_UNUSED Ynk::App::Stub * application_raw)
+int Art::GLApp_Init (YNK_UNUSED Ynk::App::Stub * application_raw)
 {
     Art::Warn ("Initializing...");
     // auto application = reinterpret_cast<YNK_APP_BY_NAME (Test) *> (application_raw);
@@ -111,7 +111,7 @@ int Art::Init (YNK_UNUSED int argc, YNK_UNUSED char ** argv, YNK_UNUSED Ynk::App
     return 0;
 }
 
-void Art::Teardown ()
+void Art::GLApp_Teardown ()
 {
     Art::Warn ("Tearing down...");
     glfwDestroyWindow (window);

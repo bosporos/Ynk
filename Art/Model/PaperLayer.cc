@@ -8,7 +8,6 @@
 #include <Ynk/Math/Math.hh>
 
 using namespace Ynk;
-using Art::Model;
 
 // Paper Layer Component
 

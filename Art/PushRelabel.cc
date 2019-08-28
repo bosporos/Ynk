@@ -56,7 +56,7 @@ PRN::PushRelabelNetwork (usize n)
     reverse_offsets[square_side + square_side]     = 6;
     reverse_offsets[square_side + square_side + 1] = 7;
 
-    labeled_sets = new std::list<Ynk::usize>[n];
+    active_sets = new std::list<Ynk::usize>[n];
 }
 
 void PRN::stabilize ()
@@ -177,7 +177,7 @@ void PRN::ready ()
     }
 
     for (usize i = 0; i < N; i++) {
-        labeled_sets[i].clear ();
+        active_sets[i].clear ();
     }
 
     this->highest_label = 0;
@@ -186,16 +186,16 @@ void PRN::ready ()
             try_activate (i);
         }
     }
-    this->labeled_sets[0].push_back (S);
+    this->active_sets[0].push_back (S);
 }
 
 void PRN::compute ()
 {
     while (highest_label >= 0_iz) {
         usize u;
-        if (labeled_sets[highest_label].size ()) {
-            u = labeled_sets[highest_label].front ();
-            labeled_sets[highest_label].pop_front ();
+        if (active_sets[highest_label].size ()) {
+            u = active_sets[highest_label].front ();
+            active_sets[highest_label].pop_front ();
             discharge (u);
         } else {
             highest_label--;
@@ -211,7 +211,7 @@ bool PRN::is_active (usize i)
 void PRN::try_activate (usize i)
 {
     if (is_active (i)) {
-        labeled_sets[labels[i]].push_back (i);
+        active_sets[labels[i]].push_back (i);
         if (labels[i] > highest_label)
             highest_label = -(-labels[i]);
     }

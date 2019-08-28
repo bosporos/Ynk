@@ -87,7 +87,6 @@ build $builddir/libynk.dylib: libdynamic $
 build $builddir/art/Art.o: rule-cxx $root/art/Art.cc
 build $builddir/art/Notes.o: rule-cxx $root/art/Notes.cc
 build $builddir/art/PushRelabel.o: rule-cxx $root/art/PushRelabel.cc
-build $builddir/art/model/Model.o: rule-cxx $root/art/model/Model.cc
 build $builddir/art/model/WaterLayer.o: rule-cxx $root/art/model/WaterLayer.cc
 build $builddir/art/model/TintLayer.o: rule-cxx $root/art/model/TintLayer.cc
 build $builddir/art/model/PaperLayer.o: rule-cxx $root/art/model/PaperLayer.cc
@@ -96,8 +95,9 @@ build $builddir/art/model/Brush.o: rule-cxx $root/art/model/Brush.cc
 build $builddir/GLAD/glad.o: rule-c $root/GLAD/glad.c
 build $builddir/art/gl/Hooks.o: rule-cxx art/gl/Hooks.cc
 build $builddir/art/gl/Errors.o: rule-cxx art/gl/Errors.cc
-build $builddir/art/gl/Main.o: rule-cxx art/gl/Main.cc
-build $builddir/art/GLOutput.o: rule-cxx art/GLOutput.cc
+build $builddir/art/gl/Setup.o: rule-cxx art/gl/Setup.cc
+build $builddir/art/GLSimulationApp/GLSimulationApp.o: rule-cxx art/GLSimulationApp/GLSimulationApp.cc
+build $builddir/art/TUIApp/TUIApp.o: rule-cxx art/TUIApp/TUIApp.cc
 build $builddir/ynked: link $
     $builddir/art/Art.o $
     $builddir/art/Notes.o $
@@ -109,7 +109,8 @@ build $builddir/ynked: link $
     $builddir/art/model/Brush.o $
     $builddir/art/gl/Hooks.o $
     $builddir/art/gl/Errors.o $
-    $builddir/art/gl/Main.o $
-    $builddir/art/GLOutput.o $
+    $builddir/art/gl/Setup.o $
+    $builddir/art/GLSimulationApp/GLSimulationApp.o $
+    $builddir/art/TUIApp/TUIApp.o $
     $builddir/GLAD/glad.o
     libs = -lynk -lc -lglfw -framework OpenGL -lc++

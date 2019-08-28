@@ -1,5 +1,5 @@
 //
-// file art/gl/main.cc
+// file art/glsimulationapp/glsimulationapp.cc
 // author Maximilien M. Cura
 //
 
@@ -17,11 +17,19 @@
 
 using namespace Ynk;
 
-Vec<2, i64> Art::window_size (Art::iq2, { 800_i64, 800_i64 });
-
 Vec<2, i64> target (Art::iq2, { 35_i64, 35_i64 });
 
-void Art::Render ()
+void Art::GLSimulationApp (App::Stub * stub)
+{
+    window_size[0] = 800_i64;
+    window_size[1] = 800_i64;
+
+    Art::GLApp_Init (stub);
+    Art::GLSimulationApp_Render ();
+    Art::GLApp_Teardown ();
+}
+
+void Art::GLSimulationApp_Render ()
 {
     Art::Warn ("Rendering...");
 

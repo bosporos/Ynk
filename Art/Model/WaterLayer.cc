@@ -11,8 +11,6 @@
 
 using namespace Ynk;
 
-using Art::Model;
-
 // Layer Component
 
 Art::WaterLayerComponent::WaterLayerComponent ()
