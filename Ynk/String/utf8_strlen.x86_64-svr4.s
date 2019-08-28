@@ -17,9 +17,9 @@ ___ynk_utf8_strlen.l0:
 ___ynk_utf8_strlen.l1:
     lodsb
     shl $1, %al
-    js ___hubstd_fastutf8strlen.l0 // chk utf8 enc
-    jc ___hubstd_fastutf8strlen.l1
-    jnz ___hubstd_fastutf8strlen.l0
+    js ___ynk_utf8_strlen.l0 // chk utf8 enc
+    jc ___ynk_utf8_strlen.l1
+    jnz ___ynk_utf8_strlen.l0
     mov %rcx, %rax
     not %rax // b/c decq fr 0
     retq

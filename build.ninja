@@ -102,7 +102,6 @@ build $builddir/ynked: link $
     $builddir/art/Art.o $
     $builddir/art/Notes.o $
     $builddir/art/pushrelabel/PushRelabel.o $
-    $builddir/art/model/Model.o $
     $builddir/art/model/WaterLayer.o $
     $builddir/art/model/TintLayer.o $
     $builddir/art/model/PaperLayer.o $
