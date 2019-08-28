@@ -101,8 +101,8 @@ void Art::TintLayer::_pr_ready (YNK_UNUSED Art::PaperLayer * pl, Art::WaterLayer
                     if (LIKELY (!(ix == 0 && iy == 0))) {
                         Ynk::usize j = _pr_index (x, y) + ix + iy;
                         if (wl->prn.flow (i, j) > 0) {
-                            Ynk::i64 cap = static_cast<Ynk::_i64> (
-                                static_cast<long double> (wl->prn.flow (i, j)) * 0.75L);
+                            Ynk::i64 cap = std::abs (static_cast<Ynk::_i64> (
+                                static_cast<long double> (wl->prn.flow (i, j)) * 0.75L));
                             // Bidirectional
                             prn.cap (i, j, cap);
                             prn.cap (j, i, cap);
@@ -123,7 +123,8 @@ void Art::TintLayer::_pr_ready (YNK_UNUSED Art::PaperLayer * pl, Art::WaterLayer
                 }
             }
             components[y][x]->maximal_moment_chromosaturation = static_cast<long double> (pl->components[y][x]->saturability)
-                * (std::exp (-(static_cast<long double> (components[y][x]->tint.quantity) / TLAYER_TQ_EP0))) * (std::exp (-(static_cast<long double> (wl->components[y][x]->hydrosaturation) / TLAYER_TQ_EP0)));
+                * (std::exp (-(static_cast<long double> (components[y][x]->tint.quantity) / TLAYER_TQ_EP0)))
+                * (std::exp (-(static_cast<long double> (wl->components[y][x]->hydrosaturation) / TLAYER_TQ_EP0)));
         }
     }
 

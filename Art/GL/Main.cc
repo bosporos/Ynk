@@ -33,17 +33,21 @@ void Art::Render ()
     Art::Notify ("Constructing model...");
 
     Art::Notify ("Bristle creation...");
-    Art::Bristle bristles[5] = {
-        Art::Bristle (Art::d3->create_vec ({ 0, -1, 0 }), 65336),
-        Art::Bristle (Art::d3->create_vec ({ -1, 0, 0 }), 65336),
+    Art::Bristle bristles[9] = {
+        Art::Bristle (Art::d3->create_vec ({ 0, -3, 0 }), 65336),
+        Art::Bristle (Art::d3->create_vec ({ -3, 0, 0 }), 65336),
         Art::Bristle (Art::d3->create_vec ({ 0, 0, 0 }), 65336),
-        Art::Bristle (Art::d3->create_vec ({ 1, 0, 0 }), 65336),
-        Art::Bristle (Art::d3->create_vec ({ 0, 1, 0 }), 65336)
+        Art::Bristle (Art::d3->create_vec ({ 3, 0, 0 }), 65336),
+        Art::Bristle (Art::d3->create_vec ({ 0, 3, 0 }), 65336),
+        Art::Bristle (Art::d3->create_vec ({ -2, -2, 0 }), 65336),
+        Art::Bristle (Art::d3->create_vec ({ -2, 2, 0 }), 65336),
+        Art::Bristle (Art::d3->create_vec ({ 2, -2, 0 }), 65336),
+        Art::Bristle (Art::d3->create_vec ({ 2, 2, 0 }), 65336),
     };
     Art::Notify ("Brush creation...");
-    Art::Brush brush (bristles, 5, UX::RGBA (0x40, 0x3F, 0x4C, 0x08));
+    Art::Brush brush (bristles, 9, UX::RGBA (0x40, 0x3F, 0x4C, 0x08));
     brush.position  = Art::d3->create_vec ({ 10, 10 });
-    auto layer_size = Art::iq2->create_vec ({ 400, 400 });
+    auto layer_size = Art::iq2->create_vec ({ 200, 200 });
 
     Art::Notify (Fmt::format ("Creating pixelbuffer [{}x{} -> {}]...", layer_size[0], layer_size[1], layer_size[0] * layer_size[1]));
     UX::RGBA pixelbuffer[layer_size[0].inner_ * layer_size[1].inner_];
@@ -147,33 +151,34 @@ void Art::Render ()
     while (!glfwWindowShouldClose (window)) {
         glClear (GL_COLOR_BUFFER_BIT);
 
-        if (counter++ == 3) {
-            double xpos, ypos;
-            glfwGetCursorPos (Art::window, &xpos, &ypos);
-            if (xpos > 0)
-                xpos *= (double)layer_size[0] / (double)Art::window_size[0];
-            else
-                xpos = target[0];
-            if (ypos > 0)
-                ypos *= (double)layer_size[1] / (double)Art::window_size[1];
-            else
-                ypos = target[1];
-            if (xpos > (double)layer_size[0])
-                xpos = target[0];
-            if (ypos > (double)layer_size[1])
-                ypos = target[1];
-            ypos      = (double)layer_size[1] - ypos;
-            target[0] = i64 { (long)xpos };
-            target[1] = i64 { (long)ypos };
+        double xpos, ypos;
+        glfwGetCursorPos (Art::window, &xpos, &ypos);
+        if (xpos > 0)
+            xpos *= (double)layer_size[0] / (double)Art::window_size[0];
+        else
+            xpos = target[0];
+        if (ypos > 0)
+            ypos *= (double)layer_size[1] / (double)Art::window_size[1];
+        else
+            ypos = target[1];
+        if (xpos > (double)layer_size[0])
+            xpos = target[0];
+        if (ypos > (double)layer_size[1])
+            ypos = target[1];
+        ypos = (double)layer_size[1] - ypos;
+        // target[0] = i64 { (long)xpos };
+        // target[1] = i64 { (long)ypos };
 
-            double ix = 2.0 - arc4random_uniform (3), iy = 2.0 - arc4random_uniform (3);
-            if (brush.position[0] > target[0])
-                ix = -ix;
-            if (brush.position[1] > target[1])
-                iy = -iy;
-            brush.position += Art::d3->create_vec ({ ix, iy, 0 });
-            counter = 0;
-        }
+        brush.position[0] = xpos;
+        brush.position[1] = ypos;
+
+        // double ix = 2.0 - arc4random_uniform (3), iy = 2.0 - arc4random_uniform (3);
+        // if (brush.position[0] > target[0])
+        // ix = -ix;
+        // if (brush.position[1] > target[1])
+        // iy = -iy;
+        // brush.position += Art::d3->create_vec ({ ix, iy, 0 });
+        counter = 0;
 
         // Art::Notify ("WL::PR");
         wl._pr_ready ();

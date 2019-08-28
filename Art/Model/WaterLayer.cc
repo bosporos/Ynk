@@ -128,7 +128,7 @@ void Art::WaterLayer::_pr_accrete (Art::PaperLayer * pl)
                 // base value
                 components[y][x]->maximal_moment_hydrosaturation = WLAYER_SAT_EP1 * pl->components[y][x]->saturability / WLAYER_T_EP2;
                 components[y][x]->maximal_moment_hydrosaturation = static_cast<long double> (components[y][x]->maximal_moment_hydrosaturation)
-                    * (std::exp (-(static_cast<long double> (components[y][x]->hydrosaturation) / 64.0L)));
+                    * (std::exp (-(static_cast<long double> (components[y][x]->hydrosaturation) / WLAYER_T_EP3)));
             } else {
                 components[y][x]->maximal_moment_hydrosaturation = WLAYER_SAT_EP1 * pl->components[y][x]->saturability / WLAYER_T_EP2;
             }

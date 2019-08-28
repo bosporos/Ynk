@@ -30,3 +30,22 @@ so all portability contributions are welcome.
 
 If you're reading through the code, then check STRUCTURE.md for details. If you
 see any other `.md` files, then those are documentation files, and might be worth reading.
+
+## Building
+
+Requirements:
+
+ - There must be a "glad/glad.h" somewhere in the include path
+ - `arc4random_uniform()` must be accessible from `stdlib.h`
+
+Remove the last few lines of clang/dev-cxxflags.txt (i.e. section "Kludge").
+
+Run `ninja` in the directory containing this README.
+
+There should now be a `build` directory.
+
+#### Packaging for macOS
+
+Run `artisan/macos/osx_export.sh` from the directory containing this README (don't run it anywhere else, seriously).
+
+There should be two things of interest in the `build` directory: `YnkExported.app` and `YnkExported.app.zip`.

@@ -259,7 +259,7 @@ void PRN::relabel (usize u)
 void PRN::discharge (usize u)
 {
     // println ("======== \x1b[34mDISCHARGE\x1b[0m {}:{}+{}", u, labels[u], excesses[u]);
-    while (excesses[u] > 0 && labels[u] <= N) {
+    while (excesses[u] > 0 && labels[u] < N) {
         usize v;
         if (u != S && u != T) {
             if (currents[u] < 9) {
@@ -267,7 +267,7 @@ void PRN::discharge (usize u)
                     v = T;
                 else
                     v = std::max (u + offsets[(currents[u] - 1 + rolls[u]) % 8], 0_uz) % N;
-                if (cap (u, v) > flow (u, v) && labels[u] > labels[v]) {
+                if (cap (u, v) > flow (u, v) && labels[u] == labels[v] + 1) {
                     push (u, v);
                 } else
                     currents[u]++;
@@ -275,18 +275,18 @@ void PRN::discharge (usize u)
                 relabel (u);
                 currents[u] = 0;
                 rolls[u]    = arc4random_uniform (9);
-                // return;
+                return;
             }
         } else if (currents[u] < N) {
             v = currents[u];
-            if (cap (u, v) > flow (u, v) && labels[u] > labels[v])
+            if (cap (u, v) > flow (u, v) && labels[u] == labels[v] + 1)
                 push (u, v);
             else
                 currents[u]++;
         } else {
             relabel (u);
             currents[u] = 0;
-            // return;
+            return;
         }
     }
 }
