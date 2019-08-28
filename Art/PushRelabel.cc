@@ -34,6 +34,7 @@ PRN::PushRelabelNetwork (usize n)
     rolls    = new usize[n];
     offsets  = new isize[8];
 
+    // Precalculate offsets
     u8 p = 0;
     for (isize ix = -1; ix <= 1; ix++) {
         for (isize iy = -1; iy <= 1; iy++) {
@@ -43,10 +44,13 @@ PRN::PushRelabelNetwork (usize n)
         }
     }
 
+    // Precalculate reverse_offsets
     reverse_offsets = new usize[reverse_offset_width];
 
+    // Debugging purposes
     for (usize i = 0; i < reverse_offset_width; i++)
         reverse_offsets[i] = 8;
+    // These are the ones that matter:
     reverse_offsets[0]                             = 0;
     reverse_offsets[1]                             = 1;
     reverse_offsets[2]                             = 2;
@@ -56,11 +60,15 @@ PRN::PushRelabelNetwork (usize n)
     reverse_offsets[square_side + square_side]     = 6;
     reverse_offsets[square_side + square_side + 1] = 7;
 
+    // Initialize the active_sets
     active_sets = new std::list<Ynk::usize>[n];
 }
 
 void PRN::stabilize ()
 {
+    // Basically, the source and sink nodes are the exception to the 10-neighbouring,
+    // node rule, but since they're not set at construction time, we do it here,
+    // and tell the client to call this.
     delete[] _flows[S];
     delete[] _flows[T];
     delete[] _capacities[S];
@@ -70,77 +78,6 @@ void PRN::stabilize ()
     _flows[T]      = new i64[N];
     _capacities[S] = new i64[N];
     _capacities[T] = new i64[N];
-}
-
-i64 PRN::flow (usize u, usize v)
-{
-    if (u == S || u == T) {
-        return _flows[u][v];
-    }
-    if (v == S)
-        return _flows[u][0];
-    if (v == T)
-        return _flows[u][1];
-    if (u == v)
-        return 0_i64;
-    isize offset = square_side + 1 + (isize)v - (isize)u;
-    if (offset >= 0 && offset < reverse_offset_width) {
-        if (reverse_offsets[offset] != 8)
-            return _flows[u][2 + reverse_offsets[offset]];
-        else
-            return 0_i64;
-    }
-    return 0_i64;
-}
-
-i64 PRN::cap (usize u, usize v)
-{
-    if (u == S || u == T)
-        return _capacities[u][v];
-    if (v == S)
-        return _capacities[u][0];
-    if (v == T)
-        return _capacities[u][1];
-    if (u == v)
-        return 0_i64;
-    isize offset = square_side + 1 + (isize)v - (isize)u;
-    if (offset >= 0 && offset < reverse_offset_width) {
-        if (reverse_offsets[offset] != 8)
-            return _capacities[u][2 + reverse_offsets[offset]];
-        else
-            return 0_i64;
-    }
-    return 0_i64;
-}
-
-void PRN::flow (usize u, usize v, i64 f)
-{
-    if (u == S || u == T)
-        _flows[u][v] = f;
-    if (v == S)
-        _flows[u][0] = f;
-    if (v == T)
-        _flows[u][1] = f;
-    isize offset = square_side + 1 + (isize)v - (isize)u;
-    if (offset >= 0 && offset < reverse_offset_width) {
-        if (reverse_offsets[offset] != 8)
-            _flows[u][2 + reverse_offsets[offset]] = f;
-    }
-}
-
-void PRN::cap (usize u, usize v, i64 c)
-{
-    if (u == S || u == T)
-        _capacities[u][v] = c;
-    if (v == S)
-        _capacities[u][0] = c;
-    if (v == T)
-        _capacities[u][1] = c;
-    isize offset = square_side + 1 + (isize)v - (isize)u;
-    if (offset >= 0 && offset < reverse_offset_width) {
-        if (reverse_offsets[offset] != 8)
-            _capacities[u][2 + reverse_offsets[offset]] = c;
-    }
 }
 
 void PRN::ready ()
@@ -288,5 +225,87 @@ void PRN::discharge (usize u)
             currents[u] = 0;
             return;
         }
+    }
+}
+
+// ==============================================================
+// INTERFACES FOR THE _flows AND _capacities ADJACENCY MATRICES
+// ==============================================================
+
+i64 PRN::flow (usize u, usize v)
+{
+    if (u == S || u == T) {
+        // For u=S and u=T, _flows[u] has N entries, so we can do this simply:
+        return _flows[u][v];
+    }
+    if (v == S)
+        // Target vertex is source, which is automatically _flows[u][0]
+        return _flows[u][0];
+    if (v == T)
+        // Target vertex is the sink, which is automatically _flows[u][1]
+        return _flows[u][1];
+    if (u == v)
+        // Don't permit loops
+        return 0_i64;
+    // Run a look-up in the reverse_offsets table, and grab that
+    isize offset = square_side + 1 + (isize)v - (isize)u;
+    if (offset >= 0 && offset < reverse_offset_width) {
+        if (reverse_offsets[offset] != 8)
+            return _flows[u][2 + reverse_offsets[offset]];
+        else
+            return 0_i64;
+    }
+    return 0_i64;
+}
+
+// From this point onwards, everything is basically the same as in flow(u,v)
+
+i64 PRN::cap (usize u, usize v)
+{
+    if (u == S || u == T)
+        return _capacities[u][v];
+    if (v == S)
+        return _capacities[u][0];
+    if (v == T)
+        return _capacities[u][1];
+    if (u == v)
+        return 0_i64;
+    isize offset = square_side + 1 + (isize)v - (isize)u;
+    if (offset >= 0 && offset < reverse_offset_width) {
+        if (reverse_offsets[offset] != 8)
+            return _capacities[u][2 + reverse_offsets[offset]];
+        else
+            return 0_i64;
+    }
+    return 0_i64;
+}
+
+void PRN::flow (usize u, usize v, i64 f)
+{
+    if (u == S || u == T)
+        _flows[u][v] = f;
+    if (v == S)
+        _flows[u][0] = f;
+    if (v == T)
+        _flows[u][1] = f;
+    isize offset = square_side + 1 + (isize)v - (isize)u;
+    if (offset >= 0 && offset < reverse_offset_width) {
+        if (reverse_offsets[offset] != 8)
+            _flows[u][2 + reverse_offsets[offset]] = f;
+    }
+}
+
+void PRN::cap (usize u, usize v, i64 c)
+{
+    if (u == S || u == T)
+        _capacities[u][v] = c;
+    if (v == S)
+        _capacities[u][0] = c;
+    if (v == T)
+        _capacities[u][1] = c;
+    isize offset = square_side + 1 + (isize)v - (isize)u;
+    if (offset >= 0 && offset < reverse_offset_width) {
+        if (reverse_offsets[offset] != 8)
+            _capacities[u][2 + reverse_offsets[offset]] = c;
     }
 }
