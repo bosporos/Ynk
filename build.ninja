@@ -6,7 +6,7 @@ cache_engine = ccache
 clang = clang-8 -fcolor-diagnostics
 asflags = --config ${root}/clang/dev-asflags.txt
 cflags = --config ${root}/clang/dev-cflags.txt -I$root
-cxxflags = --config ${root}/clang/dev-cxxflags.txt -I$root
+cxxflags = --config ${root}/clang/dev+cxxflags.txt -I$root
 ldflags = --config ${root}/clang/dev-ldflags.txt -L$builddir
 
 rule rule-cxx

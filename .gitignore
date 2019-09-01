@@ -2,3 +2,6 @@ build
 wcc.sh
 glad
 art/linmath.h
+build-cmake
+build.ninja
+clang/dev+cxxflags.txt
