@@ -55,7 +55,7 @@ void Art::GLSimulationApp_Render ()
     Art::Notify ("Brush creation...");
     Art::Brush brush (bristles, 9, UX::RGBA (0x40, 0x3F, 0x4C, 0x08));
     brush.position  = Art::d3->create_vec ({ 10, 10 });
-    auto layer_size = Art::iq2->create_vec ({ 200, 200 });
+    auto layer_size = Art::iq2->create_vec ({ 300, 300 });
 
     Art::Notify (Fmt::format ("Creating pixelbuffer [{}x{} -> {}]...", layer_size[0], layer_size[1], layer_size[0] * layer_size[1]));
     UX::RGBA pixelbuffer[layer_size[0].inner_ * layer_size[1].inner_];
@@ -155,38 +155,13 @@ void Art::GLSimulationApp_Render ()
 
     Art::Warn ("Starting mainloop");
 
-    u8 counter = 0;
-    while (!glfwWindowShouldClose (window)) {
-        glClear (GL_COLOR_BUFFER_BIT);
+    _u32 counter = 0;
+    for (usize i = 0; i < 360_uz; i++) {
+        brush.position[0] = layer_size[0].inner_ / 2.0 + 20.0 * cos (counter / 60.0);
+        brush.position[1] = layer_size[1].inner_ / 2.0 + 20.0 * cos (counter / 60.0);
 
-        double xpos, ypos;
-        glfwGetCursorPos (Art::window, &xpos, &ypos);
-        if (xpos > 0)
-            xpos *= (double)layer_size[0] / (double)Art::window_size[0];
-        else
-            xpos = target[0];
-        if (ypos > 0)
-            ypos *= (double)layer_size[1] / (double)Art::window_size[1];
-        else
-            ypos = target[1];
-        if (xpos > (double)layer_size[0])
-            xpos = target[0];
-        if (ypos > (double)layer_size[1])
-            ypos = target[1];
-        ypos = (double)layer_size[1] - ypos;
-        // target[0] = i64 { (long)xpos };
-        // target[1] = i64 { (long)ypos };
-
-        brush.position[0] = xpos;
-        brush.position[1] = ypos;
-
-        // double ix = 2.0 - arc4random_uniform (3), iy = 2.0 - arc4random_uniform (3);
-        // if (brush.position[0] > target[0])
-        // ix = -ix;
-        // if (brush.position[1] > target[1])
-        // iy = -iy;
-        // brush.position += Art::d3->create_vec ({ ix, iy, 0 });
-        counter = 0;
+        counter++;
+        brush.ink = UX::hsva ((float)counter / 360.0f, 0.78, 0.87, brush.ink.iargb.alpha);
 
         // Art::Notify ("WL::PR");
         wl._pr_ready ();
@@ -197,6 +172,12 @@ void Art::GLSimulationApp_Render ()
         // Art::Notify ("Accreting...");
         wl._pr_accrete (&pl);
         tl._pr_accrete (&pl, &wl);
+
+        println ("ITERATION {} FINISHED", i);
+    }
+
+    while (!glfwWindowShouldClose (window)) {
+        glClear (GL_COLOR_BUFFER_BIT);
 
         // Art::Notify ("Updating pixelbuffer");
         usize p = 0;

@@ -24,7 +24,7 @@ void Art::Tint::blend (Art::Tint rhs)
     double q2 = (double)quantity * (double)quantity;
     u8 end_alpha;
     if (q2 <= TLAYER_TQ_EP1)
-        end_alpha = std::min (0xff_u8, static_cast<u8> (q2 / TLAYER_TQ_EP1));
+        end_alpha = std::min (255_u8, static_cast<u8> (q2 / TLAYER_TQ_EP1));
     // if ((q2 / TLAYER_TQ_EP1) < 255)
     // end_alpha = 0;
     // end_alpha = 0;
