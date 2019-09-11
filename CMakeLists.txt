@@ -5,8 +5,6 @@
 
 cmake_minimum_required(VERSION 3.13)
 
-cmake_minimum_required(VERSION 3.13)
-
 project(Ynk)
 
 enable_language(ASM)
@@ -87,7 +85,7 @@ endif()
 
 # EXECUTABLE (ynked)
 
-set(ycm_ynkart_sources "${ycm_root}/art/Art.cc" "${ycm_root}/art/Notes.cc" "${ycm_root}/art/GL/Errors.cc" "${ycm_root}/art/GL/Hooks.cc" "${ycm_root}/art/GL/Setup.cc" "${ycm_root}/art/GLSimulationApp/GLSimulationApp.cc" "${ycm_root}/art/Model/Brush.cc" "${ycm_root}/art/Model/PaperLayer.cc" "${ycm_root}/art/Model/TintLayer.cc" "${ycm_root}/art/Model/WaterLayer.cc" "${ycm_root}/art/PushRelabel/PushRelabel.cc" "${ycm_root}/art/TUIApp/TUIApp.cc")
+set(ycm_ynkart_sources "${ycm_root}/art/Art.cc" "${ycm_root}/art/Notes.cc" "${ycm_root}/art/GL/Errors.cc" "${ycm_root}/art/GL/Hooks.cc" "${ycm_root}/art/GL/Setup.cc" "${ycm_root}/art/GLSimulationApp/GLSimulationApp.cc" "${ycm_root}/art/Model/Brush.cc" "${ycm_root}/art/Model/PaperLayer.cc" "${ycm_root}/art/Model/TintLayer.cc" "${ycm_root}/art/Model/WaterLayer.cc" "${ycm_root}/art/PushRelabel/PushRelabel.cc" "${ycm_root}/art/TUIApp/TUIApp.cc" "${ycm_root}/art/GLArtApp/GLArtApp.cc")
 
 # ==============================================================================
 # DEALING WITH TOOLING

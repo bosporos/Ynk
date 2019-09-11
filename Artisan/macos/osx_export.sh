@@ -23,7 +23,7 @@ cp -R Art/shaders build/YnkExported.app/Contents/Library
 mkdir -p build/YnkExported.app/Contents/MacOS
 echo "#!/bin/bash" > build/YnkExported.app/Contents/MacOS/YnkExported
 echo "cd \"\${0%/*}/../\"" >> build/YnkExported.app/Contents/MacOS/YnkExported
-echo "./Library/ynked gl" >> build/YnkExported.app/Contents/MacOS/YnkExported
+echo "./Library/ynked gl-art" >> build/YnkExported.app/Contents/MacOS/YnkExported
 chmod +x build/YnkExported.app/Contents/MacOS/YnkExported
 
 mkdir build/YnkExported.app/Contents/Resources

@@ -31,7 +31,7 @@ u64 Art::PaperConfiguration::saturability_real (YNK_UNUSED Art::Vec2i pos)
 Art::Tint Art::PaperConfiguration::paper_color_real (YNK_UNUSED Art::Vec2i pos)
 {
     return Tint {
-        UX::RGBA (0xE8, 0xE9, 0xEB, 0xFF),
+        UX::RGBA (0x04, 0x04, 0x04, 0xFF),
         80
         // 0
     };

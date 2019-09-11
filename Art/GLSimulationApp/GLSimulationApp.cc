@@ -53,7 +53,7 @@ void Art::GLSimulationApp_Render ()
         Art::Bristle (Art::d3->create_vec ({ 2, 2, 0 }), 65336),
     };
     Art::Notify ("Brush creation...");
-    Art::Brush brush (bristles, 9, UX::RGBA (0x40, 0x3F, 0x4C, 0x08));
+    Art::Brush brush (bristles, 9, UX::RGBA (0xFB, 0xFA, 0xF8, 0x04));
     brush.position  = Art::d3->create_vec ({ 10, 10 });
     auto layer_size = Art::iq2->create_vec ({ 300, 300 });
 
@@ -61,10 +61,13 @@ void Art::GLSimulationApp_Render ()
     UX::RGBA pixelbuffer[layer_size[0].inner_ * layer_size[1].inner_];
 
     Art::Notify ("Layer creation...");
+
     println ("\tPaper layer {}", layer_size);
     Art::PaperLayer pl (layer_size, Art::PaperConfiguration ());
+
     println ("\tWater layer {}", layer_size);
     Art::WaterLayer wl (layer_size, &brush);
+
     println ("\tTint layer {}", layer_size);
     Art::TintLayer tl (layer_size, &brush);
 
@@ -78,7 +81,7 @@ void Art::GLSimulationApp_Render ()
 
     Art::Notify ("Initializing Water layer PR network...");
     Art::Notify ("Readying...");
-    wl._pr_ready ();
+    // wl._pr_ready ();
     Art::Notify ("Accreting zero layer (filling H-sigma fields)...");
     wl._pr_accrete (&pl);
     Art::Notify ("Done.");
@@ -157,11 +160,16 @@ void Art::GLSimulationApp_Render ()
 
     _u32 counter = 0;
     for (usize i = 0; i < 360_uz; i++) {
+    }
+
+    while (!glfwWindowShouldClose (window)) {
+        glClear (GL_COLOR_BUFFER_BIT);
+
         brush.position[0] = layer_size[0].inner_ / 2.0 + 20.0 * cos (counter / 60.0);
         brush.position[1] = layer_size[1].inner_ / 2.0 + 20.0 * cos (counter / 60.0);
 
         counter++;
-        brush.ink = UX::hsva ((float)counter / 360.0f, 0.78, 0.87, brush.ink.iargb.alpha);
+        // brush.ink = UX::hsva ((float)counter / 360.0f, 0.78, 0.87, brush.ink.iargb.alpha);
 
         // Art::Notify ("WL::PR");
         wl._pr_ready ();
@@ -173,17 +181,16 @@ void Art::GLSimulationApp_Render ()
         wl._pr_accrete (&pl);
         tl._pr_accrete (&pl, &wl);
 
-        println ("ITERATION {} FINISHED", i);
-    }
-
-    while (!glfwWindowShouldClose (window)) {
-        glClear (GL_COLOR_BUFFER_BIT);
+        println ("ITERATION {} FINISHED", counter);
 
         // Art::Notify ("Updating pixelbuffer");
         usize p = 0;
         for (i64 y = 0; y < layer_size[1]; y++) {
             for (i64 x = 0; x < layer_size[0]; x++) {
-                pixelbuffer[p++] = tl.components[y][x]->tint.color.blend (pl.components[y][x]->tint.color);
+                if (tl.components[y][x]->tint.quantity)
+                    pixelbuffer[p++] = tl.components[y][x]->tint.color.blend_screen (pl.components[y][x]->tint.color);
+                else
+                    pixelbuffer[p++] = pl.components[y][x]->tint.color;
                 // ;
             }
         }

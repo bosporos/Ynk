@@ -22,13 +22,24 @@ Ynk::Vec<2, Ynk::i64> Art::window_size (Art::iq2, { 800_i64, 800_i64 });
 //! this work. Additionally, a variable `application` is also being passed in.
 YNK_APP (Test)
 {
-    if (argc == 2 && !strcmp (argv[1], "tui")) {
-        // Calling with the argument "tui" will run the TUI debugging visualizer
-        Art::TUIApp ();
-    } else if (argc == 2 && !strcmp (argv[1], "gl-sim")) {
-        // Calling with the argument "gl-sim" will run the full OpenGL simulator
-        Art::GLSimulationApp (application);
+    bool flag_print_usage = false;
+    if (argc == 2) {
+        if (!strcmp (argv[1], "tui")) {
+            // Calling with the argument "tui" will run the TUI debugging visualizer
+            Art::TUIApp ();
+        } else if (!strcmp (argv[1], "gl-sim")) {
+            // Calling with the argument "gl-sim" will run the full OpenGL simulator
+            Art::GLSimulationApp (application);
+        } else if (!strcmp (argv[1], "gl-art")) {
+            Art::GLArtApp (application);
+        } else {
+            flag_print_usage = true;
+        }
     } else {
+        flag_print_usage = true;
+    }
+
+    if (flag_print_usage) {
         // Print usage message.
         if (argc <= 1) {
             Art::Error ("No command specified!");

@@ -39,10 +39,17 @@ namespace Ynk::UX {
         RGBA (_u32);
         RGBA ();
 
+        // Srz̧ Bältai nők ypriơ
+
+        // Processing color blending functions:
+        // https://github.com/processing/processing/blob/master/core/src/processing/core/PImage.java#L2732
         RGBA lerp (RGBA, float);
         RGBA blend (RGBA);
         RGBA blend_add_pin (RGBA);
         RGBA blend_sub_pin (RGBA);
+        RGBA blend_multiply (RGBA);
+        RGBA blend_screen (RGBA);
+        RGBA blend_overlay (RGBA);
 
         // Todo: add more blend modes
     };

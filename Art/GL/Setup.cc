@@ -59,7 +59,8 @@ int Art::GLApp_Init (YNK_UNUSED Ynk::App::Stub * application_raw)
     glfwWindowHint (GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    window = glfwCreateWindow (window_size[0], window_size[1], application->get_name (), NULL, NULL);
+    // window = glfwCreateWindow (window_size[0], window_size[1], application->get_name (), NULL, NULL);
+    window = glfwCreateWindow (window_size[0], window_size[1], "(DIS)ORDER?", NULL, NULL);
 
     if (!window) {
         glfwTerminate ();

@@ -90,6 +90,84 @@ RGBA RGBA::blend_sub_pin (RGBA rhs)
                  | std::max ((rhs.inner & BLUE_MASK) - (rb & BLUE_MASK), 0u));
 }
 
+RGBA RGBA::blend_multiply (RGBA rhs)
+{
+    _u32 src = this->inner;
+    _u32 dst = rhs.inner;
+
+    _u32 a = src >> 24;
+
+    _u32 s_a = a + (a >= 0x7F ? 1 : 0);
+    _u32 d_a = 0x100 - s_a;
+
+    _u32 d_gn = dst & GN_MASK;
+
+    _u32 f_r = (dst & RED_MASK) >> 16;
+    _u32 f_b = (dst & BLUE_MASK);
+
+    _u32 rb = ((src & RED_MASK) * (f_r + 1) | (src & BLUE_MASK) * (f_b + 1))
+            >> 8
+        & RB_MASK;
+    _u32 gn = (src & GREEN_MASK) * (d_gn + 0x100)
+            >> 16
+        & GN_MASK;
+
+    return std::min ((dst >> 24) + a, 0xFFu) << 24 | ((dst & RB_MASK) * d_a + rb * s_a) >> 8 & RB_MASK | (d_gn * d_a + gn * s_a) >> 8 & GN_MASK;
+}
+
+RGBA RGBA::blend_screen (RGBA rhs)
+{
+    _u32 src = this->inner;
+    _u32 dst = rhs.inner;
+
+    _u32 a = src >> 24;
+
+    _u32 s_a = a + (a >= 0x7F ? 1 : 0);
+    _u32 d_a = 0x100 - s_a;
+
+    _u32 d_rb = dst & RB_MASK;
+    _u32 d_gn = dst & GN_MASK;
+
+    _u32 s_gn = src & GN_MASK;
+
+    _u32 f_r = (dst & RED_MASK) >> 16;
+    _u32 f_b = (dst & BLUE_MASK);
+
+    _u32 rb_sub = ((src & RED_MASK) * (f_r + 1) | (src & BLUE_MASK) * (f_b + 1))
+            >> 8
+        & RB_MASK;
+    _u32 gn_sub = s_gn * (d_gn + 0x100)
+            >> 16
+        & GN_MASK;
+
+    return (_u32)std::min ((dst >> 24) + a, 0xFFu) << 24 | (d_rb * d_a + (d_rb + (src & RB_MASK) - rb_sub) * s_a) >> 8 & RB_MASK | (d_gn * d_a + (d_gn + s_gn - gn_sub) * s_a) >> 8 & GN_MASK;
+}
+
+RGBA RGBA::blend_overlay (RGBA rhs)
+{
+    _u32 src = this->inner;
+    _u32 dst = rhs.inner;
+
+    _u32 a = src >> 24;
+
+    _u32 s_a = a + (a >= 0x7F ? 1 : 0);
+    _u32 d_a = 0x100 - s_a;
+
+    _u32 d_r = dst & RED_MASK;
+    _u32 d_g = dst & GREEN_MASK;
+    _u32 d_b = dst & BLUE_MASK;
+
+    _u32 s_r = src & RED_MASK;
+    _u32 s_g = src & GREEN_MASK;
+    _u32 s_b = src & BLUE_MASK;
+
+    _u32 r = (d_r < 0x800000) ? d_r * ((s_r >> 16) + 1) >> 7 : 0xFF0000 - ((0x100 - (s_r >> 16)) * (RED_MASK - d_r) >> 7);
+    _u32 g = (d_g < 0x8000) ? d_g * (s_g + 0x100) >> 15 : (0xFF00 - ((0x10000 - s_g) * (GREEN_MASK - d_g) >> 15));
+    _u32 b = (d_b < 0x80) ? d_b * (s_b + 1) >> 7 : (0xFF00 - ((0x100 - s_b) * (BLUE_MASK - d_b) << 1)) >> 8;
+
+    return (_u32)std::min ((dst >> 24) + a, 0xFFu) << 24 | ((dst & RB_MASK) * d_a + ((r | b) & RB_MASK) * s_a) >> 8 & RB_MASK | ((dst & GN_MASK) * d_a + (g & GN_MASK) * s_a) >> 8 & GN_MASK;
+}
+
 RGBA UX::hsva (_f32 hue, _f32 saturation, _f32 value, _f32 alpha)
 {
     _f32 kr = std::fmod (5. + (hue / 6.), 6.);

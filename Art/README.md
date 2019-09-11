@@ -24,7 +24,9 @@
 
  - `Art/GLSimulationApp/GLSimulationApp.cc` runs the real-time watercolor simulation
 
-`Art/GLArtApp` (_not created yet_) will contain the sources for the final generative art piece.
+`Art/GLArtApp` contains the sources for the final generative art piece.
+
+ - `Art/GLArtApp/GlArtApp.cc` runs the semi-dry-brush final art piece ("Distorsion Progression")
 
 `Art/Model` contains the sources for the watercolor model.
 
