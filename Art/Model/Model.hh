@@ -12,9 +12,14 @@
 #include <Ynk/UX/Color.hh>
 
 namespace Art {
+    // Some boilerplate;
+
+    // Vec3d is used by the Brush and Bristle classes, because they exist in
+    // continuous 3-dimensional space
     typedef Ynk::Vec<3, Ynk::_f64> Vec3d;
     typedef Ynk::Space<3, Ynk::_f64> Space3d;
 
+    // Whereas the component layers exist in discrete 2-dimensional space.
     typedef Ynk::Vec<2, Ynk::i64> Vec2i;
     typedef Ynk::Space<2, Ynk::i64> Space2i;
 

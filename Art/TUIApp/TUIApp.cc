@@ -68,6 +68,7 @@ void Art::TUIApp ()
 
         wl._pr_accrete (&pl);
         tl._pr_accrete (&pl, &wl);
+        // Basically, we print a bunch of debugging screens
         for (i64 y = 0; y < layer_size[1]; y++) {
             for (i64 x = 0; x < layer_size[0]; x++) {
                 print ("{}#{}",

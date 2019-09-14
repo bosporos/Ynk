@@ -33,9 +33,11 @@ YNK_APP (Test)
         } else if (!strcmp (argv[1], "gl-art")) {
             Art::GLArtApp (application);
         } else {
+            // Invalid command specifed, so print usage
             flag_print_usage = true;
         }
     } else {
+        // Wrong number of arguments, so print usage
         flag_print_usage = true;
     }
 
@@ -56,4 +58,5 @@ YNK_APP (Test)
     return 0;
 }
 
+// A bit of boilerplate
 YNK_LAUNCH_APP (Test);
