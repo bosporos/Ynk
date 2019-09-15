@@ -37,6 +37,8 @@ namespace Art {
 
     struct Bristle
     {
+        // Position of the tip of the bristle in 3d space, using the Brush's position
+        // as the origin
         Vec3d tip_offset;
         // Handled by TintLayer
         Ynk::u64 tint_remaining;
@@ -46,16 +48,25 @@ namespace Art {
 
     struct Brush
     {
+        // Number of bristles
         Ynk::usize num_bristles;
+        // The actual bristles themselves
         Bristle * bristles;
 
+        // The position of the brush
         Vec3d position;
+        // The ink that the brush uses
         Ynk::UX::RGBA ink;
 
         Brush (Bristle *, Ynk::usize, Ynk::UX::RGBA);
+        // C++ magic;
         Brush (Brush && husk);
 
+        // Number of nodes taken up by the brush in the flow network.
+        // Written for a future possible implementation that allows transfer between bristles within the brush
+        // that *would* need nodes of its owns
         Ynk::usize _pr_num_nodes ();
+        // Attach the brush to a flow network
         void _pr_attach (PushRelabelNetwork *, Vec2i);
     };
 
@@ -63,10 +74,13 @@ namespace Art {
     // LAYER COMPONENTS
     //
 
+    // The layer components are all simple, raw data structures
+
     struct WaterLayerComponent
     {
+        // The amount of water saturated into the paper
         Ynk::u64 hydrosaturation;
-        Ynk::u64 standing_water;
+        // The maximal moment hydrosaturation of the component
         Ynk::u64 maximal_moment_hydrosaturation;
 
         WaterLayerComponent ();
@@ -74,7 +88,9 @@ namespace Art {
 
     struct TintLayerComponent
     {
+        // Maximal moment chromosaturation
         Ynk::u64 maximal_moment_chromosaturation;
+        // Tint of the component
         Tint tint;
 
         TintLayerComponent ();
@@ -82,18 +98,19 @@ namespace Art {
 
     struct PaperLayerComponent
     {
+        // The base saturability of the paper
         Ynk::u64 saturability;
-
+        // The base coloration of the paper
         Tint tint;
 
         PaperLayerComponent (Ynk::u64, Tint);
-        void add_tint (Tint tint);
     };
 
     //
     // LAYERS
     //
 
+    // Internal abstraction structure; basically just sets up the values in a PaperLayer
     struct PaperConfiguration
     {
         Ynk::u64 saturability_real (Art::Vec2i);
@@ -102,8 +119,10 @@ namespace Art {
 
 #define ART_DEFAULT_PAPER_CONFIGURATION PaperConfiguration ()
 
+    // The paperlayer is inert-- there's not a lot that's happening here
     struct PaperLayer
     {
+        // Size of the layer
         Art::Vec2i size;
         PaperLayerComponent *** components;
 
@@ -129,25 +148,34 @@ namespace Art {
 
         PushRelabelNetwork prn;
 
+        // Index of the sink in the push-relabel network
         Ynk::usize _pr_sink_index;
 
         WaterLayer (Art::Vec2i, Brush * brush);
         ~WaterLayer ();
 
+        // Initializer
         void _pr_construct (PaperLayer *);
+        // Readies the network for an iteration
         void _pr_ready ();
+        // Runs the network
         void _pr_run ();
+        // Accretes the flow network onto the water component layer
+        // Needs the paperlayer for the saturability function
         void _pr_accrete (PaperLayer *);
 
+        // For converting between indexed nodes in the flow network and positions on screen
         inline Ynk::usize _pr_index (Ynk::i64 x, Ynk::i64 y) { return (x + (y.inner_ * size[1].inner_)).inner_; }
-        inline Vec2i _pr_deindex (Ynk::usize i)
-        {
-            return size.space->create_vec ({ i.inner_ % size[1].inner_, i.inner_ / size[1].inner_ });
-        }
+        inline Vec2i _pr_deindex (Ynk::usize i) { return size.space->create_vec ({ i.inner_ % size[1].inner_, i.inner_ / size[1].inner_ }); }
     };
 
 #define TLAYER_TQ_EP0 64.0L
 
+    // TintLayer has essentially the exact same structure as WaterLayer.
+    // The only differences are the _pr_* functions, which additionally need
+    // to take the water layer as a parameter because tint is intrinsically
+    // dependent on water-- tint can only flow through areas of the paper that
+    // have been saturated with water
     struct TintLayer
     {
         Art::Vec2i size;
@@ -166,11 +194,9 @@ namespace Art {
         void _pr_run ();
         void _pr_accrete (PaperLayer *, WaterLayer *);
 
+        // For converting between indexed nodes in the flow network and positions on screen
         inline Ynk::usize _pr_index (Ynk::i64 x, Ynk::i64 y) { return (x + (y.inner_ * size[1].inner_)).inner_; }
-        inline Vec2i _pr_deindex (Ynk::usize i)
-        {
-            return size.space->create_vec ({ i.inner_ % size[1].inner_, i.inner_ / size[1].inner_ });
-        }
+        inline Vec2i _pr_deindex (Ynk::usize i) { return size.space->create_vec ({ i.inner_ % size[1].inner_, i.inner_ / size[1].inner_ }); }
     };
 }
 

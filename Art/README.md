@@ -14,7 +14,7 @@
 
  - `Art/GL/Errors.cc` contains a couple functions for debugging OpenGL problems.
  - `Art/GL/Hooks.cc` contains callbacks set up with the GLFW windowing system.
- - `Art/GL/Setup.cc` sets up and tears down a windowed OpenGL environment
+ - `Art/GL/Setup.cc` sets up and tears down a windowed OpenGL environment. Documented.
 
 `Art/TUIApp` contains the sources for the debugging TUI.
 
@@ -26,20 +26,20 @@
 
 `Art/GLArtApp` contains the sources for the final generative art piece.
 
- - `Art/GLArtApp/GlArtApp.cc` runs the semi-dry-brush final art piece ("Distorsion Progression")
+ - `Art/GLArtApp/GlArtApp.cc` runs the semi-dry-brush final art piece ("Distorted progression"). Documented.
 
 `Art/Model` contains the sources for the watercolor model.
 
- - `Art/Model/Model.hh` contains all the declarations and definitions for the watercolor modeling system
+ - `Art/Model/Model.hh` contains all the declarations and definitions for the watercolor modeling system. (Moderately) documented.
  - `Art/Model/Brush.cc` contains the code for the `Brush`
- - `Art/Model/PaperLayer.cc` contains the sources for `PaperLayerComponent` and the `PaperLayer`
- - `Art/Model/WaterLayer.cc` contains the sources for `WaterLayerComponent` and the `WaterLayer`
- - `Art/Model/TintLayer.cc` contains the sources for `TintLayerComponent`, `TintLayer`, and `Tint`
+ - `Art/Model/PaperLayer.cc` contains the sources for `PaperLayerComponent` and the `PaperLayer`. Trivial.
+ - `Art/Model/WaterLayer.cc` contains the sources for `WaterLayerComponent` and the `WaterLayer`. (Moderately) documented.
+ - `Art/Model/TintLayer.cc` contains the sources for `TintLayerComponent`, `TintLayer`, and `Tint`. (Moderately) documented.
 
 `Art/PushRelabel` contains the sources of the push-relabel algorithm I implemented.
 
- - `Art/PushRelabel/PushRelabel.hh` defines the interface and data structures used
- - `Art/PushRelabel/PushRelabel.cc` contains the implementations thereof
+ - `Art/PushRelabel/PushRelabel.hh` defines the interface and data structures used. Documented.
+ - `Art/PushRelabel/PushRelabel.cc` contains the implementations thereof. Documented.
 
 `Art/shaders` contains the GLSL shaders used in the OpenGL rendering pipeline.
 

@@ -17,17 +17,15 @@ Art::PaperLayerComponent::PaperLayerComponent (u64 saturability,
     , tint { base }
 {}
 
-void Art::PaperLayerComponent::add_tint (YNK_UNUSED Art::Tint addition)
-{
-}
-
 // Paper Configuration
 
+// Fixed value for the \sigma(u) saturability function: 2048
 u64 Art::PaperConfiguration::saturability_real (YNK_UNUSED Art::Vec2i pos)
 {
     return 0x800;
 }
 
+// Fixed value for the base paper coloration
 Art::Tint Art::PaperConfiguration::paper_color_real (YNK_UNUSED Art::Vec2i pos)
 {
     return Tint {
@@ -43,6 +41,7 @@ Art::PaperLayer::PaperLayer (Art::Vec2i size, Art::PaperConfiguration pc)
     : size { size }
     , components { nullptr }
 {
+    // Create the component layer with the values from the PaperConfiguration object
     this->components = new PaperLayerComponent **[size[1]];
     for (i64 i = 0; i < size[1]; i++) {
         this->components[i] = new PaperLayerComponent *[size[0]];
